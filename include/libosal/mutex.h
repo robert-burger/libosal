@@ -53,7 +53,7 @@
 #define OSAL_MUTEX_ATTR__PRIOCEILING__MASK      0xFFFF0000u
 #define OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT     16u
 
-typedef uint32_t osal_mutex_attr_t;
+typedef osal_uint32_t osal_mutex_attr_t;
 
 //! \brief Initialize a mutex.
 /*!
