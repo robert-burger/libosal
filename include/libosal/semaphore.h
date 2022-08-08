@@ -1,0 +1,5 @@
+#ifndef LIBOSAL_SEMAPHORE__H
+#define LIBOSAL_SEMAPHORE__H
+
+#endif /* LIBOSAL_SEMAPHORE__H */
+
