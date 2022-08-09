@@ -1,12 +1,14 @@
 #ifndef LIBOSAL_TYPES__H
 #define LIBOSAL_TYPES__H
 
+#include <unistd.h>
 #include <stdint.h>
 #include <stddef.h>
 
 typedef char        osal_char_t;
 
 typedef size_t      osal_size_t;
+typedef ssize_t     osal_ssize_t;
 
 typedef uint8_t     osal_uint8_t;
 typedef uint16_t    osal_uint16_t;
