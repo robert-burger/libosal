@@ -35,11 +35,14 @@
 #define OSAL_ERR_INVALID_PARAM          -2
 #define OSAL_ERR_PERMISSION_DENIED      -3
 #define OSAL_ERR_SYSTEM_LIMIT_REACHED   -4
+#define OSAL_ERR_TIMEOUT                -5
+#define OSAL_ERR_UNAVAILABLE            -6
 
 #include <libosal/task.h>
 #include <libosal/mutex.h>
 #include <libosal/semaphore.h>
 #include <libosal/binary_semaphore.h>
+#include <libosal/timer.h>
 
 #endif /* LIBOSAL_OSAL__H */
 

@@ -43,6 +43,14 @@ int osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
         ret = OSAL_ERR_INVALID_PARAM;
     }
 
+    if (ret == OSAL_OK) {
+        if (attr != NULL) {
+            //pthread_getschedparam(&sch_prm);
+            sch_prm.sched_priority = attr->priority;
+            pthread_setschedparam(hdl->tid, SCHED_FIFO, &sch_prm);
+        }
+    }
+
     return ret;
 }
 

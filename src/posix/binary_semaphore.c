@@ -21,6 +21,9 @@
 int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semaphore_attr_t *attr) {
     assert(sem != NULL);
 
+    sem->value = 0;
+    pthread_mutex_init(&sem->posix_mtx, NULL);
+    pthread_cond_init(&sem->posix_cond, NULL);
     return 0;
 }
 
@@ -65,32 +68,46 @@ int osal_binary_semaphore_wait(osal_binary_semaphore_t *sem) {
     return 0;
 }
 
+#include <stdio.h>
+
 //! \brief Wait for a binary_semaphore.
 /*!
  * \param[in]   sem     Pointer to osal binary_semaphore structure. Content is OS dependent.
- * \param[in]   nsec    Timeout in nanoseconds.
+ * \param[in]   to      Timeout.
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_uint64_t nsec) {
-    struct timespec ts;
-    clock_gettime(CLOCK_REALTIME, &ts);
-    timespec_add(&ts, nsec / (osal_uint64_t)1E9, nsec % (osal_uint64_t)1E9);
+int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_timer_t *to) {
+    assert(sem != NULL);
 
-    pthread_mutex_lock(&sem->posix_mtx);
+    int ret = OSAL_OK;
 
-    while (!sem->value) {
-        int ret = pthread_cond_timedwait(&sem->posix_cond, &sem->posix_mtx, &ts);
-        if (ret == ETIMEDOUT) {
-            break;
+    if (to != NULL) {
+        struct timespec ts;
+        ts.tv_sec = to->sec;
+        ts.tv_nsec = to->nsec;
+
+        pthread_mutex_lock(&sem->posix_mtx);
+        while (!sem->value) {
+            int local_ret = pthread_cond_timedwait(&sem->posix_cond, &sem->posix_mtx, &ts);
+            if (local_ret == ETIMEDOUT) {
+                ret = OSAL_ERR_TIMEOUT;
+                break;
+            }
+        }
+
+        if (ret == OSAL_OK) {        
+            sem->value = 0;
+        }
+
+        pthread_mutex_unlock(&sem->posix_mtx);
+    } else {
+        if (sem->value == 0) {
+            ret = OSAL_ERR_TIMEOUT;
         }
     }
 
-    sem->value = 0;
-    
-    pthread_mutex_unlock(&sem->posix_mtx);
-
-    return 0;
+    return ret;
 }
 
 //! \brief Destroys a binary_semaphore.

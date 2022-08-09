@@ -32,6 +32,7 @@
 
 #include <libosal/config.h>
 #include <libosal/types.h>
+#include <libosal/timer.h>
 
 #ifdef LIBOSAL_BUILD_POSIX
 #include <libosal/posix/binary_semaphore.h>
@@ -71,11 +72,11 @@ int osal_binary_semaphore_wait(osal_binary_semaphore_t *sem);
 //! \brief Wait for a binary_semaphore.
 /*!
  * \param[in]   sem     Pointer to osal binary_semaphore structure. Content is OS dependent.
- * \param[in]   nsec    Timeout in nanoseconds.
+ * \param[in]   to      Timeout.
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_uint64_t nsec);
+int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_timer_t *to);
 
 //! \brief Destroys a binary_semaphore.
 /*!
