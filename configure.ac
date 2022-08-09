@@ -14,8 +14,9 @@ m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
 
 AC_CONFIG_SRCDIR([src])
-AC_CONFIG_HEADERS([include/libosal/config.h])
+AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
+AX_PREFIX_CONFIG_H(include/libosal/config.h) # prep mylib/_config.h from it..
 
 # Checks for programs.
 AC_PROG_CC

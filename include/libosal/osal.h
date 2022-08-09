@@ -30,11 +30,16 @@
 #ifndef LIBOSAL_OSAL__H
 #define LIBOSAL_OSAL__H
 
-#define OSAL_OK                     0
-#define OSAL_ERR_OPERATION_FAILED   -1
+#define OSAL_OK                         0
+#define OSAL_ERR_OPERATION_FAILED       -1
+#define OSAL_ERR_INVALID_PARAM          -2
+#define OSAL_ERR_PERMISSION_DENIED      -3
+#define OSAL_ERR_SYSTEM_LIMIT_REACHED   -4
 
+#include <libosal/task.h>
 #include <libosal/mutex.h>
 #include <libosal/semaphore.h>
+#include <libosal/binary_semaphore.h>
 
 #endif /* LIBOSAL_OSAL__H */
 

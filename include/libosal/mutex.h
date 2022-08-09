@@ -33,7 +33,7 @@
 #include <libosal/config.h>
 #include <libosal/types.h>
 
-#ifdef BUILD_POSIX
+#ifdef LIBOSAL_BUILD_POSIX
 #include <libosal/posix/mutex.h>
 #endif
 
