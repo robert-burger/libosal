@@ -36,12 +36,19 @@
 #ifdef LIBOSAL_BUILD_POSIX
 #include <libosal/posix/task.h>
 #endif
+
+#ifdef LIBOSAL_BUILD_VXWORKS
+#include <libosal/vxworks/task.h>
+#endif
     
+#define TASK_NAME_LEN   64u
+
 typedef osal_uint32_t osal_task_sched_policy_t;
 typedef osal_uint32_t osal_task_sched_priority_t;
 typedef osal_uint32_t osal_task_sched_affinity_t;
 
 typedef struct osal_task_attr {
+    osal_char_t task_name[TASK_NAME_LEN];
     osal_task_sched_policy_t   policy;
     osal_task_sched_priority_t priority;
     osal_task_sched_affinity_t affinity;

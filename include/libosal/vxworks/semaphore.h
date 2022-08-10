@@ -1,13 +1,13 @@
 /**
- * \file binary_semaphore.h
+ * \file vxworks/semaphore.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
  *
  * \date 07 Aug 2022
  *
- * \brief OSAL binary_semaphore header.
+ * \brief OSAL semaphore header.
  *
- * OSAL binary_semaphore include header.
+ * OSAL semaphore include header.
  */
 
 /*
@@ -27,15 +27,16 @@
  * along with libosal. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBOSAL_POSIX_BINARY_SEMAPHORE__H
-#define LIBOSAL_POSIX_BINARY_SEMAPHORE__H
+#ifndef LIBOSAL_VXWORKS_SEMAPHORE__H
+#define LIBOSAL_VXWORKS_SEMAPHORE__H
 
-#include <pthread.h>
+#include <vxWorks.h>
+#include <semLib.h>
 
-typedef struct osal_binary_semaphore {
-    pthread_mutex_t posix_mtx;
-    pthread_cond_t posix_cond;
-    int value;
-} osal_binary_semaphore_t;
+typedef struct osal_semaphore {
+    SEM_ID vx_sem;
+} osal_semaphore_t;
 
-#endif /* LIBOSAL_POSIX_BINARY_SEMAPHORE__H */
+#endif /* LIBOSAL_VXWORKS_SEMAPHORE__H */
+
+

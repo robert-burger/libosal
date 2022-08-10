@@ -1,5 +1,7 @@
+#include <vxWorks.h>
+
 #include <pthread.h>
 
 typedef struct osal_task {
-    pthread_t tid;
+    TASK_ID tid;
 } osal_task_t;

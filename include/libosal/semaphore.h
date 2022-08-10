@@ -38,6 +38,10 @@
 #include <libosal/posix/semaphore.h>
 #endif
 
+#ifdef LIBOSAL_BUILD_VXWORKS
+#include <libosal/vxworks/semaphore.h>
+#endif
+
 #define OSAL_SEMAPHORE_ATTR__PROCESS_SHARED         0x00000020u
 
 typedef osal_uint32_t osal_semaphore_attr_t;

@@ -22,15 +22,19 @@ AX_PREFIX_CONFIG_H(include/libosal/config.h) # prep mylib/_config.h from it..
 AC_PROG_CC
 AC_PROG_LIBTOOL
         
-
-case $target in
-    *-*-linux-*)
+case $target_os in
+    linux)
         BUILD_POSIX=true
         AC_DEFINE([BUILD_POSIX], [true], [Use POSIX build on linux])
+        ;;
+    vxworks*)
+        BUILD_VXWORKS=true
+        AC_DEFINE([BUILD_VXWORKS], [true], [Use VxWorks build])
         ;;
 esac
 
 AM_CONDITIONAL([BUILD_POSIX], [ test x$BUILD_POSIX = xtrue]) 
+AM_CONDITIONAL([BUILD_VXWORKS], [ test x$BUILD_VXWORKS = xtrue]) 
 
 # Checks for libraries.
 
