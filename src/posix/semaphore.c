@@ -116,10 +116,14 @@ int osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to) {
 
     while (ret != OSAL_ERR_TIMEOUT) {
         int local_ret = sem_timedwait(&sem->posix_sem, &ts);
+        int local_errno = errno;
+
         if (local_ret == 0) {
             break;
-        } else if (local_ret == ETIMEDOUT) {
-            ret = OSAL_ERR_TIMEOUT;
+        } else {
+            if (local_errno == ETIMEDOUT) {
+                ret = OSAL_ERR_TIMEOUT;
+            }
         }
     }
 
