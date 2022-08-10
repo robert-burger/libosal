@@ -30,6 +30,8 @@
 #ifndef LIBOSAL_TIMER__H
 #define LIBOSAL_TIMER__H
 
+#include <libosal/types.h>
+
 #define NSEC_PER_SEC                1000000000
 
 //! timer structure
