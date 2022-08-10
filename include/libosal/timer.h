@@ -38,7 +38,7 @@ typedef struct osal_timer {
     osal_int64_t nsec;      //!< nanoseconds
 } osal_timer_t;
 
-# define osal_timer_add(a, b, result)                                 \
+#define osal_timer_add(a, b, result)                                \
     do {                                                            \
         (result)->sec = (a)->sec + (b)->sec;                        \
         (result)->nsec = (a)->nsec + (b)->nsec;                     \
@@ -49,7 +49,7 @@ typedef struct osal_timer {
         }                                                           \
     } while (0)
 
-#define osal_timer_cmp(a, b, CMP)                                     \
+#define osal_timer_cmp(a, b, CMP)                                   \
     (((a)->sec == (b)->sec) ?                                       \
      ((a)->nsec CMP (b)->nsec) :                                    \
      ((a)->sec CMP (b)->sec))

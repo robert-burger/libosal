@@ -86,5 +86,5 @@ int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_timer_t *
  */
 int osal_binary_semaphore_destroy(osal_binary_semaphore_t *sem);
 
-#endif /* LIBOSAL_MUTEX__H */
+#endif /* LIBOSAL_BINARY_SEMAPHORE__H */
 

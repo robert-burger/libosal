@@ -1,13 +1,13 @@
 /**
- * \file semaphore.h
+ * \file posix/semaphore.c
  *
  * \author Robert Burger <robert.burger@dlr.de>
  *
  * \date 07 Aug 2022
  *
- * \brief OSAL semaphore header.
+ * \brief OSAL semaphore posix source.
  *
- * OSAL semaphore include header.
+ * OSAL semaphore posix source.
  */
 
 /*
@@ -27,20 +27,9 @@
  * along with libosal. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBOSAL_SEMAPHORE__H
-#define LIBOSAL_SEMAPHORE__H
-
-#include <libosal/config.h>
-#include <libosal/types.h>
-#include <libosal/timer.h>
-
-#ifdef LIBOSAL_BUILD_POSIX
-#include <libosal/posix/semaphore.h>
-#endif
-
-#define OSAL_SEMAPHORE_ATTR__PROCESS_SHARED         0x00000020u
-
-typedef osal_uint32_t osal_semaphore_attr_t;
+#include <libosal/osal.h>
+#include <assert.h>
+#include <errno.h>
 
 //! \brief Initialize a semaphore.
 /*!
@@ -51,7 +40,19 @@ typedef osal_uint32_t osal_semaphore_attr_t;
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_init(osal_semaphore_t *sem, osal_semaphore_attr_t *attr);
+int osal_semaphore_init(osal_semaphore_t *sem, osal_semaphore_attr_t *attr) {
+    assert(sem != NULL);
+
+    int pshared = 0;
+    if (attr != NULL) {
+        if (((*attr) & OSAL_SEMAPHORE_ATTR__PROCESS_SHARED) == OSAL_SEMAPHORE_ATTR__PROCESS_SHARED) {
+            pshared = 1;
+        }
+    }
+
+    sem_init(&sem->posix_sem, pshared, 0);
+    return OSAL_OK;
+}
 
 //! \brief Post a semaphore.
 /*!
@@ -59,7 +60,13 @@ int osal_semaphore_init(osal_semaphore_t *sem, osal_semaphore_attr_t *attr);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_post(osal_semaphore_t *sem);
+int osal_semaphore_post(osal_semaphore_t *sem) {
+    assert(sem != NULL);
+
+    sem_post(&sem->posix_sem);
+
+    return OSAL_OK;
+}
 
 //! \brief Wait for a semaphore.
 /*!
@@ -67,7 +74,13 @@ int osal_semaphore_post(osal_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_wait(osal_semaphore_t *sem);
+int osal_semaphore_wait(osal_semaphore_t *sem) {
+    assert(sem != NULL);
+
+    sem_wait(&sem->posix_sem);
+
+    return OSAL_OK;
+}
 
 //! \brief Try to wait for a semaphore but don't block.
 /*!
@@ -75,7 +88,13 @@ int osal_semaphore_wait(osal_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_trywait(osal_semaphore_t *sem);
+int osal_semaphore_trywait(osal_semaphore_t *sem) {
+    assert(sem != NULL);
+
+    sem_trywait(&sem->posix_sem);
+
+    return OSAL_OK;
+}
 
 //! \brief Wait for a semaphore.
 /*!
@@ -84,7 +103,27 @@ int osal_semaphore_trywait(osal_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to);
+int osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to) {
+    assert(sem != NULL);
+    assert(to != NULL);
+
+    int ret = OSAL_OK;
+
+    struct timespec ts;
+    ts.tv_sec = to->sec;
+    ts.tv_nsec = to->nsec;
+
+    while (ret != OSAL_ERR_TIMEOUT) {
+        int local_ret = sem_timedwait(&sem->posix_sem, &ts);
+        if (local_ret == 0) {
+            break;
+        } else if (local_ret == ETIMEDOUT) {
+            ret = OSAL_ERR_TIMEOUT;
+        }
+    }
+
+    return ret;
+}
 
 //! \brief Destroys a semaphore.
 /*!
@@ -92,7 +131,11 @@ int osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_destroy(osal_semaphore_t *sem);
+int osal_semaphore_destroy(osal_semaphore_t *sem) {
+    assert(sem != NULL);
 
-#endif /* LIBOSAL_SEMAPHORE__H */
+    sem_destroy(&sem->posix_sem);
+    return OSAL_OK;
+}
+
 

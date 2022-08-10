@@ -27,37 +27,6 @@
  * along with libosal. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * \file timer.c
- *
- * \author Robert Burger <robert.burger@dlr.de>
- *
- * \date 23 Nov 2016
- *
- * \brief ethercat master timer routines
- *
- * 
- */
-
-
-/*
- * This file is part of libethercat.
- *
- * libethercat is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * libethercat is distributed in the hope that 
- * it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with libethercat
- * If not, see <www.gnu.org/licenses/>.
- */
-
 #include <libosal/osal.h>
 #include <libosal/timer.h>
 
@@ -102,9 +71,9 @@ int osal_timer_gettime(osal_timer_t *timer) {
 osal_int64_t osal_timer_gettime_nsec(void) {
     osal_int64_t ret = 0;
     osal_timer_t tmr = { 0, 0 };
-    ret = osal_timer_gettime(&tmr);
+    int local_ret = osal_timer_gettime(&tmr);
 
-    if (ret == OSAL_OK) {
+    if (local_ret == OSAL_OK) {
         ret = ((tmr.sec * 1E9) + tmr.nsec);
     }
 
@@ -113,12 +82,12 @@ osal_int64_t osal_timer_gettime_nsec(void) {
 
 // initialize timer with timeout 
 void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout) {
+    assert(timer != NULL);
+
     struct timespec ts;
     if (clock_gettime(CLOCK_REALTIME, &ts) == -1) {
         perror("clock_gettime");
     }
-
-    assert(timer != NULL);
 
     osal_timer_t a;
     osal_timer_t b;
@@ -133,11 +102,11 @@ void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout) {
 
 // checks if timer is expired
 int osal_timer_expired(osal_timer_t *timer) {
+    assert(timer != NULL);
+
     osal_timer_t act = { 0, 0 };
     int ret = OSAL_OK;
     ret = osal_timer_gettime(&act);    
-
-    assert(timer != NULL);
 
     if (ret == OSAL_OK) {
         if (osal_timer_cmp(&act, timer, <) == 0) {

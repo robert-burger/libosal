@@ -28,6 +28,7 @@ libosal_la_SOURCES += posix/binary_semaphore.c
 libosal_la_SOURCES += posix/mutex.c
 libosal_la_SOURCES += posix/task.c
 libosal_la_SOURCES += posix/timer.c
+libosal_la_SOURCES += posix/semaphore.c
 endif
 
 libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror -Wno-unused-const-variable -I$(top_srcdir)/include
