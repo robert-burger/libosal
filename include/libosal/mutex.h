@@ -55,6 +55,10 @@
 
 typedef osal_uint32_t osal_mutex_attr_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //! \brief Initialize a mutex.
 /*!
  * \param[in]   mtx     Pointer to osal mutex structure. Content is OS dependent.
@@ -96,6 +100,10 @@ int osal_mutex_unlock(osal_mutex_t *mtx);
  * \return OK or ERROR_CODE.
  */
 int osal_mutex_destroy(osal_mutex_t *mtx);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* LIBOSAL_MUTEX__H */
 

@@ -42,6 +42,10 @@
 
 typedef osal_uint32_t osal_binary_semaphore_attr_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //! \brief Initialize a binary_semaphore.
 /*!
  * \param[in]   sem     Pointer to osal binary_semaphore structure. Content is OS dependent.
@@ -85,6 +89,10 @@ int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_timer_t *
  * \return OK or ERROR_CODE.
  */
 int osal_binary_semaphore_destroy(osal_binary_semaphore_t *sem);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* LIBOSAL_BINARY_SEMAPHORE__H */
 

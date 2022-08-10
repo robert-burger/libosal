@@ -51,6 +51,10 @@ typedef void *(*osal_task_handler_t)(void *arg);
 typedef void * osal_task_handler_arg_t;
 typedef void * osal_task_retval_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //! \brief Create a task.
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
@@ -80,6 +84,10 @@ int osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval);
  * \return OK or ERROR_CODE.
  */
 int osal_task_destroy(osal_task_t *hdl);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* LIBOSAL_MUTEX__H */
 

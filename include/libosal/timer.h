@@ -54,6 +54,10 @@ typedef struct osal_timer {
      ((a)->nsec CMP (b)->nsec) :                                    \
      ((a)->sec CMP (b)->sec))
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 //! Sleep in nanoseconds
 /*!
  * \param[in] nsec      Time to sleep in nanoseconds.
@@ -93,6 +97,10 @@ void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout);
  * \retval OSAL_OK              If \p timer is not expired
  */
 int osal_timer_expired(osal_timer_t *timer);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* LIBOSAL_TIMER__H */
 
