@@ -1,8 +1,64 @@
+#define _GNU_SOURCE             /* See feature_test_macros(7) */
+#include <sched.h>
+
 #include <libosal/osal.h>
 #include <libosal/task.h>
 
 #include <errno.h>
 #include <assert.h>
+
+#include <stdio.h>
+#include <string.h>
+
+typedef struct posix_start_args {
+    int running;
+
+    osal_task_handler_t user_handler;
+    osal_task_handler_arg_t user_arg;
+    const osal_task_attr_t *user_attr;
+} posix_start_args_t;
+
+void *posix_task_wrapper(void *args) {
+    posix_start_args_t *start_args = (posix_start_args_t *)args;
+
+    // copy all stuff to local stack-objects, they will be destroyed after 'start_args->running = 1;'
+    osal_task_handler_t user_handler = start_args->user_handler;
+    osal_task_handler_arg_t user_arg = start_args->user_arg;
+    const osal_task_attr_t *user_attr = start_args->user_attr;
+
+    if (user_attr != NULL) {
+        struct sched_param param;
+        int policy = SCHED_FIFO;
+
+        printf("setting thread priority to %d, policy %d\n", user_attr->priority, policy);
+
+        param.sched_priority = user_attr->priority;
+        if (pthread_setschedparam(pthread_self(), policy, &param) != 0) {
+            printf("pthread_setschedparam(%p, %d, %d): %s\n",
+                    (void *)pthread_self(), policy, user_attr->priority, strerror(errno));
+        }
+        
+        cpu_set_t cpuset;
+        CPU_ZERO(&cpuset);
+        for (unsigned i = 0; i < (sizeof(user_attr->affinity) * 8); ++i) {
+            if (user_attr->affinity & (1 << i)) {
+                CPU_SET(i, &cpuset);
+            }
+        }
+
+        printf("setting cpu affinity mask %#x\n", user_attr->affinity);
+
+        int ret = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
+        if (ret != 0)
+            printf("setAffinityMask: pthread_setaffinity(%p, %#x): %d %s\n", 
+                    (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
+
+    }       
+        
+    start_args->running = 1;
+
+    return (*user_handler)(user_arg);
+}
 
 //! \brief Create a task.
 /*!
@@ -20,20 +76,9 @@ int osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
 
     int ret = OSAL_OK;
     int local_ret;
-    pthread_attr_t pthr_attr;
-    pthread_attr_t *ppthr_attr = NULL;
-    struct sched_param sch_prm;
+    posix_start_args_t start_args = { 0, handler, arg, attr };
 
-    if (attr != NULL) {
-        pthread_attr_init(&pthr_attr);
-        ppthr_attr = &pthr_attr;
-
-        sch_prm.sched_priority = attr->priority;
-
-        pthread_attr_setschedparam(ppthr_attr, &sch_prm);
-    }
-
-    local_ret = pthread_create(&hdl->tid, ppthr_attr, handler, arg);
+    local_ret = pthread_create(&hdl->tid, NULL, posix_task_wrapper, &start_args);
     
     if (local_ret == EAGAIN) {
         ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
@@ -44,10 +89,9 @@ int osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
     }
 
     if (ret == OSAL_OK) {
-        if (attr != NULL) {
-            //pthread_getschedparam(&sch_prm);
-            sch_prm.sched_priority = attr->priority;
-            pthread_setschedparam(hdl->tid, SCHED_FIFO, &sch_prm);
+        // only wait if thread has been started successfully
+        while (start_args.running == 0) {
+            osal_sleep(1000000);
         }
     }
 
