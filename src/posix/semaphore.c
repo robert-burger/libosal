@@ -36,21 +36,22 @@
  * \param[in]   sem     Pointer to osal semaphore structure. Content is OS dependent.
  * \param[in]   attr    Pointer to initial semaphore attributes. Can be NULL then
  *                      the defaults of the underlying mutex will be used.
- *
+ * \param[in]   initval Initial semaphore cound value
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_init(osal_semaphore_t *sem, osal_semaphore_attr_t *attr) {
+int osal_semaphore_init(osal_semaphore_t *sem, osal_semaphore_attr_t *attr, osal_int32_t initval) {
     assert(sem != NULL);
 
     int pshared = 0;
+    int posix_initval = initval;
     if (attr != NULL) {
         if (((*attr) & OSAL_SEMAPHORE_ATTR__PROCESS_SHARED) == OSAL_SEMAPHORE_ATTR__PROCESS_SHARED) {
             pshared = 1;
         }
     }
 
-    sem_init(&sem->posix_sem, pshared, 0);
+    sem_init(&sem->posix_sem, pshared, posix_initval);
     return OSAL_OK;
 }
 

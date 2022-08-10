@@ -47,11 +47,11 @@ typedef osal_uint32_t osal_semaphore_attr_t;
  * \param[in]   sem     Pointer to osal semaphore structure. Content is OS dependent.
  * \param[in]   attr    Pointer to initial semaphore attributes. Can be NULL then
  *                      the defaults of the underlying mutex will be used.
- *
+ * \param[in]   initval Initial semaphore cound value
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_init(osal_semaphore_t *sem, osal_semaphore_attr_t *attr);
+int osal_semaphore_init(osal_semaphore_t *sem, osal_semaphore_attr_t *attr, osal_int32_t initval);
 
 //! \brief Post a semaphore.
 /*!
