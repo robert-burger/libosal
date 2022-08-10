@@ -30,11 +30,9 @@ void *posix_task_wrapper(void *args) {
         struct sched_param param;
         int policy = SCHED_FIFO;
 
-        printf("setting thread priority to %d, policy %d\n", user_attr->priority, policy);
-
         param.sched_priority = user_attr->priority;
         if (pthread_setschedparam(pthread_self(), policy, &param) != 0) {
-            printf("pthread_setschedparam(%p, %d, %d): %s\n",
+            printf("libosal: pthread_setschedparam(%p, %d, %d): %s\n",
                     (void *)pthread_self(), policy, user_attr->priority, strerror(errno));
         }
         
@@ -46,15 +44,14 @@ void *posix_task_wrapper(void *args) {
             }
         }
 
-        printf("setting cpu affinity mask %#x\n", user_attr->affinity);
-
         int ret = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
-        if (ret != 0)
-            printf("setAffinityMask: pthread_setaffinity(%p, %#x): %d %s\n", 
+        if (ret != 0) {
+            printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
                     (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
-
+        }
     }       
         
+    // after setting running to 1, we 
     start_args->running = 1;
 
     return (*user_handler)(user_arg);

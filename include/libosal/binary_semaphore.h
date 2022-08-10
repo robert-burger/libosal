@@ -65,13 +65,21 @@ int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semapho
  */
 int osal_binary_semaphore_post(osal_binary_semaphore_t *sem);
 
-//! \brief Wait for a binary_semaphore.
+//! \brief Wait for a binary_semaphore. (blocking)
 /*!
  * \param[in]   sem     Pointer to osal binary_semaphore structure. Content is OS dependent.
  *
  * \return OK or ERROR_CODE.
  */
 int osal_binary_semaphore_wait(osal_binary_semaphore_t *sem);
+
+//! \brief Wait for a binary_semaphore.
+/*!
+ * \param[in]   sem     Pointer to osal binary_semaphore structure. Content is OS dependent.
+ *
+ * \return OK or ERROR_CODE.
+ */
+int osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem);
 
 //! \brief Wait for a binary_semaphore.
 /*!
