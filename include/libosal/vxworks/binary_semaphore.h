@@ -34,7 +34,7 @@
 #include <semLib.h>
 
 typedef struct osal_binary_semaphore {
-    SEM_ID vxw_sem;
+    SEM_ID vx_sem;
 } osal_binary_semaphore_t;
 
 #endif /* LIBOSAL_VXWORKS_BINARY_SEMAPHORE__H */

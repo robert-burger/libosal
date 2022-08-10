@@ -33,7 +33,10 @@ endif
 
 if BUILD_VXWORKS
 
+libosal_la_SOURCES += vxworks/binary_semaphore.c
+libosal_la_SOURCES += vxworks/mutex.c
 libosal_la_SOURCES += vxworks/task.c
+libosal_la_SOURCES += vxworks/semaphore.c
 
 endif
 
