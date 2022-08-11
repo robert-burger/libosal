@@ -47,7 +47,8 @@ typedef struct posix_start_args {
     const osal_task_attr_t *user_attr;
 } posix_start_args_t;
 
-void *posix_task_wrapper(void *args) {
+static void *posix_task_wrapper(void *args) {
+    // cppcheck-suppress misra-c2012-11.5
     posix_start_args_t *start_args = (posix_start_args_t *)args;
 
     // copy all stuff to local stack-objects, they will be destroyed after 'start_args->running = 1;'
@@ -61,21 +62,21 @@ void *posix_task_wrapper(void *args) {
 
         param.sched_priority = user_attr->priority;
         if (pthread_setschedparam(pthread_self(), policy, &param) != 0) {
-            printf("libosal: pthread_setschedparam(%p, %d, %d): %s\n",
+            (void)printf("libosal: pthread_setschedparam(%p, %d, %u): %s\n",
                     (void *)pthread_self(), policy, user_attr->priority, strerror(errno));
         }
         
         cpu_set_t cpuset;
         CPU_ZERO(&cpuset);
-        for (unsigned i = 0; i < (sizeof(user_attr->affinity) * 8); ++i) {
-            if (user_attr->affinity & (1 << i)) {
+        for (uint32_t i = 0u; i < (sizeof(user_attr->affinity) * 8u); ++i) {
+            if (user_attr->affinity & (1u << i)) {
                 CPU_SET(i, &cpuset);
             }
         }
 
         int ret = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
         if (ret != 0) {
-            printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
+            (void)printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
                     (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
         }
     }       
@@ -100,8 +101,9 @@ int osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
         osal_task_handler_t handler, osal_task_handler_arg_t arg) {
     assert(hdl != NULL);
 
-    if (attr)
-        printf("starting thread with prio %d\n", attr->priority);
+    if (attr != NULL) {
+        (void)printf("starting thread with prio %u\n", attr->priority);
+    }
 
     int ret = OSAL_OK;
     int local_ret;

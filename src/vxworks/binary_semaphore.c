@@ -50,6 +50,8 @@
 int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semaphore_attr_t *attr) {
     assert(sem != NULL);
 
+    (void)attr;
+
     sem->vx_sem = semBCreate(SEM_Q_FIFO, SEM_EMPTY);
     return OSAL_OK;
 }

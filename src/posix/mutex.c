@@ -59,7 +59,7 @@ int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
             pthread_mutexattr_settype(&posix_attr, PTHREAD_MUTEX_ERRORCHECK);
         } else if (((*attr) & OSAL_MUTEX_ATTR__TYPE__MASK) == OSAL_MUTEX_ATTR__TYPE__RECURSIVE) {
             pthread_mutexattr_settype(&posix_attr, PTHREAD_MUTEX_RECURSIVE);
-        }
+        } else  {}
 
         if (((*attr) & OSAL_MUTEX_ATTR__ROBUST) == OSAL_MUTEX_ATTR__ROBUST) {
             pthread_mutexattr_setrobust(&posix_attr, PTHREAD_MUTEX_ROBUST);
@@ -75,7 +75,7 @@ int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
             pthread_mutexattr_setprotocol(&posix_attr, PTHREAD_PRIO_INHERIT);
         } else if (((*attr) & OSAL_MUTEX_ATTR__PROTOCOL__MASK) == OSAL_MUTEX_ATTR__PROTOCOL__PROTECT) {
             pthread_mutexattr_setprotocol(&posix_attr, PTHREAD_PRIO_PROTECT);
-        }
+        } else {}
 
         if (((*attr) & OSAL_MUTEX_ATTR__PRIOCEILING__MASK) != 0u) {
             int prioceiling = (((*attr) & OSAL_MUTEX_ATTR__PRIOCEILING__MASK) >> OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT);

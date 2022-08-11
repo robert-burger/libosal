@@ -50,6 +50,8 @@
 int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semaphore_attr_t *attr) {
     assert(sem != NULL);
 
+    (void)attr;
+
     sem->value = 0;
 
     pthread_condattr_t cond_attr;

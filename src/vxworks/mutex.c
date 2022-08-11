@@ -43,6 +43,8 @@
 int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
     assert(mtx != NULL);
 
+    (void)attr;
+
     int ret = OSAL_OK;
     mtx->vx_mtx = semMCreate(SEM_Q_FIFO);
     return ret;

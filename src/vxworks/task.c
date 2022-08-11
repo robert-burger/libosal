@@ -6,7 +6,7 @@
 #include <libosal/osal.h>
 #include <libosal/task.h>
 
-int vxworks_task_entry(_Vx_usr_arg_t arg1, _Vx_usr_arg_t arg2) {
+static int vxworks_task_entry(_Vx_usr_arg_t arg1, _Vx_usr_arg_t arg2) {
     osal_task_handler_t hdl = (osal_task_handler_t)arg1;
     osal_task_handler_arg_t arg = (osal_task_handler_arg_t)arg2;
 

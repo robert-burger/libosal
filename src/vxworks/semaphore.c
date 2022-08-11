@@ -40,8 +40,10 @@
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_init(osal_semaphore_t *sem, osal_semaphore_attr_t *attr, osal_int32_t initval) {
+int osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_attr_t *attr, osal_int32_t initval) {
     assert(sem != NULL);
+
+    (void)attr;
 
     sem->vx_sem = semCCreate(SEM_Q_FIFO, initval);
     return OSAL_OK;

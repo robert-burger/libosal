@@ -46,6 +46,8 @@ int osal_spinlock_init(osal_spinlock_t *mtx, const osal_spinlock_attr_t *attr) {
 
     int ret = OSAL_OK;
     int posix_ret;
+
+    (void)attr;
 /*
     pthread_spinlockattr_t posix_attr;
     pthread_spinlockattr_t *pposix_attr = NULL;
