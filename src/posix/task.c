@@ -1,3 +1,32 @@
+/**
+ * \file posix/task.c
+ *
+ * \author Robert Burger <robert.burger@dlr.de>
+ *
+ * \date 07 Aug 2022
+ *
+ * \brief OSAL task posix source.
+ *
+ * OSAL task posix source.
+ */
+
+/*
+ * This file is part of libosal.
+ *
+ * libosal is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libosal is distributed in the hope that 
+ * it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with libosal. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #define _GNU_SOURCE             /* See feature_test_macros(7) */
 #include <sched.h>
 
@@ -51,7 +80,7 @@ void *posix_task_wrapper(void *args) {
         }
     }       
         
-    // after setting running to 1, we 
+    // after setting running to 1, we start_args will be invalid
     start_args->running = 1;
 
     return (*user_handler)(user_arg);
@@ -77,12 +106,16 @@ int osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
 
     local_ret = pthread_create(&hdl->tid, NULL, posix_task_wrapper, &start_args);
     
-    if (local_ret == EAGAIN) {
-        ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
-    } else if (local_ret == EPERM) {
-        ret = OSAL_ERR_PERMISSION_DENIED;
-    } else if (local_ret == EINVAL) {
-        ret = OSAL_ERR_INVALID_PARAM;
+    if (local_ret != 0) {
+        if (local_ret == EAGAIN) {
+            ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
+        } else if (local_ret == EPERM) {
+            ret = OSAL_ERR_PERMISSION_DENIED;
+        } else if (local_ret == EINVAL) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else {
+            ret = OSAL_ERR_OPERATION_FAILED;
+        }
     }
 
     if (ret == OSAL_OK) {
@@ -108,6 +141,18 @@ int osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval) {
 
     local_ret = pthread_join(hdl->tid, retval);
     (void)local_ret;
+
+    if (local_ret != 0) {
+        if (local_ret == EDEADLK) {
+            ret = OSAL_ERR_DEAD_LOCK;
+        } else if (local_ret == EINVAL) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else if (local_ret == ESRCH) {
+            ret = OSAL_ERR_NOT_FOUND;
+        } else {
+            ret = OSAL_ERR_OPERATION_FAILED;
+        }
+    }
 
     return ret;
 }

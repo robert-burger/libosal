@@ -42,6 +42,7 @@
 #define OSAL_ERR_OWNER_DEAD             -9
 #define OSAL_ERR_DEAD_LOCK              -10
 #define OSAL_ERR_BUSY                   -11
+#define OSAL_ERR_NOT_FOUND              -12
 
 #include <libosal/task.h>
 #include <libosal/mutex.h>
