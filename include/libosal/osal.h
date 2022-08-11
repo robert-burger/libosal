@@ -37,6 +37,11 @@
 #define OSAL_ERR_SYSTEM_LIMIT_REACHED   -4
 #define OSAL_ERR_TIMEOUT                -5
 #define OSAL_ERR_UNAVAILABLE            -6
+#define OSAL_ERR_OUT_OF_MEMORY          -7
+#define OSAL_ERR_NOT_RECOVERABLE        -8
+#define OSAL_ERR_OWNER_DEAD             -9
+#define OSAL_ERR_DEAD_LOCK              -10
+#define OSAL_ERR_BUSY                   -11
 
 #include <libosal/task.h>
 #include <libosal/mutex.h>

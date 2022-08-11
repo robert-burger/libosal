@@ -23,7 +23,7 @@ AC_PROG_CC
 AC_PROG_LIBTOOL
         
 case $target_os in
-    linux)
+    linux*)
         BUILD_POSIX=true
         AC_DEFINE([BUILD_POSIX], [true], [Use POSIX build on linux])
         ;;
