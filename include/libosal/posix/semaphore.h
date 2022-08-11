@@ -1,5 +1,5 @@
 /**
- * \file semaphore.h
+ * \file posix/semaphore.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
  *

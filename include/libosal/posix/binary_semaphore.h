@@ -1,5 +1,5 @@
 /**
- * \file binary_semaphore.h
+ * \file posix/binary_semaphore.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
  *
