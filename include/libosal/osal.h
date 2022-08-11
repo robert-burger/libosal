@@ -47,6 +47,7 @@
 #include <libosal/task.h>
 #include <libosal/mutex.h>
 #include <libosal/semaphore.h>
+#include <libosal/spinlock.h>
 #include <libosal/binary_semaphore.h>
 #include <libosal/timer.h>
 

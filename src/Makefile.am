@@ -12,6 +12,7 @@ include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
 				  $(top_srcdir)/include/libosal/task.h \
 				  $(top_srcdir)/include/libosal/timer.h \
 				  $(top_srcdir)/include/libosal/semaphore.h \
+				  $(top_srcdir)/include/libosal/spinlock.h \
 				  $(top_srcdir)/include/libosal/binary_semaphore.h
 
 includeposix_HEADERS = 
@@ -22,13 +23,15 @@ if BUILD_POSIX
 includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/binary_semaphore.h \
 						   $(top_srcdir)/include/libosal/posix/mutex.h \
 				  		   $(top_srcdir)/include/libosal/posix/semaphore.h \
-				  		   $(top_srcdir)/include/libosal/posix/task.h 
+				  		   $(top_srcdir)/include/libosal/posix/task.h \
+				  		   $(top_srcdir)/include/libosal/posix/spinlock.h 
 
 libosal_la_SOURCES += posix/binary_semaphore.c
 libosal_la_SOURCES += posix/mutex.c
 libosal_la_SOURCES += posix/task.c
 libosal_la_SOURCES += posix/timer.c
 libosal_la_SOURCES += posix/semaphore.c
+libosal_la_SOURCES += posix/spinlock.c
 endif
 
 if BUILD_VXWORKS

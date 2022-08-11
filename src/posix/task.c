@@ -100,6 +100,9 @@ int osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
         osal_task_handler_t handler, osal_task_handler_arg_t arg) {
     assert(hdl != NULL);
 
+    if (attr)
+        printf("starting thread with prio %d\n", attr->priority);
+
     int ret = OSAL_OK;
     int local_ret;
     posix_start_args_t start_args = { 0, handler, arg, attr };
