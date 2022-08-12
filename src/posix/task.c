@@ -29,9 +29,15 @@
 
 #define _GNU_SOURCE             /* See feature_test_macros(7) */
 #include <sched.h>
+#include <pthread.h>
 
+#include <libosal/config.h>
 #include <libosal/osal.h>
 #include <libosal/task.h>
+
+#if LIBOSAL_HAVE_SYS_PRCTL_H == 1
+#include <sys/prctl.h>
+#endif
 
 #include <errno.h>
 #include <assert.h>
@@ -79,6 +85,10 @@ static void *posix_task_wrapper(void *args) {
             (void)printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
                     (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
         }
+
+#if LIBOSAL_HAVE_SYS_PRCTL_H == 1
+        prctl(PR_SET_NAME, user_attr->task_name, 0, 0, 0);
+#endif
     }       
         
     // after setting running to 1, we start_args will be invalid
@@ -100,10 +110,6 @@ static void *posix_task_wrapper(void *args) {
 int osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr, 
         osal_task_handler_t handler, osal_task_handler_arg_t arg) {
     assert(hdl != NULL);
-
-    if (attr != NULL) {
-        (void)printf("starting thread with prio %u\n", attr->priority);
-    }
 
     int ret = OSAL_OK;
     int local_ret;

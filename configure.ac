@@ -40,6 +40,8 @@ AM_CONDITIONAL([BUILD_VXWORKS], [ test x$BUILD_VXWORKS = xtrue])
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdint.h])
+dnl check for sys/prctl for setting thread name on Linux
+AC_CHECK_HEADERS([sys/prctl.h], [], [], [AC_INCLUDES_DEFAULT])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_UINT32_T
