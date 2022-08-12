@@ -47,6 +47,10 @@ int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
 
     int ret = OSAL_OK;
     mtx->vx_mtx = semMCreate(SEM_Q_FIFO);
+    if (mtx->vx_mtx == SEM_ID_NULL) {
+        ret = OSAL_ERR_OUT_OF_MEMORY;
+    }
+
     return ret;
 }
 
@@ -60,7 +64,20 @@ int osal_mutex_lock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    semTake(mtx->vx_mtx, WAIT_FOREVER);
+    int local_ret = semTake(mtx->vx_mtx, WAIT_FOREVER);
+    if (local_ret != 0) {
+        switch (local_ret) {
+            default:
+            case S_intLib_NOT_ISR_CALLABLE:
+            case S_objLib_OBJ_UNAVAILABLE:
+                ret = OSAL_ERR_UNAVAILABLE;
+                break;
+            case S_objLib_OBJ_ID_ERROR:
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+        }
+    }
+
     return ret;
 }
 
@@ -74,7 +91,20 @@ int osal_mutex_trylock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    semTake(mtx->vx_mtx, NO_WAIT);
+    int local_ret = semTake(mtx->vx_mtx, NO_WAIT);
+    if (local_ret != 0) {
+        switch (local_ret) {
+            default:
+            case S_intLib_NOT_ISR_CALLABLE:
+            case S_objLib_OBJ_UNAVAILABLE:
+                ret = OSAL_ERR_UNAVAILABLE;
+                break;
+            case S_objLib_OBJ_ID_ERROR:
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+        }
+    }
+
     return ret;
 }
 
@@ -88,7 +118,20 @@ int osal_mutex_unlock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    semGive(mtx->vx_mtx);
+    int local_ret = semGive(mtx->vx_mtx);
+    if (local_ret != 0) {
+        switch (local_ret) {
+            default:
+            case S_intLib_NOT_ISR_CALLABLE:
+            case S_objLib_OBJ_UNAVAILABLE:
+                ret = OSAL_ERR_UNAVAILABLE;
+                break;
+            case S_objLib_OBJ_ID_ERROR:
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+        }
+    }
+
     return ret;
 }
 
@@ -102,6 +145,10 @@ int osal_mutex_destroy(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    semDelete(mtx->vx_mtx);
+    int local_ret = semDelete(mtx->vx_mtx);
+    if (local_ret != 0) {
+        ret = OSAL_ERR_INVALID_PARAM;
+    }
+
     return ret;
 }
