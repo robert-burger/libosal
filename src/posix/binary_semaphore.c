@@ -60,7 +60,7 @@ int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semapho
 
     pthread_mutex_init(&sem->posix_mtx, NULL);
     pthread_cond_init(&sem->posix_cond, &cond_attr);
-    return 0;
+    return OSAL_OK;
 }
 
 //! \brief Post a binary_semaphore.
@@ -80,7 +80,7 @@ int osal_binary_semaphore_post(osal_binary_semaphore_t *sem) {
     }
 
     pthread_mutex_unlock(&sem->posix_mtx);
-    return 0;
+    return OSAL_OK;
 }
 
 //! \brief Wait for a binary_semaphore.
@@ -101,7 +101,7 @@ int osal_binary_semaphore_wait(osal_binary_semaphore_t *sem) {
     sem->value = 0;
     
     pthread_mutex_unlock(&sem->posix_mtx);
-    return 0;
+    return OSAL_OK;
 }
 
 //! \brief Wait for a binary_semaphore.
@@ -180,6 +180,6 @@ int osal_binary_semaphore_destroy(osal_binary_semaphore_t *sem) {
     pthread_mutex_destroy(&sem->posix_mtx);
     pthread_cond_destroy(&sem->posix_cond);
 
-    return 0;
+    return OSAL_OK;
 }
 
