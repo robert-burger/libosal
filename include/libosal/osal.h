@@ -44,6 +44,7 @@
 #define OSAL_ERR_BUSY                   -11
 #define OSAL_ERR_NOT_FOUND              -12
 
+#include <libosal/types.h>
 #include <libosal/task.h>
 #include <libosal/mutex.h>
 #include <libosal/semaphore.h>
