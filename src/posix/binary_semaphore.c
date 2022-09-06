@@ -56,7 +56,7 @@ int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semapho
 
     pthread_condattr_t cond_attr;
     pthread_condattr_init(&cond_attr);
-    pthread_condattr_setclock(&cond_attr, CLOCK_MONOTONIC);
+    pthread_condattr_setclock(&cond_attr, CLOCK_REALTIME);
 
     pthread_mutex_init(&sem->posix_mtx, NULL);
     pthread_cond_init(&sem->posix_cond, &cond_attr);

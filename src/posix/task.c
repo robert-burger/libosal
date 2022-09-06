@@ -63,31 +63,35 @@ static void *posix_task_wrapper(void *args) {
     const osal_task_attr_t *user_attr = start_args->user_attr;
 
     if (user_attr != NULL) {
-        struct sched_param param;
-        int policy = SCHED_FIFO;
+        if (user_attr->priority != 0) {
+            struct sched_param param;
+            int policy = SCHED_FIFO;
 
-        param.sched_priority = user_attr->priority;
-        if (pthread_setschedparam(pthread_self(), policy, &param) != 0) {
-            (void)printf("libosal: pthread_setschedparam(%p, %d, %u): %s\n",
-                    (void *)pthread_self(), policy, user_attr->priority, strerror(errno));
-        }
-        
-        cpu_set_t cpuset;
-        CPU_ZERO(&cpuset);
-        for (uint32_t i = 0u; i < (sizeof(user_attr->affinity) * 8u); ++i) {
-            if (user_attr->affinity & (1u << i)) {
-                CPU_SET(i, &cpuset);
+            param.sched_priority = user_attr->priority;
+            if (pthread_setschedparam(pthread_self(), policy, &param) != 0) {
+                (void)printf("libosal: pthread_setschedparam(%p, %d, %u): %s\n",
+                        (void *)pthread_self(), policy, user_attr->priority, strerror(errno));
+            }
+
+            cpu_set_t cpuset;
+            CPU_ZERO(&cpuset);
+            for (uint32_t i = 0u; i < (sizeof(user_attr->affinity) * 8u); ++i) {
+                if (user_attr->affinity & (1u << i)) {
+                    CPU_SET(i, &cpuset);
+                }
+            }
+
+            int ret = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
+            if (ret != 0) {
+                (void)printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
+                        (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
             }
         }
 
-        int ret = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
-        if (ret != 0) {
-            (void)printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
-                    (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
-        }
-
 #if LIBOSAL_HAVE_SYS_PRCTL_H == 1
-        prctl(PR_SET_NAME, user_attr->task_name, 0, 0, 0);
+        if (strlen(user_attr->task_name) > 0) {
+            prctl(PR_SET_NAME, user_attr->task_name, 0, 0, 0);
+        }
 #endif
     }       
         
