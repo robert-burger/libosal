@@ -1,0 +1,4 @@
+context: conan
+configurations:
+- imports:
+  - linux_defaults
