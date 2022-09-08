@@ -2,6 +2,7 @@
  * \file task.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
+ * \author Martin Stelzer <martin.stelzer@dlr.de>
  *
  * \date 07 Aug 2022
  *
@@ -58,6 +59,8 @@ typedef void *(*osal_task_handler_t)(void *arg);
 typedef void * osal_task_handler_arg_t;
 typedef void * osal_task_retval_t;
 
+typedef osal_uint32_t osal_task_state_t;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -72,7 +75,7 @@ extern "C" {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr, 
+osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr, 
         osal_task_handler_t handler, osal_task_handler_arg_t arg);
 
 //! \brief Joins a task.
@@ -82,7 +85,7 @@ int osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
  *
  * \return OK or ERROR_CODE.
  */
-int osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval);
+osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval);
 
 //! \brief Destroys a task.
 /*!
@@ -90,7 +93,69 @@ int osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_task_destroy(osal_task_t *hdl);
+osal_retval_t osal_task_destroy(osal_task_t *hdl);
+
+//! \brief Get the handle of the calling thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_get_hdl(osal_task_t *hdl);
+
+//! \brief Change the priority of the specified thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ * \param[in]   prio    The thread prio as member of osal_task_sched_priority_t
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_set_priority(osal_task_t *hdl,
+                                        osal_task_sched_priority_t prio);
+
+//! \brief Get the current priority of the specified thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ * \param[out]  prio    The thread's current prio
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_get_priority(osal_task_t *hdl,
+                                        osal_task_sched_priority_t *prio);
+
+//! \brief Suspend a thread from running.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_suspend(osal_task_t *hdl);
+
+//! \brief Resume a thread that has been suspended earlier.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_resume(osal_task_t *hdl);
+
+//! \brief Delete the calling thread.
+/*!
+ * \note To be used at the end of a thread's execution
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_delete(osal_void_t);
+
+//! \brief Get the current state of a created thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ * \param[out]  state   A thread state according to osal_task_State_t
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_get_state(osal_task_t *hdl,
+                                     osal_task_state_t *state);
 
 #ifdef __cplusplus
 };

@@ -98,6 +98,7 @@ int osal_mutex_lock(osal_mutex_t *mtx) {
             default:
                 ret = OSAL_ERR_UNAVAILABLE;
                 break;
+        }
     }
 
     return ret;

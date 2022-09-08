@@ -43,6 +43,7 @@
 #define OSAL_ERR_DEAD_LOCK              -10
 #define OSAL_ERR_BUSY                   -11
 #define OSAL_ERR_NOT_FOUND              -12
+#define OSAL_ERR_NOT_IMPLEMENTED        -13
 
 #include <libosal/types.h>
 #include <libosal/task.h>

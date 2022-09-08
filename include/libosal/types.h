@@ -34,6 +34,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+typedef void        osal_void_t;
+
+typedef int         osal_retval_t;
+
 typedef char        osal_char_t;
 
 typedef size_t      osal_size_t;
