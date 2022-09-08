@@ -199,6 +199,110 @@ osal_retval_t osal_task_get_hdl(osal_task_t *hdl) {
     return ret;
 }
 
+//! \brief Change the task attributes of the specified task.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ * \param[in]   attr    The thread's new attributes.
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) {
+    osal_retval_t ret = OSAL_OK;
+    int local_ret;
+
+    struct sched_param param;
+    param.sched_priority = attr->priority;
+    local_ret = pthread_setschedparam(hdl->tid, attr->policy, &param);
+    if (local_ret != 0) {
+        if ((local_ret == ESRCH) || (local_ret == EINVAL)) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else if (local_ret == EPERM) {
+            ret = OSAL_ERR_PERMISSION_DENIED;
+        } else {
+            ret = OSAL_ERR_OPERATION_FAILED;
+        }
+    }
+
+    if (ret == OSAL_OK) {
+        cpu_set_t cpuset;
+        CPU_ZERO(&cpuset);
+        for (uint32_t i = 0u; i < (sizeof(attr->affinity) * 8u); ++i) {
+            if (attr->affinity & (1u << i)) {
+                CPU_SET(i, &cpuset);
+            }
+        }
+
+        local_ret = pthread_setaffinity_np(hdl->tid, sizeof(cpu_set_t), &cpuset);
+        if (local_ret != 0) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        }
+    }
+
+    if (ret == OSAL_OK) {
+#if LIBOSAL_HAVE_SYS_PRCTL_H == 1
+        if (strlen(attr->task_name) > 0) {
+            prctl(PR_SET_NAME, attr->task_name, 0, 0, 0);
+        }
+#endif
+    }
+
+    return ret;
+}
+
+//! \brief Get the current task attributes of the specified task.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ * \param[out]  attr    The thread's current attributes.
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) {
+    osal_retval_t ret = OSAL_OK;
+    int local_ret;
+
+    int policy;
+    struct sched_param param;
+    local_ret = pthread_getschedparam(hdl->tid, &policy, &param);
+    if (local_ret == 0) {
+        attr->policy = policy;
+        attr->priority = param.sched_priority;
+    } else {
+        if ((local_ret == ESRCH) || (local_ret == EINVAL)) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else if (local_ret == EPERM) {
+            ret = OSAL_ERR_PERMISSION_DENIED;
+        } else {
+            ret = OSAL_ERR_OPERATION_FAILED;
+        }
+    }
+
+    if (ret == OSAL_OK) {
+        attr->affinity = 0;
+
+        cpu_set_t cpuset;
+        CPU_ZERO(&cpuset);
+
+        local_ret = pthread_getaffinity_np(hdl->tid, sizeof(cpuset), &cpuset);
+        if (local_ret != 0) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else {
+            for (int j = 0; j < CPU_SETSIZE; j++) {
+                if (CPU_ISSET(j, &cpuset)) {
+                    attr->affinity |= (1u << j);
+                }
+            }
+        }
+    }
+
+    if (ret == OSAL_OK) {
+#if LIBOSAL_HAVE_SYS_PRCTL_H == 1
+        prctl(PR_GET_NAME, attr->task_name, 0, 0, 0);
+#endif
+    }
+
+    return ret;
+}
+
 //! \brief Change the priority of the specified thread.
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.

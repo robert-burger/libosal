@@ -103,6 +103,24 @@ osal_retval_t osal_task_destroy(osal_task_t *hdl);
  */
 osal_retval_t osal_task_get_hdl(osal_task_t *hdl);
 
+//! \brief Change the task attributes of the specified task.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ * \param[in]   attr    The thread's new attributes.
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
+
+//! \brief Get the current task attributes of the specified task.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ * \param[out]  attr    The thread's current attributes.
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
+
 //! \brief Change the priority of the specified thread.
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
