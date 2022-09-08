@@ -63,25 +63,38 @@ int osal_mutex_lock(osal_mutex_t *mtx) {
     int local_ret = p4_mutex_lock(&mtx->vx_mtx, P4_TIMEOUT_NULL);
     if (local_ret != P4_E_OK) {
         switch (local_ret) {
-            case P4_E_STATE:        // if the caller already owns the mutex (recursive locking attempt on non-recursive mutex).
+            case P4_E_STATE:        // if the caller already owns the mutex (recursive 
+                                    // locking attempt on non-recursive mutex).
                 ret = OSAL_ERR_BUSY;
                 break;
-            case P4_E_LIMIT:        // if the maximum recursion level P4_MUTEX_MAX_RECURSION is reached. / if the maximum number of robust mutexes is reached.
+            case P4_E_LIMIT:        // if the maximum recursion level P4_MUTEX_MAX_RECURSION 
+                                    // is reached. / if the maximum number of robust mutexes 
+                                    // is reached.
                 ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
                 break;
-            case P4_E_TIMEOUT:      // if the specified timeout has expired before the lock was acquired by the caller.
+            case P4_E_TIMEOUT:      // if the specified timeout has expired before the lock 
+                                    // was acquired by the caller.
                 ret = OSAL_ERR_TIMEOUT;
                 break;
             case P4_E_BADTIMEOUT:   // if the specified timeout is invalid or in the past.
             case P4_E_BADUID:       // if mutex references invalid waiting threads.
-            case P4_E_INVAL:        // if mutex is NULL or does not point to a valid address or exceeds the caller’s virtual address space.
+            case P4_E_INVAL:        // if mutex is NULL or does not point to a valid address 
+                                    // or exceeds the caller’s virtual address space.
                 ret = OSAL_ERR_INVALID_PARAM;
                 break;
-            case P4_E_PAGEFAULT:    // if mutex is not fully mapped in the caller’s virtual address space.
-            case P4_E_CANCEL:       // if the mutex is cancelable (flag P4_MUTEX_CANCELABLE is set), and the function was canceled by another thread, the calling thread was moved to another time partition, or the thread was migrated to another CPU.
-            case P4_E_ABORT:        // if the previous lock owner of the robust mutex mutex died. Note that at most
-            case P4_ULOCK_LIMIT:    // threads waiting for a robust mutex are woken up when the lock owner dies.
-            case P4_E_NOABILITY:    // if the mutex is shareable (P4_MUTEX_SHARED is used), but the task of the calling thread does not have the ability P4_AB_ULOCK_SHARED enabled.
+            case P4_E_PAGEFAULT:    // if mutex is not fully mapped in the caller’s virtual 
+                                    // address space.
+            case P4_E_CANCEL:       // if the mutex is cancelable (flag P4_MUTEX_CANCELABLE 
+                                    // is set), and the function was canceled by another thread, 
+                                    // the calling thread was moved to another time partition, 
+                                    // or the thread was migrated to another CPU.
+            case P4_E_ABORT:        // if the previous lock owner of the robust mutex mutex died. 
+                                    // Note that at most
+            case P4_ULOCK_LIMIT:    // threads waiting for a robust mutex are woken up when the 
+                                    // lock owner dies.
+            case P4_E_NOABILITY:    // if the mutex is shareable (P4_MUTEX_SHARED is used), 
+                                    // but the task of the calling thread does not have the 
+                                    // ability P4_AB_ULOCK_SHARED enabled.
             default:
                 ret = OSAL_ERR_UNAVAILABLE;
                 break;
