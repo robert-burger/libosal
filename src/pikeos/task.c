@@ -1,14 +1,14 @@
 /**
- * \file task.h
+ * \file pikeos/task.c
  *
  * \author Robert Burger <robert.burger@dlr.de>
  * \author Martin Stelzer <martin.stelzer@dlr.de>
  *
- * \date 07 Aug 2022
+ * \date 07 Sep 2022
  *
- * \brief OSAL task header.
+ * \brief OSAL task pikeos source.
  *
- * OSAL task include header.
+ * OSAL task pikeos source.
  */
 
 /*
@@ -28,46 +28,9 @@
  * along with libosal. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBOSAL_TASK__H
-#define LIBOSAL_TASK__H
-
 #include <libosal/config.h>
-#include <libosal/types.h>
-
-#ifdef LIBOSAL_BUILD_POSIX
-#include <libosal/posix/task.h>
-#endif
-
-#ifdef LIBOSAL_BUILD_VXWORKS
-#include <libosal/vxworks/task.h>
-#endif
-    
-#ifdef LIBOSAL_BUILD_PIKEOS
-#include <libosal/pikeos/task.h>
-#endif
-
-#define TASK_NAME_LEN   64u
-
-typedef osal_uint32_t osal_task_sched_policy_t;
-typedef osal_uint32_t osal_task_sched_priority_t;
-typedef osal_uint32_t osal_task_sched_affinity_t;
-
-typedef struct osal_task_attr {
-    osal_char_t task_name[TASK_NAME_LEN];
-    osal_task_sched_policy_t   policy;
-    osal_task_sched_priority_t priority;
-    osal_task_sched_affinity_t affinity;
-} osal_task_attr_t;
-
-typedef void *(*osal_task_handler_t)(void *arg);
-typedef void * osal_task_handler_arg_t;
-typedef void * osal_task_retval_t;
-
-typedef osal_uint32_t osal_task_state_t;
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <libosal/osal.h>
+#include <libosal/task.h>
 
 //! \brief Create a task.
 /*!
@@ -80,7 +43,33 @@ extern "C" {
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr, 
-        osal_task_handler_t handler, osal_task_handler_arg_t arg);
+        osal_task_handler_t handler, osal_task_handler_arg_t arg) 
+{
+    assert(hdl != NULL);
+
+    osal_retval_t ret = OSAL_OK;
+    P4_e_t local_ret;
+    p4ext_thr_attr_t tattr;
+
+    p4ext_thr_attr_init(&tattr);
+    tattr.prio = attr->priority;
+    tattr.context_flags = P4_THREAD_ARG_FPU | P4_THREAD_ARG_DEBUG;
+    hdl->tid = P4EXT_THR_NUM_INVALID;
+
+    local_ret = p4ext_thr_create(&hdl->tid, 0, 
+            strlen(user_attr->task_name) > 0 ? user_attr->task_name : "thread", 
+            handler, 1, arg);
+    vm_cprintf("%s\n", p4_strerror(local_ret));
+    if (local_ret != P4_E_OK) {
+        if (local_ret == P4_E_INVAL) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else {
+            ret = OSAL_ERR_OPERATION_FAILED;
+        }
+    }
+
+    return ret;
+}
 
 //! \brief Joins a task.
 /*!
@@ -89,7 +78,11 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval);
+osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval) {
+    osal_retval_t ret = OSAL_OK;
+
+    return ret;
+}
 
 //! \brief Destroys a task.
 /*!
@@ -97,7 +90,18 @@ osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval);
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_task_destroy(osal_task_t *hdl);
+osal_retval_t osal_task_destroy(osal_task_t *hdl) {
+    osal_retval_t ret = OSAL_OK;
+
+    P4_e_t local_ret;
+    local_ret = p4_thread_delete(hdl->tid);
+    if (local_ret != P4_E_OK) {
+        ret = OSAL_ERR_OPERATION_FAILED;
+    }
+
+    return ret;
+}
+
 
 //! \brief Get the handle of the calling thread.
 /*!
@@ -105,7 +109,11 @@ osal_retval_t osal_task_destroy(osal_task_t *hdl);
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_task_get_hdl(osal_task_t *hdl);
+osal_retval_t osal_task_get_hdl(osal_task_t *hdl) {
+    osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
+
+    return ret;
+}
 
 //! \brief Change the task attributes of the specified task.
 /*!
@@ -114,7 +122,10 @@ osal_retval_t osal_task_get_hdl(osal_task_t *hdl);
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
+osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) {
+    osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
+    return ret;
+}
 
 //! \brief Get the current task attributes of the specified task.
 /*!
@@ -123,7 +134,10 @@ osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
+osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) {
+    osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
+    return ret;
+}
 
 //! \brief Change the priority of the specified thread.
 /*!
@@ -133,7 +147,19 @@ osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_set_priority(osal_task_t *hdl,
-                                        osal_task_sched_priority_t prio);
+                                        osal_task_sched_priority_t prio)
+{
+    osal_retval_t ret = OSAL_OK;
+    int local_ret;
+    P4_e_t local_ret;
+
+    local_ret = p4_thread_ex_priority(Handle, NULL, Prio);
+    if (local_ret != P4_E_OK) {
+        ret = OSAL_ERR_OPERATION_FAILED;
+    }
+
+    return ret;
+}
 
 //! \brief Get the current priority of the specified thread.
 /*!
@@ -143,7 +169,21 @@ osal_retval_t osal_task_set_priority(osal_task_t *hdl,
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_get_priority(osal_task_t *hdl,
-                                        osal_task_sched_priority_t *prio);
+                                        osal_task_sched_priority_t *prio)
+{
+    assert(hdl != NULL);
+    assert(prio != NULL);
+
+    osal_retval_t ret = OSAL_OK;
+    P4_e_t local_ret;
+
+    local_ret = p4_thread_get_priority(hdl->tid, prio);
+    if (local_ret != P4_E_OK) {
+        ret = OSAL_ERR_OPERATION_FAILED;
+    }
+
+    return ret;
+}
 
 //! \brief Suspend a thread from running.
 /*!
@@ -151,7 +191,17 @@ osal_retval_t osal_task_get_priority(osal_task_t *hdl,
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_task_suspend(osal_task_t *hdl);
+osal_retval_t osal_task_suspend(osal_task_t *hdl) {
+    osal_retval_t ret = OSAL_OK;
+    P4_e_t local_ret;
+
+    local_ret = p4_thread_stop(hdl->tid);
+    if (local_ret != P4_E_OK) {
+        ret = OSAL_ERR_OPERATION_FAILED;
+    }
+
+    return ret;
+}
 
 //! \brief Resume a thread that has been suspended earlier.
 /*!
@@ -159,7 +209,17 @@ osal_retval_t osal_task_suspend(osal_task_t *hdl);
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_task_resume(osal_task_t *hdl);
+osal_retval_t osal_task_resume(osal_task_t *hdl) {
+    osal_retval_t ret = OSAL_OK;
+    P4_e_t local_ret;
+
+    local_ret = p4_thread_resume(hdl->tid);
+    if (local_ret != P4_E_OK) {
+        ret = OSAL_ERR_OPERATION_FAILED;
+    }
+
+    return ret;
+}
 
 //! \brief Delete the calling thread.
 /*!
@@ -167,7 +227,17 @@ osal_retval_t osal_task_resume(osal_task_t *hdl);
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_task_delete(osal_void_t);
+osal_retval_t osal_task_delete(osal_void_t) {
+    osal_retval_t ret = OSAL_OK;
+    P4_e_t local_ret;
+
+    local_ret = p4_thread_delete(P4_THREAD_MYSELF);
+    if (local_ret != P4_E_OK) {
+        ret = OSAL_ERR_OPERATION_FAILED;
+    }
+
+    return ret;
+}
 
 //! \brief Get the current state of a created thread.
 /*!
@@ -177,12 +247,10 @@ osal_retval_t osal_task_delete(osal_void_t);
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_get_state(osal_task_t *hdl,
-                                     osal_task_state_t *state);
+                                     osal_task_state_t *state)
+{
+    osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
 
-#ifdef __cplusplus
-};
-#endif
-
-#endif /* LIBOSAL_MUTEX__H */
-
+    return ret;
+}
 
