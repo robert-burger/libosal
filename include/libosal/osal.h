@@ -52,6 +52,7 @@
 #include <libosal/spinlock.h>
 #include <libosal/binary_semaphore.h>
 #include <libosal/timer.h>
+#include <libosal/condvar.h>
 
 #endif /* LIBOSAL_OSAL__H */
 
