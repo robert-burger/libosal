@@ -2,3 +2,5 @@ context: conan
 configurations:
 - imports:
   - linux_defaults
+- pikeos5.1-armv8hf-gcc7
+    
