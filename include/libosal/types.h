@@ -44,7 +44,7 @@ typedef char        osal_char_t;
 typedef size_t      osal_size_t;
 
 #ifdef LIBOSAL_BUILD_PIKEOS
-typedef ssize_t     int64_t;
+typedef int64_t     osal_ssize_t;
 #else 
 #include <unistd.h>
 typedef ssize_t     osal_ssize_t;
