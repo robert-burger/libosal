@@ -41,10 +41,10 @@
  *
  * \return OK or ERROR_CODE.
  */
-int osal_spinlock_init(osal_spinlock_t *mtx, const osal_spinlock_attr_t *attr) {
+osal_retval_t osal_spinlock_init(osal_spinlock_t *mtx, const osal_spinlock_attr_t *attr) {
     assert(mtx != NULL);
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
     int posix_ret;
 
     (void)attr;
@@ -114,10 +114,10 @@ int osal_spinlock_init(osal_spinlock_t *mtx, const osal_spinlock_attr_t *attr) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_spinlock_lock(osal_spinlock_t *mtx) {
+osal_retval_t osal_spinlock_lock(osal_spinlock_t *mtx) {
     assert(mtx != NULL);
 
-    int ret;
+    osal_retval_t ret;
     int posix_ret;
 
     posix_ret = pthread_spin_lock(&mtx->posix_sl);
@@ -148,10 +148,10 @@ int osal_spinlock_lock(osal_spinlock_t *mtx) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_spinlock_unlock(osal_spinlock_t *mtx) {
+osal_retval_t osal_spinlock_unlock(osal_spinlock_t *mtx) {
     assert(mtx != NULL);
 
-    int ret;
+    osal_retval_t ret;
     int posix_ret;
 
     posix_ret = pthread_spin_unlock(&mtx->posix_sl);
@@ -174,10 +174,10 @@ int osal_spinlock_unlock(osal_spinlock_t *mtx) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_spinlock_destroy(osal_spinlock_t *mtx) {
+osal_retval_t osal_spinlock_destroy(osal_spinlock_t *mtx) {
     assert(mtx != NULL);
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
     int posix_ret;
 
     posix_ret = pthread_spin_destroy(&mtx->posix_sl);

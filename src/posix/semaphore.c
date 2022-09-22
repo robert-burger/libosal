@@ -40,7 +40,7 @@
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_attr_t *attr, osal_int32_t initval) {
+osal_retval_t osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_attr_t *attr, osal_int32_t initval) {
     assert(sem != NULL);
 
     int pshared = 0;
@@ -61,7 +61,7 @@ int osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_attr_t *attr
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_post(osal_semaphore_t *sem) {
+osal_retval_t osal_semaphore_post(osal_semaphore_t *sem) {
     assert(sem != NULL);
 
     sem_post(&sem->posix_sem);
@@ -75,7 +75,7 @@ int osal_semaphore_post(osal_semaphore_t *sem) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_wait(osal_semaphore_t *sem) {
+osal_retval_t osal_semaphore_wait(osal_semaphore_t *sem) {
     assert(sem != NULL);
 
     sem_wait(&sem->posix_sem);
@@ -89,7 +89,7 @@ int osal_semaphore_wait(osal_semaphore_t *sem) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_trywait(osal_semaphore_t *sem) {
+osal_retval_t osal_semaphore_trywait(osal_semaphore_t *sem) {
     assert(sem != NULL);
 
     sem_trywait(&sem->posix_sem);
@@ -104,11 +104,11 @@ int osal_semaphore_trywait(osal_semaphore_t *sem) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to) {
+osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to) {
     assert(sem != NULL);
     assert(to != NULL);
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
 
     struct timespec ts;
     ts.tv_sec = to->sec;
@@ -136,7 +136,7 @@ int osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_destroy(osal_semaphore_t *sem) {
+osal_retval_t osal_semaphore_destroy(osal_semaphore_t *sem) {
     assert(sem != NULL);
 
     sem_destroy(&sem->posix_sem);

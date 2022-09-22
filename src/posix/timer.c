@@ -52,9 +52,9 @@ void osal_sleep(osal_int64_t nsec) {
 }
 
 //! gets timer 
-int osal_timer_gettime(osal_timer_t *timer) {
+osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
     assert(timer != NULL);
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
 
     struct timespec ts;
     if (clock_gettime(CLOCK_REALTIME, &ts) == -1) {
@@ -102,11 +102,11 @@ void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout) {
 }
 
 // checks if timer is expired
-int osal_timer_expired(osal_timer_t *timer) {
+osal_retval_t osal_timer_expired(osal_timer_t *timer) {
     assert(timer != NULL);
 
     osal_timer_t act = { 0, 0 };
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
     ret = osal_timer_gettime(&act);    
 
     if (ret == OSAL_OK) {

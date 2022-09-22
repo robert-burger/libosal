@@ -47,7 +47,7 @@
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semaphore_attr_t *attr) {
+osal_retval_t osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semaphore_attr_t *attr) {
     assert(sem != NULL);
 
     (void)attr;
@@ -69,7 +69,7 @@ int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semapho
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_post(osal_binary_semaphore_t *sem) {
+osal_retval_t osal_binary_semaphore_post(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
     pthread_mutex_lock(&sem->posix_mtx);
@@ -89,7 +89,7 @@ int osal_binary_semaphore_post(osal_binary_semaphore_t *sem) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_wait(osal_binary_semaphore_t *sem) {
+osal_retval_t osal_binary_semaphore_wait(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
     pthread_mutex_lock(&sem->posix_mtx);
@@ -110,10 +110,10 @@ int osal_binary_semaphore_wait(osal_binary_semaphore_t *sem) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem) {
+osal_retval_t osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
 
     pthread_mutex_lock(&sem->posix_mtx);
 
@@ -135,10 +135,10 @@ int osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_timer_t *to) {
+osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_timer_t *to) {
     assert(sem != NULL);
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
 
     if (to != NULL) {
         struct timespec ts;
@@ -174,7 +174,7 @@ int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_timer_t *
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_destroy(osal_binary_semaphore_t *sem) {
+osal_retval_t osal_binary_semaphore_destroy(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
     pthread_mutex_destroy(&sem->posix_mtx);

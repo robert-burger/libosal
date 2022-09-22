@@ -41,10 +41,10 @@
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
+osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
     assert(mtx != NULL);
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
     int posix_ret;
 
     pthread_mutexattr_t posix_attr;
@@ -112,10 +112,10 @@ int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_lock(osal_mutex_t *mtx) {
+osal_retval_t osal_mutex_lock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
-    int ret;
+    osal_retval_t ret;
     int posix_ret;
 
     posix_ret = pthread_mutex_lock(&mtx->posix_mtx);
@@ -146,10 +146,10 @@ int osal_mutex_lock(osal_mutex_t *mtx) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_trylock(osal_mutex_t *mtx) {
+osal_retval_t osal_mutex_trylock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
-    int ret;
+    osal_retval_t ret;
     int posix_ret;
 
     posix_ret = pthread_mutex_trylock(&mtx->posix_mtx);
@@ -180,10 +180,10 @@ int osal_mutex_trylock(osal_mutex_t *mtx) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_unlock(osal_mutex_t *mtx) {
+osal_retval_t osal_mutex_unlock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
-    int ret;
+    osal_retval_t ret;
     int posix_ret;
 
     posix_ret = pthread_mutex_unlock(&mtx->posix_mtx);
@@ -206,10 +206,10 @@ int osal_mutex_unlock(osal_mutex_t *mtx) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_destroy(osal_mutex_t *mtx) {
+osal_retval_t osal_mutex_destroy(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
     int posix_ret;
 
     posix_ret = pthread_mutex_destroy(&mtx->posix_mtx);
