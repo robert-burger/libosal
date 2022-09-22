@@ -25,4 +25,13 @@ missing
 .libs
 *.la
 stamp-h1
+*.ctu-info
+
+conan.lock
+conanbuildinfo.txt
+conaninfo.txt
+graph_info.json
+
+cppcheck-addon-ctu-file-list
+
 
