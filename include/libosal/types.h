@@ -30,6 +30,8 @@
 #ifndef LIBOSAL_TYPES__H
 #define LIBOSAL_TYPES__H
 
+#include <libosal/config.h>
+
 #include <stdint.h>
 #include <stddef.h>
 
