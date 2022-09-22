@@ -23,6 +23,7 @@ class MainProject(ConanFile):
     #        f.write(re.sub("VERSION *=.*[^\n]", f"VERSION = {self.version}", filedata))
 
     def build(self):
+        print("os %s, compiler %s, build_type %s, arch %s" % (self.settings.os, self.settings.compiler, self.settings.build_type, self.settings.arch))
         self.run("autoreconf -if")
         autotools = AutoToolsBuildEnvironment(self)
         autotools.libs=[]
