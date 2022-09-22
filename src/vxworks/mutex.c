@@ -46,8 +46,8 @@ int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
     (void)attr;
 
     int ret = OSAL_OK;
-    mtx->vx_mtx = semMCreate(SEM_Q_FIFO);
-    if (mtx->vx_mtx == SEM_ID_NULL) {
+    mtx->vxworks_mtx = semMCreate(SEM_Q_FIFO);
+    if (mtx->vxworks_mtx == SEM_ID_NULL) {
         ret = OSAL_ERR_OUT_OF_MEMORY;
     }
 
@@ -64,11 +64,13 @@ int osal_mutex_lock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    int local_ret = semTake(mtx->vx_mtx, WAIT_FOREVER);
+    int local_ret = semTake(mtx->vxworks_mtx, WAIT_FOREVER);
     if (local_ret != 0) {
         switch (local_ret) {
             default:
+#ifdef _WRS_KERNEL
             case S_intLib_NOT_ISR_CALLABLE:
+#endif
             case S_objLib_OBJ_UNAVAILABLE:
                 ret = OSAL_ERR_UNAVAILABLE;
                 break;
@@ -91,11 +93,13 @@ int osal_mutex_trylock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    int local_ret = semTake(mtx->vx_mtx, NO_WAIT);
+    int local_ret = semTake(mtx->vxworks_mtx, NO_WAIT);
     if (local_ret != 0) {
         switch (local_ret) {
             default:
+#ifdef _WRS_KERNEL
             case S_intLib_NOT_ISR_CALLABLE:
+#endif
             case S_objLib_OBJ_UNAVAILABLE:
                 ret = OSAL_ERR_UNAVAILABLE;
                 break;
@@ -118,11 +122,13 @@ int osal_mutex_unlock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    int local_ret = semGive(mtx->vx_mtx);
+    int local_ret = semGive(mtx->vxworks_mtx);
     if (local_ret != 0) {
         switch (local_ret) {
             default:
+#ifdef _WRS_KERNEL
             case S_intLib_NOT_ISR_CALLABLE:
+#endif
             case S_objLib_OBJ_UNAVAILABLE:
                 ret = OSAL_ERR_UNAVAILABLE;
                 break;
@@ -145,7 +151,7 @@ int osal_mutex_destroy(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    int local_ret = semDelete(mtx->vx_mtx);
+    int local_ret = semDelete(mtx->vxworks_mtx);
     if (local_ret != 0) {
         ret = OSAL_ERR_INVALID_PARAM;
     }

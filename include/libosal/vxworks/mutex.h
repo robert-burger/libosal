@@ -34,7 +34,7 @@
 #include <semLib.h>
 
 typedef struct osal_mutex {
-    SEM_ID vx_mtx;
+    SEM_ID vxworks_mtx;
 } osal_mutex_t;
 
 #endif /* LIBOSAL_VXWORKS_MUTEX__H */
