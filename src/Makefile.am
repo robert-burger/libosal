@@ -47,6 +47,14 @@ libosal_la_SOURCES += vxworks/semaphore.c
 
 endif
 
+if BUILD_PIKEOS
+
+libosal_la_SOURCES += pikeos/condvar.c
+libosal_la_SOURCES += pikeos/mutex.c
+libosal_la_SOURCES += pikeos/task.c
+
+endif
+
 libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror -Wno-unused-const-variable -I$(top_srcdir)/include
 libosal_la_LDFLAGS	= -Wall -Werror 
 libosal_la_LIBS     = -lm
