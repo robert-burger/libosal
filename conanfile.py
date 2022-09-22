@@ -8,7 +8,7 @@ class MainProject(ConanFile):
     url = f"https://rmc-github.robotic.dlr.de/common/{name}"
     description = "This library provides all functionality to communicate with EtherCAT slaves attached to a Network interface"
     settings = "os", "compiler", "build_type", "arch"
-    exports_sources = "src/*", "include/*", "README.md", "project.properties", "libosal.pc.in", "Makefile.am", "m4/*", "configure.ac", "LICENSE", "aminclude.am", "acinclude.m4", "tools/*", "doxygen.cfg"
+    exports_sources = "src/*", "include/*", "README.md", "project.properties", "libosal.pc.in", "Makefile.am", "m4/*", "configure.ac", "LICENSE", "aminclude.am", "acinclude.m4", "tools/*", "doxygen.cfg", "config.sub"
     options = {"shared": [True, False]}
     default_options = {"shared": True}
 
