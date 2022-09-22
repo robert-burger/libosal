@@ -24,7 +24,7 @@ class MainProject(ConanFile):
 
     def build(self):
         print("os %s, compiler %s, build_type %s, arch %s" % (self.settings.os, self.settings.compiler, self.settings.build_type, self.settings.arch))
-        self.run("autoreconf -if")
+        self.run("autoreconf -i")
         autotools = AutoToolsBuildEnvironment(self)
         autotools.libs=[]
         autotools.include_paths=[]
