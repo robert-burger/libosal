@@ -63,7 +63,7 @@ extern "C" {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_attr_t *attr, osal_int32_t initval);
+osal_retval_t osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_attr_t *attr, osal_int32_t initval);
 
 //! \brief Post a semaphore.
 /*!
@@ -71,7 +71,7 @@ int osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_attr_t *attr
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_post(osal_semaphore_t *sem);
+osal_retval_t osal_semaphore_post(osal_semaphore_t *sem);
 
 //! \brief Wait for a semaphore.
 /*!
@@ -79,7 +79,7 @@ int osal_semaphore_post(osal_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_wait(osal_semaphore_t *sem);
+osal_retval_t osal_semaphore_wait(osal_semaphore_t *sem);
 
 //! \brief Try to wait for a semaphore but don't block.
 /*!
@@ -87,7 +87,7 @@ int osal_semaphore_wait(osal_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_trywait(osal_semaphore_t *sem);
+osal_retval_t osal_semaphore_trywait(osal_semaphore_t *sem);
 
 //! \brief Wait for a semaphore.
 /*!
@@ -96,7 +96,7 @@ int osal_semaphore_trywait(osal_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to);
+osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to);
 
 //! \brief Destroys a semaphore.
 /*!
@@ -104,7 +104,7 @@ int osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_semaphore_destroy(osal_semaphore_t *sem);
+osal_retval_t osal_semaphore_destroy(osal_semaphore_t *sem);
 
 #ifdef __cplusplus
 };
