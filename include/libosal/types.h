@@ -30,7 +30,6 @@
 #ifndef LIBOSAL_TYPES__H
 #define LIBOSAL_TYPES__H
 
-#include <unistd.h>
 #include <stdint.h>
 #include <stddef.h>
 
@@ -41,7 +40,13 @@ typedef int         osal_retval_t;
 typedef char        osal_char_t;
 
 typedef size_t      osal_size_t;
+
+#ifdef LIBOSAL_BUILD_PIKEOS
+typedef ssize_t     int64_t;
+#else 
+#include <unistd.h>
 typedef ssize_t     osal_ssize_t;
+#endif
 
 typedef uint8_t     osal_uint8_t;
 typedef uint16_t    osal_uint16_t;
