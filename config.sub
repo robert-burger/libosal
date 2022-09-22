@@ -176,9 +176,9 @@ case $os in
 	-hiux*)
 		os=-hiuxwe2
 		;;
-    -pikeos*)
-        os=-pikeos
-        ;;
+	-pikeos*)
+		os=-pikeos
+		;;
 	-sco6)
 		os=-sco5v6
 		basic_machine=`echo $1 | sed -e 's/86-.*/86-pc/'`
@@ -1507,9 +1507,9 @@ case $os in
 	-nsk*)
 		os=-nsk
 		;;
-    -pikeos*)
-        os=-pikeos
-        ;;
+	-pikeos*)
+		os=-pikeos
+		;;
 	# Preserve the version number of sinix5.
 	-sinix5.*)
 		os=`echo $os | sed -e 's|sinix|sysv|'`
