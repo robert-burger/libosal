@@ -33,6 +33,7 @@
 #include <libosal/config.h>
 #include <libosal/types.h>
 #include <libosal/mutex.h>
+#include <libosal/timer.h>
 
 #ifdef LIBOSAL_BUILD_POSIX
 #include <libosal/posix/condvar.h>

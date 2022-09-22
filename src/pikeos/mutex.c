@@ -27,6 +27,7 @@
  * along with libosal. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <libosal/mutex.h>
 #include <libosal/osal.h>
 
 #include <assert.h>
@@ -45,7 +46,7 @@ int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
     (void)attr;
 
     int ret = OSAL_OK;
-    p4_mutex_init(&mtx->pike_mtx, P4_MUTEX_SHARED);
+    p4_mutex_init(&mtx->pikeos_mtx, P4_MUTEX_SHARED);
 
     return ret;
 }
@@ -60,7 +61,7 @@ int osal_mutex_lock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    int local_ret = p4_mutex_lock(&mtx->vx_mtx, P4_TIMEOUT_NULL);
+    int local_ret = p4_mutex_lock(&mtx->pikeos_mtx, P4_TIMEOUT_NULL);
     if (local_ret != P4_E_OK) {
         switch (local_ret) {
             case P4_E_STATE:        // if the caller already owns the mutex (recursive 
@@ -114,7 +115,7 @@ int osal_mutex_trylock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    int local_ret = p4_mutex_trylock(&mtx->vx_mtx);
+    int local_ret = p4_mutex_trylock(&mtx->pikeos_mtx);
     if (local_ret != 0) {
     }
 
@@ -131,7 +132,7 @@ int osal_mutex_unlock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     int ret = OSAL_OK;
-    int local_ret = p4_mutex_unlock(&mtx->vx_mtx);
+    int local_ret = p4_mutex_unlock(&mtx->pikeos_mtx);
     if (local_ret != 0) {
     }
 

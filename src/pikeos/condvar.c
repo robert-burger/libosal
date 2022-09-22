@@ -27,7 +27,9 @@
  * along with libosal. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <libosal/condvar.h>
 #include <libosal/osal.h>
+
 #include <assert.h>
 #include <errno.h>
 
@@ -52,7 +54,7 @@ osal_retval_t osal_condvar_init(osal_condvar_t *cv, const osal_condvar_attr_t *a
 
     (void)attr;
 
-    p4_cond_init(cv->pikeos_cond, P4_COND_SHARED);
+    p4_cond_init(&cv->pikeos_cond, P4_COND_SHARED);
 
     return OSAL_OK;
 }
@@ -69,7 +71,7 @@ osal_retval_t osal_condvar_signal(osal_condvar_t *cv) {
     osal_retval_t ret = OSAL_OK;
     P4_e_t result;
 
-    result = p4_cond_wake(cv->pikeos_cond, 0);
+    result = p4_cond_wake(&cv->pikeos_cond, 0);
 
     if (result != P4_E_OK) {
         if (result == P4_E_INVAL) {
@@ -96,7 +98,7 @@ osal_retval_t osal_condvar_broadcast(osal_condvar_t *cv) {
     osal_retval_t ret = OSAL_OK;
     P4_e_t result;
 
-    result = p4_cond_broadcast(cv->pikeos_cond);
+    result = p4_cond_broadcast(&cv->pikeos_cond);
 
     if (result != P4_E_OK) {
         if (result == P4_E_INVAL) {
@@ -124,7 +126,7 @@ osal_retval_t osal_condvar_wait(osal_condvar_t *cv, osal_mutex_t *mtx) {
     osal_retval_t ret = OSAL_OK;
     P4_e_t result;
     
-    result = p4_cond_wait(cv->pikeos_cond, mtx->pikeos_mtx, P4_TIMEOUT_INFINITE);
+    result = p4_cond_wait(&cv->pikeos_cond, &mtx->pikeos_mtx, P4_TIMEOUT_INFINITE);
 
     if (result != P4_E_OK) {
         if (result == P4_E_STATE) {
@@ -155,7 +157,7 @@ osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, osal
     // TODO get rel timeout
     osal_uint32_t timeout = 100;
 
-    result = p4_cond_wait(cv->pikeos_cond, cv->pikeos_mtx, P4_MSEC(timeout));
+    result = p4_cond_wait(&cv->pikeos_cond, &mtx->pikeos_mtx, P4_MSEC(timeout));
 
     if (result != P4_E_OK) {
         if (result == P4_E_STATE) {
@@ -178,7 +180,7 @@ osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, osal
 osal_retval_t osal_condvar_destroy(osal_condvar_t *cv) {
     assert(cv != NULL);
 
-    p4_cond_destroy(cv->pikeos_cond);
+    // there is no destroy on pikeos
 
     return OSAL_OK;
 }

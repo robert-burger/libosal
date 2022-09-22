@@ -32,6 +32,15 @@
 #include <libosal/osal.h>
 #include <libosal/task.h>
 
+#include <stand/string.h>
+#include <assert.h>
+
+#include <vm.h>
+#ifdef PIKEOSDEBUG
+/* init_gdbstub(), gdb_breakpoint(). */
+#include <vm_debug.h>
+#endif
+
 //! \brief Create a task.
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
@@ -57,7 +66,7 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
     hdl->tid = P4EXT_THR_NUM_INVALID;
 
     local_ret = p4ext_thr_create(&hdl->tid, 0, 
-            strlen(user_attr->task_name) > 0 ? user_attr->task_name : "thread", 
+            strlen(attr->task_name) > 0 ? attr->task_name : "thread", 
             handler, 1, arg);
     vm_cprintf("%s\n", p4_strerror(local_ret));
     if (local_ret != P4_E_OK) {
@@ -150,10 +159,9 @@ osal_retval_t osal_task_set_priority(osal_task_t *hdl,
                                         osal_task_sched_priority_t prio)
 {
     osal_retval_t ret = OSAL_OK;
-    int local_ret;
     P4_e_t local_ret;
 
-    local_ret = p4_thread_ex_priority(Handle, NULL, Prio);
+    local_ret = p4_thread_ex_priority(hdl->tid, NULL, prio);
     if (local_ret != P4_E_OK) {
         ret = OSAL_ERR_OPERATION_FAILED;
     }

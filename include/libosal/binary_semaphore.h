@@ -42,6 +42,10 @@
 #include <libosal/vxworks/binary_semaphore.h>
 #endif
 
+#ifdef LIBOSAL_BUILD_PIKEOS
+#include <libosal/pikeos/binary_semaphore.h>
+#endif
+
 #define OSAL_BINARY_SEMAPHORE_ATTR__PROCESS_SHARED         0x00000020u
 
 typedef osal_uint32_t osal_binary_semaphore_attr_t;
