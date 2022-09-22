@@ -31,6 +31,10 @@ case $target_os in
         BUILD_VXWORKS=true
         AC_DEFINE([BUILD_VXWORKS], [true], [Use VxWorks build])
         ;;
+    pikeos*)
+        BUILD_PIKEOS=true
+        AC_DEFINE([BUILD_PIKEOS], [true], [Use PikeOS build])
+        ;;
 esac
 
 AM_CONDITIONAL([BUILD_POSIX], [ test x$BUILD_POSIX = xtrue]) 
