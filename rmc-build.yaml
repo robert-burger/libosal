@@ -3,6 +3,5 @@ configurations:
 - imports:
   - linux_defaults
 - pikeos5.1-armv8hf-gcc7
-- vxworks7.0.0-x86
 - osl154-x86_64
     
