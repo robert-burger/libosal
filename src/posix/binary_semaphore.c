@@ -47,7 +47,7 @@
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semaphore_attr_t *attr) {
+osal_retval_t osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osal_binary_semaphore_attr_t *attr) {
     assert(sem != NULL);
 
     (void)attr;
