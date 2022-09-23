@@ -123,6 +123,8 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to) 
         } else {
             if (local_errno == ETIMEDOUT) {
                 ret = OSAL_ERR_TIMEOUT;
+            } else {
+                ret = OSAL_ERR_OPERATION_FAILED;
             }
         }
     }

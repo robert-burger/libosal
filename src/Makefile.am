@@ -16,7 +16,8 @@ include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
 				  $(top_srcdir)/include/libosal/semaphore.h \
 				  $(top_srcdir)/include/libosal/spinlock.h \
 				  $(top_srcdir)/include/libosal/binary_semaphore.h \
-				  $(top_srcdir)/include/libosal/condvar.h
+				  $(top_srcdir)/include/libosal/condvar.h \
+				  $(top_srcdir)/include/libosal/queue.h
 
 includeposix_HEADERS = 
 includepikeos_HEADERS = 
