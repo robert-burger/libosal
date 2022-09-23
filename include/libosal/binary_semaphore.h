@@ -63,7 +63,7 @@ extern "C" {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, osal_binary_semaphore_attr_t *attr);
+int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osal_binary_semaphore_attr_t *attr);
 
 //! \brief Post a binary_semaphore.
 /*!

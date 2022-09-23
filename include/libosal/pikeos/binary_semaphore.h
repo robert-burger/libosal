@@ -31,6 +31,7 @@
 #define LIBOSAL_PIKEOS_BINARY_SEMAPHORE__H
 
 typedef struct osal_binary_semaphore {
+    P4_sem_t pikeos_sem;
 } osal_binary_semaphore_t;
 
 #endif /* LIBOSAL_PIKEOS_BINARY_SEMAPHORE__H */

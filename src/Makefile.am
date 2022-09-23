@@ -2,6 +2,8 @@ ACLOCAL_AMFLAGS = -I m4
 
 includedir = $(prefix)/include/libosal
 includeposixdir = $(prefix)/include/libosal/posix
+includepikeosdir = $(prefix)/include/libosal/pikeos
+includevxworksdir = $(prefix)/include/libosal/vxworks
 
 lib_LTLIBRARIES = libosal.la
 
@@ -17,6 +19,8 @@ include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
 				  $(top_srcdir)/include/libosal/condvar.h
 
 includeposix_HEADERS = 
+includepikeos_HEADERS = 
+includevxworks_HEADERS =
 
 libosal_la_SOURCES	= 
 
@@ -49,6 +53,14 @@ endif
 
 if BUILD_PIKEOS
 
+includepikeos_HEADERS   += $(top_srcdir)/include/libosal/pikeos/binary_semaphore.h \
+						   $(top_srcdir)/include/libosal/pikeos/condvar.h \
+						   $(top_srcdir)/include/libosal/pikeos/mutex.h \
+				  		   $(top_srcdir)/include/libosal/pikeos/semaphore.h \
+				  		   $(top_srcdir)/include/libosal/pikeos/task.h \
+				  		   $(top_srcdir)/include/libosal/pikeos/spinlock.h 
+
+libosal_la_SOURCES += pikeos/binary_semaphore.c
 libosal_la_SOURCES += pikeos/condvar.c
 libosal_la_SOURCES += pikeos/mutex.c
 libosal_la_SOURCES += pikeos/semaphore.c
