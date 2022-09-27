@@ -64,9 +64,14 @@ osal_retval_t osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_at
 osal_retval_t osal_semaphore_post(osal_semaphore_t *sem) {
     assert(sem != NULL);
 
-    sem_post(&sem->posix_sem);
+    osal_retval_t ret = OSAL_OK;
 
-    return OSAL_OK;
+    int local_ret = sem_post(&sem->posix_sem);
+    if (local_ret != 0) {
+        ret = OSAL_ERR_OPERATION_FAILED;
+    }
+
+    return ret;
 }
 
 //! \brief Wait for a semaphore.
