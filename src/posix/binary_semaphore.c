@@ -135,7 +135,7 @@ osal_retval_t osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem) {
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_timer_t *to) {
+osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, const osal_timer_t *to) {
     assert(sem != NULL);
 
     osal_retval_t ret = OSAL_OK;

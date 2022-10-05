@@ -146,7 +146,7 @@ osal_retval_t osal_condvar_wait(osal_condvar_t *cv, osal_mutex_t *mtx) {
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, osal_timer_t *to) {
+osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, const osal_timer_t *to) {
     assert(cv != NULL);
     assert(mtx != NULL);
     assert(to != NULL);
@@ -181,6 +181,7 @@ osal_retval_t osal_condvar_destroy(osal_condvar_t *cv) {
     assert(cv != NULL);
 
     // there is no destroy on pikeos
+    (void)cv;
 
     return OSAL_OK;
 }

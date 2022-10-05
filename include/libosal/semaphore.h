@@ -96,7 +96,7 @@ osal_retval_t osal_semaphore_trywait(osal_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to);
+osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t *to);
 
 //! \brief Destroys a semaphore.
 /*!

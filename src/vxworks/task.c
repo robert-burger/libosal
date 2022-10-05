@@ -32,11 +32,10 @@ int osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
 
     int priority = attr->priority;
     char task_name[TASK_NAME_LEN];
-    strcpy(task_name, attr->task_name);
+    (void)strcpy(task_name, attr->task_name);
 
-
-    hdl->tid = taskSpawn(&task_name[0], priority, options, stackSize,
-            vxworks_task_entry, (_Vx_usr_arg_t)handler, (_Vx_usr_arg_t)arg, 3, 4, 5, 6, 7, 8, 9, 10);
+    // cppcheck-suppress misra-c2012-11.1
+    hdl->tid = taskSpawn(&task_name[0], priority, options, stackSize, vxworks_task_entry, (_Vx_usr_arg_t)handler, (_Vx_usr_arg_t)arg, 3, 4, 5, 6, 7, 8, 9, 10);
 
     return OSAL_OK;
 }

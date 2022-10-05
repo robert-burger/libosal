@@ -64,7 +64,7 @@ static void *posix_task_wrapper(void *args) {
     const osal_task_attr_t *user_attr = start_args->user_attr;
 
     if (user_attr != NULL) {
-        if (user_attr->priority != 0) {
+        if (user_attr->priority != 0u) {
             struct sched_param param;
             int policy = SCHED_FIFO;
 
@@ -77,7 +77,7 @@ static void *posix_task_wrapper(void *args) {
             cpu_set_t cpuset;
             CPU_ZERO(&cpuset);
             for (uint32_t i = 0u; i < (sizeof(user_attr->affinity) * 8u); ++i) {
-                if (user_attr->affinity & (1u << i)) {
+                if ((user_attr->affinity & ((uint32_t)1u << i)) != 0u) {
                     CPU_SET(i, &cpuset);
                 }
             }
@@ -90,7 +90,7 @@ static void *posix_task_wrapper(void *args) {
         }
 
 #if LIBOSAL_HAVE_SYS_PRCTL_H == 1
-        if (strlen(user_attr->task_name) > 0) {
+        if (strlen(user_attr->task_name) > 0u) {
             prctl(PR_SET_NAME, user_attr->task_name, 0, 0, 0);
         }
 #endif
@@ -180,6 +180,8 @@ osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval) {
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_destroy(osal_task_t *hdl) {
+    assert(hdl != NULL);
+
     osal_retval_t ret = OSAL_OK;
 
     pthread_cancel(hdl->tid);
@@ -194,6 +196,10 @@ osal_retval_t osal_task_destroy(osal_task_t *hdl) {
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_get_hdl(osal_task_t *hdl) {
+    assert(hdl != NULL);
+
+    (void)hdl;
+
     osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
 
     return ret;
@@ -207,6 +213,8 @@ osal_retval_t osal_task_get_hdl(osal_task_t *hdl) {
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) {
+    assert(hdl != NULL);
+
     osal_retval_t ret = OSAL_OK;
     int local_ret;
 
@@ -227,7 +235,7 @@ osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
         cpu_set_t cpuset;
         CPU_ZERO(&cpuset);
         for (uint32_t i = 0u; i < (sizeof(attr->affinity) * 8u); ++i) {
-            if (attr->affinity & (1u << i)) {
+            if ((attr->affinity & ((uint32_t)1u << i)) != 0u) {
                 CPU_SET(i, &cpuset);
             }
         }
@@ -240,7 +248,7 @@ osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
 
     if (ret == OSAL_OK) {
 #if LIBOSAL_HAVE_SYS_PRCTL_H == 1
-        if (strlen(attr->task_name) > 0) {
+        if (strlen(attr->task_name) > 0u) {
             prctl(PR_SET_NAME, attr->task_name, 0, 0, 0);
         }
 #endif
@@ -286,8 +294,8 @@ osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
         if (local_ret != 0) {
             ret = OSAL_ERR_INVALID_PARAM;
         } else {
-            for (int j = 0; j < CPU_SETSIZE; j++) {
-                if (CPU_ISSET(j, &cpuset)) {
+            for (osal_uint32_t j = 0; j < CPU_SETSIZE; j++) {
+                if (CPU_ISSET(j, &cpuset) != 0u) {
                     attr->affinity |= (1u << j);
                 }
             }
@@ -438,6 +446,11 @@ osal_retval_t osal_task_delete(osal_void_t) {
 osal_retval_t osal_task_get_state(osal_task_t *hdl,
                                      osal_task_state_t *state)
 {
+    assert(hdl != NULL);
+
+    (void)hdl;
+    (void)state;
+
     osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
 
     return ret;

@@ -96,7 +96,7 @@ int osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, osal_timer_t *to);
+int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, const osal_timer_t *to);
 
 //! \brief Destroys a binary_semaphore.
 /*!

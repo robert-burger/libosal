@@ -148,6 +148,8 @@ int osal_mutex_unlock(osal_mutex_t *mtx) {
 int osal_mutex_destroy(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
+    (void)mtx;
+
     int ret = OSAL_OK;
     return ret;
 }

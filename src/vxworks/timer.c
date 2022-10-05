@@ -32,7 +32,6 @@
 
 // cppcheck-suppress misra-c2012-21.6
 #include <stdio.h>
-// cppcheck-suppress misra-c2012-21.10
 #include <assert.h>
 
 #include <tickLib.h>

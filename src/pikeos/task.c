@@ -66,7 +66,7 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
     hdl->tid = P4EXT_THR_NUM_INVALID;
 
     local_ret = p4ext_thr_create(&hdl->tid, 0, 
-            strlen(attr->task_name) > 0 ? attr->task_name : "thread", 
+            (strlen(attr->task_name) > 0u) ? attr->task_name : "thread", 
             handler, 1, arg);
     vm_cprintf("%s\n", p4_strerror(local_ret));
     if (local_ret != P4_E_OK) {
@@ -88,7 +88,15 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval) {
+    assert(hdl != NULL);
+
+    (void)hdl;
+
     osal_retval_t ret = OSAL_OK;
+
+    if (retval != NULL) {
+        *retval = NULL;
+    }
 
     return ret;
 }
@@ -100,6 +108,8 @@ osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval) {
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_destroy(osal_task_t *hdl) {
+    assert(hdl != NULL);
+
     osal_retval_t ret = OSAL_OK;
 
     P4_e_t local_ret;
@@ -119,6 +129,10 @@ osal_retval_t osal_task_destroy(osal_task_t *hdl) {
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_get_hdl(osal_task_t *hdl) {
+    assert(hdl != NULL);
+
+    (void)hdl;
+
     osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
 
     return ret;
@@ -132,6 +146,11 @@ osal_retval_t osal_task_get_hdl(osal_task_t *hdl) {
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) {
+    assert(hdl != NULL);
+
+    (void)hdl;
+    (void)attr;
+
     osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
     return ret;
 }
@@ -144,6 +163,11 @@ osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) {
+    assert(hdl != NULL);
+
+    (void)hdl;
+    (void)attr;
+
     osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
     return ret;
 }
@@ -158,6 +182,8 @@ osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
 osal_retval_t osal_task_set_priority(osal_task_t *hdl,
                                         osal_task_sched_priority_t prio)
 {
+    assert(hdl != NULL);
+
     osal_retval_t ret = OSAL_OK;
     P4_e_t local_ret;
 
@@ -254,9 +280,12 @@ osal_retval_t osal_task_delete(osal_void_t) {
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_task_get_state(osal_task_t *hdl,
-                                     osal_task_state_t *state)
-{
+osal_retval_t osal_task_get_state(osal_task_t *hdl, osal_task_state_t *state) {
+    assert(hdl != NULL);
+    
+    (void)hdl;
+    (void)state;
+
     osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
 
     return ret;

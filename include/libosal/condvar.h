@@ -96,7 +96,7 @@ osal_retval_t osal_condvar_wait(osal_condvar_t *cv, osal_mutex_t *mtx);
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, osal_timer_t *timeout);
+osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, const osal_timer_t *timeout);
 
 //! \brief Signals one waiter on a condvar.
 /*!

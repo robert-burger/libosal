@@ -43,6 +43,9 @@
 osal_retval_t osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_attr_t *attr, osal_int32_t initval) {
     assert(sem != NULL);
 
+    (void)attr;
+    (void)initval;
+
     p4_sem_init(&sem->pikeos_sem, 0, 0);
 
     return OSAL_OK;
@@ -75,6 +78,7 @@ osal_retval_t osal_semaphore_post(osal_semaphore_t *sem) {
             case P4_E_NOABILITY: // if the semaphore is shareable (P4_SEM_SHARED is used),#
                                  // but the task of the calling thread does not have the ability
                                  // P4_AB_ULOCK_SHARED enabled.
+            default:
                 ret = OSAL_ERR_OPERATION_FAILED;
                 break;
 
@@ -116,6 +120,7 @@ osal_retval_t osal_semaphore_wait(osal_semaphore_t *sem) {
             case P4_E_NOABILITY:    // if the semaphore is shareable (P4_SEM_SHARED is used),
                                     // but the task of the calling thread does not have the ability
                                     // P4_AB_ULOCK_SHARED enabled.
+            default:
                 ret = OSAL_ERR_OPERATION_FAILED;
                 break;
         }
@@ -151,7 +156,7 @@ osal_retval_t osal_semaphore_trywait(osal_semaphore_t *sem) {
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to) {
+osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t *to) {
     assert(sem != NULL);
     assert(to != NULL);
 
@@ -182,6 +187,7 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, osal_timer_t *to) 
             case P4_E_NOABILITY:    // if the semaphore is shareable (P4_SEM_SHARED is used),
                                     // but the task of the calling thread does not have the ability
                                     // P4_AB_ULOCK_SHARED enabled.
+            default:
                 ret = OSAL_ERR_OPERATION_FAILED;
                 break;
         }
@@ -200,7 +206,8 @@ osal_retval_t osal_semaphore_destroy(osal_semaphore_t *sem) {
     assert(sem != NULL);
 
     // no destroy in pikeos
-    
+    (void)sem; 
+
     return OSAL_OK;
 }
 
