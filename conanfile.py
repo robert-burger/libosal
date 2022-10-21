@@ -6,7 +6,7 @@ class MainProject(ConanFile):
     license = "GPLv3"
     author = "Robert Burger <robert.burger@dlr.de>"
     url = f"https://rmc-github.robotic.dlr.de/common/{name}"
-    description = "This library provides all functionality to communicate with EtherCAT slaves attached to a Network interface"
+    description = "This library provides an Operating System Abstraction Layer (OSAL) for other programs so they do not need to take care about the underlying implementation"
     settings = "os", "compiler", "build_type", "arch"
     exports_sources = "src/*", "include/*", "README.md", "project.properties", "libosal.pc.in", "Makefile.am", "m4/*", "configure.ac", "LICENSE", "aminclude.am", "acinclude.m4", "tools/*", "doxygen.cfg", "config.sub"
     options = {"shared": [True, False]}
