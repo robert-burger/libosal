@@ -34,6 +34,8 @@
 
 #include <stand/string.h>
 #include <assert.h>
+
+// cppcheck-suppress misra-c2012-21.6
 #include <stdio.h>
 
 #include <vm.h>
@@ -41,9 +43,6 @@
 /* init_gdbstub(), gdb_breakpoint(). */
 #include <vm_debug.h>
 #endif
-
-static osal_mutex_t mutex_printf;
-static int mutex_printf_init = 0;
 
 //! \brief Get the current state of a created thread.
 /*!
@@ -54,23 +53,32 @@ static int mutex_printf_init = 0;
 osal_retval_t osal_printf(const osal_char_t *fmt, ...) {
     assert(fmt != NULL);
 
-    char buf[512];
-    va_list va;
     osal_retval_t ret = OSAL_OK;
 
+    static osal_mutex_t mutex_printf;
+    static int mutex_printf_init = 0;
     if (mutex_printf_init == 0) {
-        osal_mutex_init(&mutex_printf, NULL);
+        (void)osal_mutex_init(&mutex_printf, NULL);
         mutex_printf_init = 1;
     }
 
     /* vm_cprintf is not reentrant */
-    osal_mutex_lock(&mutex_printf);
-    va_start(va, fmt);
-    vsnprintf(buf, 512, fmt, va);
-    va_end(va);
+    if (osal_mutex_lock(&mutex_printf) == OSAL_OK) {
+        char buf[512];
 
-    vm_cprintf("%s", buf);
-    osal_mutex_unlock(&mutex_printf);
+        // cppcheck-suppress misra-c2012-17.1
+        va_list va;
+
+        // cppcheck-suppress misra-c2012-17.1
+        va_start(va, fmt);
+        (void)vsnprintf(buf, 512, fmt, va);
+        
+        // cppcheck-suppress misra-c2012-17.1
+        va_end(va);
+
+        vm_cprintf("%s", buf);
+        (void)osal_mutex_unlock(&mutex_printf);
+    }
 
     return ret;
 }

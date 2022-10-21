@@ -33,6 +33,8 @@
 #include <libosal/io.h>
 
 #include <assert.h>
+        
+// cppcheck-suppress misra-c2012-21.6
 #include <stdio.h>
 #include <stdarg.h>
 
@@ -46,15 +48,20 @@ osal_retval_t osal_printf(const osal_char_t *fmt, ...) {
     assert(fmt != NULL);
 
     char buf[512];
+
+    // cppcheck-suppress misra-c2012-17.1
     va_list va;
     osal_retval_t ret = OSAL_OK;
 
-    /* vm_cprintf is not reentrant */
+    // cppcheck-suppress misra-c2012-17.1
     va_start(va, fmt);
-    vsnprintf(buf, 512, fmt, va);
+
+    (void)vsnprintf(buf, 512, fmt, va);
+    
+    // cppcheck-suppress misra-c2012-17.1
     va_end(va);
 
-    fprintf(stdout, "%s", buf);
+    (void)fprintf(stdout, "%s", buf);
 
     return ret;
 }

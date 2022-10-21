@@ -35,6 +35,7 @@
 #include <libosal/config.h>
 #include <libosal/osal.h>
 #include <libosal/task.h>
+#include <libosal/io.h>
 
 #if LIBOSAL_HAVE_SYS_PRCTL_H == 1
 #include <sys/prctl.h>
@@ -43,7 +44,6 @@
 #include <errno.h>
 #include <assert.h>
 
-#include <stdio.h>
 #include <string.h>
 
 typedef struct posix_start_args {
@@ -70,7 +70,7 @@ static void *posix_task_wrapper(void *args) {
 
             param.sched_priority = user_attr->priority;
             if (pthread_setschedparam(pthread_self(), policy, &param) != 0) {
-                (void)printf("libosal: pthread_setschedparam(%p, %d, %u): %s\n",
+                (void)osal_printf("libosal: pthread_setschedparam(%p, %d, %u): %s\n",
                         (void *)pthread_self(), policy, user_attr->priority, strerror(errno));
             }
 
@@ -84,7 +84,7 @@ static void *posix_task_wrapper(void *args) {
 
             int ret = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
             if (ret != 0) {
-                (void)printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
+                (void)osal_printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
                         (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
             }
         }
