@@ -68,6 +68,7 @@ libosal_la_SOURCES += pikeos/condvar.c
 libosal_la_SOURCES += pikeos/mutex.c
 libosal_la_SOURCES += pikeos/semaphore.c
 libosal_la_SOURCES += pikeos/task.c
+libosal_la_SOURCES += pikeos/timer.c
 libosal_la_SOURCES += pikeos/io.c
 
 endif
