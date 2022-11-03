@@ -46,7 +46,8 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
     osal_retval_t ret = OSAL_OK;
 
     osal_uint64_t local_time;
-    P4_GET_TS(local_time);
+    local_time = p4_get_time();
+
     timer->sec = local_time / (osal_uint64_t)1E9;
     timer->nsec = local_time % (osal_uint64_t)1E9;
 
@@ -55,10 +56,7 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
 
 // gets time in nanoseconds
 osal_int64_t osal_timer_gettime_nsec(void) {
-    osal_int64_t ret = 0;
-    osal_uint64_t local_time;
-    P4_GET_TS(local_time);
-    ret = local_time;
+    osal_int64_t ret = p4_get_time();
 
     return ret;
 }
@@ -68,7 +66,7 @@ void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout) {
     assert(timer != NULL);
 
     osal_uint64_t local_time;
-    P4_GET_TS(local_time);
+    local_time = p4_get_time();
 
     osal_timer_t a;
     osal_timer_t b;
