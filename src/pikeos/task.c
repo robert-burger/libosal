@@ -68,7 +68,6 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
     local_ret = p4ext_thr_create(&hdl->tid, 0, 
             (strlen(attr->task_name) > 0u) ? attr->task_name : "thread", 
             handler, 1, arg);
-    vm_cprintf("%s\n", p4_strerror(local_ret));
     if (local_ret != P4_E_OK) {
         if (local_ret == P4_E_INVAL) {
             ret = OSAL_ERR_INVALID_PARAM;
