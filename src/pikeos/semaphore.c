@@ -162,9 +162,9 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
 
     osal_retval_t ret = OSAL_OK;
     P4_e_t local_ret;
-    P4_timeout_t timeout = 100; // TODO calc timeout
+    P4_time_t timeout = to->sec * 1E9 + to->nsec;
 
-    local_ret = p4_sem_wait(&sem->pikeos_sem, timeout);
+    local_ret = p4_sem_wait(&sem->pikeos_sem, P4_TIMEOUT_ABS(timeout));
     if (local_ret != P4_E_OK) {
         switch (local_ret) {
             case P4_E_TIMEOUT:      // if the specified timeout has expired before the lock was acquired
