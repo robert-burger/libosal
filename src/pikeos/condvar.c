@@ -153,11 +153,9 @@ osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, cons
 
     osal_retval_t ret = OSAL_OK;
     P4_e_t result;
+    P4_time_t timeout = to->sec * 1E9 + to->nsec;
 
-    // TODO get rel timeout
-    osal_uint32_t timeout = 100;
-
-    result = p4_cond_wait(&cv->pikeos_cond, &mtx->pikeos_mtx, P4_MSEC(timeout));
+    result = p4_cond_wait(&cv->pikeos_cond, &mtx->pikeos_mtx, P4_TIMEOUT_ABS(timeout));
 
     if (result != P4_E_OK) {
         if (result == P4_E_STATE) {
