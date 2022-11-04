@@ -52,9 +52,14 @@
 osal_retval_t osal_condvar_init(osal_condvar_t *cv, const osal_condvar_attr_t *attr) {
     assert(cv != NULL);
 
-    (void)attr;
+    P4_uint32_t flags = 0u;
+    if (attr != NULL) {
+        if ((*attr & OSAL_BINARY_SEMAPHORE_ATTR__PROCESS_SHARED) != 0u) {
+            flags |= P4_COND_SHARED;
+        }
+    }
 
-    p4_cond_init(&cv->pikeos_cond, P4_COND_SHARED);
+    p4_cond_init(&cv->pikeos_cond, flags);
 
     return OSAL_OK;
 }
@@ -122,6 +127,7 @@ osal_retval_t osal_condvar_broadcast(osal_condvar_t *cv) {
  */
 osal_retval_t osal_condvar_wait(osal_condvar_t *cv, osal_mutex_t *mtx) {
     assert(cv != NULL);
+    assert(mtx != NULL);
 
     osal_retval_t ret = OSAL_OK;
     P4_e_t result;
