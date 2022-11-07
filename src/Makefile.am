@@ -18,6 +18,7 @@ include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
 				  $(top_srcdir)/include/libosal/binary_semaphore.h \
 				  $(top_srcdir)/include/libosal/condvar.h \
 				  $(top_srcdir)/include/libosal/queue.h \
+				  $(top_srcdir)/include/libosal/shm.h \
 				  $(top_srcdir)/include/libosal/io.h
 
 includeposix_HEADERS = 
@@ -61,7 +62,8 @@ includepikeos_HEADERS   += $(top_srcdir)/include/libosal/pikeos/binary_semaphore
 						   $(top_srcdir)/include/libosal/pikeos/mutex.h \
 				  		   $(top_srcdir)/include/libosal/pikeos/semaphore.h \
 				  		   $(top_srcdir)/include/libosal/pikeos/task.h \
-				  		   $(top_srcdir)/include/libosal/pikeos/spinlock.h 
+				  		   $(top_srcdir)/include/libosal/pikeos/spinlock.h \
+				  		   $(top_srcdir)/include/libosal/pikeos/shm.h 
 
 libosal_la_SOURCES += pikeos/binary_semaphore.c
 libosal_la_SOURCES += pikeos/condvar.c
@@ -70,6 +72,7 @@ libosal_la_SOURCES += pikeos/semaphore.c
 libosal_la_SOURCES += pikeos/task.c
 libosal_la_SOURCES += pikeos/timer.c
 libosal_la_SOURCES += pikeos/io.c
+libosal_la_SOURCES += pikeos/shm.c
 
 endif
 
