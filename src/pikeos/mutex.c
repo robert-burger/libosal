@@ -40,7 +40,7 @@
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
+osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
     assert(mtx != NULL);
 
     P4_prio_t ceil_prio = 0u;
@@ -68,7 +68,7 @@ int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
         }
     }
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
 
     if (ceil_prio == 0u) {
         p4_mutex_init(&mtx->pikeos_mtx, flags);
@@ -85,10 +85,10 @@ int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_lock(osal_mutex_t *mtx) {
+osal_retval_t osal_mutex_lock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
     int local_ret = p4_mutex_lock(&mtx->pikeos_mtx, P4_TIMEOUT_NULL);
     if (local_ret != P4_E_OK) {
         switch (local_ret) {
@@ -139,10 +139,10 @@ int osal_mutex_lock(osal_mutex_t *mtx) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_trylock(osal_mutex_t *mtx) {
+osal_retval_t osal_mutex_trylock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
     int local_ret = p4_mutex_trylock(&mtx->pikeos_mtx);
     if (local_ret != 0) {
     }
@@ -156,10 +156,10 @@ int osal_mutex_trylock(osal_mutex_t *mtx) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_unlock(osal_mutex_t *mtx) {
+osal_retval_t osal_mutex_unlock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
     int local_ret = p4_mutex_unlock(&mtx->pikeos_mtx);
     if (local_ret != 0) {
     }
@@ -173,11 +173,11 @@ int osal_mutex_unlock(osal_mutex_t *mtx) {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_destroy(osal_mutex_t *mtx) {
+osal_retval_t osal_mutex_destroy(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     (void)mtx;
 
-    int ret = OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
     return ret;
 }

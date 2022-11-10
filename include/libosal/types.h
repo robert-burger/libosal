@@ -35,6 +35,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+typedef uint32_t    osal_bool_t;
+
 typedef void        osal_void_t;
 
 typedef int         osal_retval_t;

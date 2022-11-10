@@ -74,7 +74,7 @@ void osal_sleep(osal_int64_t nsec);
  * \retval OSAL_OK                  On success.
  * \retval OSAL_ERR_UNAVAILABLE     On error and errno set.
  */
-int osal_timer_gettime(osal_timer_t *timer);
+osal_retval_t osal_timer_gettime(osal_timer_t *timer);
 
 //! Gets time in nanoseconds.
 /*!
@@ -98,7 +98,7 @@ void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout);
  * \retval OSAL_ERR_TIMEOUT     If \p timer is expired
  * \retval OSAL_OK              If \p timer is not expired
  */
-int osal_timer_expired(osal_timer_t *timer);
+osal_retval_t osal_timer_expired(osal_timer_t *timer);
 
 #ifdef __cplusplus
 };

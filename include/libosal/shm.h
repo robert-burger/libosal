@@ -70,7 +70,7 @@ extern "C" {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr_t *attr);
+osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr_t *attr);
 
 //! \brief Map a shm.
 /*!
@@ -78,7 +78,7 @@ int osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr
  *
  * \return OK or ERROR_CODE.
  */
-int osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_void_t *ptr);
+osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_void_t **ptr);
 
 //! \brief Closes an open shm.
 /*!
@@ -86,7 +86,7 @@ int osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_void_t *ptr
  *
  * \return OK or ERROR_CODE.
  */
-int osal_shm_close(osal_shm_t *shm);
+osal_retval_t osal_shm_close(osal_shm_t *shm);
 
 #ifdef __cplusplus
 };

@@ -75,7 +75,7 @@ extern "C" {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr);
+osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr);
 
 //! \brief Locks a mutex.
 /*!
@@ -83,7 +83,7 @@ int osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_lock(osal_mutex_t *mtx);
+osal_retval_t osal_mutex_lock(osal_mutex_t *mtx);
 
 //! \brief Tries to lock a mutex.
 /*!
@@ -91,7 +91,7 @@ int osal_mutex_lock(osal_mutex_t *mtx);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_trylock(osal_mutex_t *mtx);
+osal_retval_t osal_mutex_trylock(osal_mutex_t *mtx);
 
 //! \brief Unlocks a mutex.
 /*!
@@ -99,7 +99,7 @@ int osal_mutex_trylock(osal_mutex_t *mtx);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_unlock(osal_mutex_t *mtx);
+osal_retval_t osal_mutex_unlock(osal_mutex_t *mtx);
 
 //! \brief Destroys a mutex.
 /*!
@@ -107,7 +107,7 @@ int osal_mutex_unlock(osal_mutex_t *mtx);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_mutex_destroy(osal_mutex_t *mtx);
+osal_retval_t osal_mutex_destroy(osal_mutex_t *mtx);
 
 #ifdef __cplusplus
 };

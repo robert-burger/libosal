@@ -32,6 +32,9 @@
 
 #include <assert.h>
 
+#include <vm.h>
+#include <p4ext/p4ext_vmem.h>
+
 //! \brief Initialize a shm.
 /*!
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
@@ -122,9 +125,47 @@ osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osa
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_void_t *ptr) {
+osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_void_t **ptr) {
     assert(shm != NULL);
+    assert(ptr != NULL);
     osal_retval_t ret = OSAL_OK;
+
+    /* Allocate virtual memory to map the shared memory. Enforce an PAGE alignment */
+    *ptr = (struct comm_str *)p4ext_vmem_alloc_aligned(size, (P4_phys_addr_t)P4_PAGESIZE);
+    if (*ptr == NULL) {
+        ret = OSAL_ERR_OUT_OF_MEMORY;
+    }
+
+    if (ret == OSAL_OK) {
+        int local_retval = vm_map(&shm->fd, 0, size, VM_MEM_ACCESS_RD_WR, 0, (P4_address_t)*ptr);
+        if (local_retval != P4_E_OK) {
+            switch (local_retval) {
+                case P4_E_PERM:     // if the partition does not have prot access rights to file fd.
+                    ret = OSAL_ERR_PERMISSION_DENIED;
+                    break;
+                case P4_E_NOTIMPL:  // if the responsible provider does not support this operation.
+                case P4_E_SIZE:     // if size is invalid
+                case P4_E_OVERFLOW: // if offset causes an arithmetic overflow
+                case P4_E_INVAL:    // if the file is not suited for memory mapping or
+                                    // if a parameter is invalid, e.g., if fd is not a valid file descriptor. Note that uninitialized descriptors
+                                    // cannot reliably be identified as invalid.
+                    ret = OSAL_ERR_INVALID_PARAM;
+                    break;
+                case P4_E_TIMEOUT:  // if the file was opened with a VM_O_NONBLOCK flag, and the driver supports non-
+                                    // blocking operation, and if the operation would need to block to be performed, then instead of blocking, 
+                                    // P4_E_TIMEOUT will be returned.
+                    ret = OSAL_ERR_TIMEOUT;
+                    break;
+                case P4_E_NOKMEM:   // if the file could not be mapped completely because of an insufficient. amount of free kernel
+                                    // memory.
+                    ret = OSAL_ERR_OUT_OF_MEMORY;
+                    break;
+                case P4_E_CANCEL:   // if the call was canceled.
+                    ret = OSAL_ERR_OPERATION_FAILED;
+                    break;
+            }
+        }
+    }
 
     return ret;
 }

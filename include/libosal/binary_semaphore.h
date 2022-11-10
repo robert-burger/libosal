@@ -63,7 +63,7 @@ extern "C" {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osal_binary_semaphore_attr_t *attr);
+osal_retval_t osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osal_binary_semaphore_attr_t *attr);
 
 //! \brief Post a binary_semaphore.
 /*!
@@ -71,7 +71,7 @@ int osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osal_binary_s
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_post(osal_binary_semaphore_t *sem);
+osal_retval_t osal_binary_semaphore_post(osal_binary_semaphore_t *sem);
 
 //! \brief Wait for a binary_semaphore. (blocking)
 /*!
@@ -79,7 +79,7 @@ int osal_binary_semaphore_post(osal_binary_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_wait(osal_binary_semaphore_t *sem);
+osal_retval_t osal_binary_semaphore_wait(osal_binary_semaphore_t *sem);
 
 //! \brief Wait for a binary_semaphore.
 /*!
@@ -87,7 +87,7 @@ int osal_binary_semaphore_wait(osal_binary_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem);
+osal_retval_t osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem);
 
 //! \brief Wait for a binary_semaphore.
 /*!
@@ -96,7 +96,7 @@ int osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem);
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, const osal_timer_t *to);
+osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, const osal_timer_t *to);
 
 //! \brief Destroys a binary_semaphore.
 /*!
@@ -104,7 +104,7 @@ int osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, const osal_tim
  *
  * \return OK or ERROR_CODE.
  */
-int osal_binary_semaphore_destroy(osal_binary_semaphore_t *sem);
+osal_retval_t osal_binary_semaphore_destroy(osal_binary_semaphore_t *sem);
 
 #ifdef __cplusplus
 };
