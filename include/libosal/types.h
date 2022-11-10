@@ -37,6 +37,9 @@
 
 typedef uint32_t    osal_bool_t;
 
+#define OSAL_TRUE   ( 1u )
+#define OSAL_FALSE  ( 0u )
+
 typedef void        osal_void_t;
 
 typedef int         osal_retval_t;
