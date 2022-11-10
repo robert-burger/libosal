@@ -78,7 +78,7 @@ osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osa
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_void_t **ptr);
+osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, osal_void_t **ptr);
 
 //! \brief Closes an open shm.
 /*!
