@@ -43,6 +43,7 @@ libosal_la_SOURCES += posix/timer.c
 libosal_la_SOURCES += posix/semaphore.c
 libosal_la_SOURCES += posix/spinlock.c
 libosal_la_SOURCES += posix/io.c
+libosal_la_SOURCES += posix/shm.c
 endif
 
 if BUILD_VXWORKS
