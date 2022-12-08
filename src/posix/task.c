@@ -74,6 +74,7 @@ static void *posix_task_wrapper(void *args) {
                         (void *)pthread_self(), policy, user_attr->priority, strerror(errno));
             }
 
+#if LIBOSAL_HAVE_PTHREAD_SETAFFINITY_NP
             cpu_set_t cpuset;
             CPU_ZERO(&cpuset);
             for (uint32_t i = 0u; i < (sizeof(user_attr->affinity) * 8u); ++i) {
@@ -87,6 +88,7 @@ static void *posix_task_wrapper(void *args) {
                 (void)osal_printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
                         (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
             }
+#endif
         }
 
 #if LIBOSAL_HAVE_SYS_PRCTL_H == 1
@@ -232,6 +234,7 @@ osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
     }
 
     if (ret == OSAL_OK) {
+#if LIBOSAL_HAVE_PTHREAD_SETAFFINITY_NP
         cpu_set_t cpuset;
         CPU_ZERO(&cpuset);
         for (uint32_t i = 0u; i < (sizeof(attr->affinity) * 8u); ++i) {
@@ -244,6 +247,7 @@ osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
         if (local_ret != 0) {
             ret = OSAL_ERR_INVALID_PARAM;
         }
+#endif
     }
 
     if (ret == OSAL_OK) {
@@ -285,6 +289,7 @@ osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
     }
 
     if (ret == OSAL_OK) {
+#if LIBOSAL_HAVE_PTHREAD_SETAFFINITY_NP
         attr->affinity = 0;
 
         cpu_set_t cpuset;
@@ -300,6 +305,7 @@ osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
                 }
             }
         }
+#endif
     }
 
     if (ret == OSAL_OK) {
@@ -393,12 +399,17 @@ osal_retval_t osal_task_get_priority(osal_task_t *hdl,
  */
 osal_retval_t osal_task_suspend(osal_task_t *hdl) {
     osal_retval_t ret = OSAL_OK;
+
+#if LIBOSAL_HAVE_SIGSTOP == 1
     int local_ret;
 
     local_ret = pthread_kill(hdl->tid, SIGSTOP);
     if (local_ret != 0) {
         ret = OSAL_ERR_INVALID_PARAM;
     }
+#else 
+    ret = OSAL_ERR_NOT_IMPLEMENTED;
+#endif
 
     return ret;
 }
@@ -411,12 +422,16 @@ osal_retval_t osal_task_suspend(osal_task_t *hdl) {
  */
 osal_retval_t osal_task_resume(osal_task_t *hdl) {
     osal_retval_t ret = OSAL_OK;
-    int local_ret;
 
+#if LIBOSAL_HAVE_SIGCONT == 1
+    int local_ret;
     local_ret = pthread_kill(hdl->tid, SIGCONT);
     if (local_ret != 0) {
         ret = OSAL_ERR_INVALID_PARAM;
     }
+#else 
+    ret = OSAL_ERR_NOT_IMPLEMENTED;
+#endif
 
     return ret;
 }

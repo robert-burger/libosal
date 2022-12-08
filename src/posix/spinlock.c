@@ -126,8 +126,10 @@ osal_retval_t osal_spinlock_lock(osal_spinlock_t *mtx) {
             ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
         } else if (posix_ret == EINVAL) {
             ret = OSAL_ERR_INVALID_PARAM; 
+#if LIBOSAL_HAVE_ENOTRECOVERABLE == 1
         } else if (posix_ret == ENOTRECOVERABLE) {
             ret = OSAL_ERR_NOT_RECOVERABLE;
+#endif
         } else if (posix_ret == EOWNERDEAD) {
             ret = OSAL_ERR_OWNER_DEAD;
         } else if (posix_ret == EDEADLK) {

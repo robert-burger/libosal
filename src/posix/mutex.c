@@ -61,9 +61,11 @@ osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) 
             pthread_mutexattr_settype(&posix_attr, PTHREAD_MUTEX_RECURSIVE);
         } else  {}
 
+#if LIBOSAL_HAVE_PTHREAD_MUTEXATTR_SETROBUST == 1
         if (((*attr) & OSAL_MUTEX_ATTR__ROBUST) == OSAL_MUTEX_ATTR__ROBUST) {
             pthread_mutexattr_setrobust(&posix_attr, PTHREAD_MUTEX_ROBUST);
         }
+#endif
 
         if (((*attr) & OSAL_MUTEX_ATTR__PROCESS_SHARED) == OSAL_MUTEX_ATTR__PROCESS_SHARED) {
             pthread_mutexattr_setpshared(&posix_attr, PTHREAD_PROCESS_SHARED);
@@ -124,8 +126,10 @@ osal_retval_t osal_mutex_lock(osal_mutex_t *mtx) {
             ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
         } else if (posix_ret == EINVAL) {
             ret = OSAL_ERR_INVALID_PARAM; 
+#if LIBOSAL_HAVE_ENOTRECOVERABLE == 1
         } else if (posix_ret == ENOTRECOVERABLE) {
             ret = OSAL_ERR_NOT_RECOVERABLE;
+#endif
         } else if (posix_ret == EOWNERDEAD) {
             ret = OSAL_ERR_OWNER_DEAD;
         } else if (posix_ret == EDEADLK) {
@@ -158,8 +162,10 @@ osal_retval_t osal_mutex_trylock(osal_mutex_t *mtx) {
             ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
         } else if (posix_ret == EINVAL) {
             ret = OSAL_ERR_INVALID_PARAM; 
+#if LIBOSAL_HAVE_ENOTRECOVERABLE == 1
         } else if (posix_ret == ENOTRECOVERABLE) {
             ret = OSAL_ERR_NOT_RECOVERABLE;
+#endif
         } else if (posix_ret == EOWNERDEAD) {
             ret = OSAL_ERR_OWNER_DEAD;
         } else if (posix_ret == EBUSY) {
