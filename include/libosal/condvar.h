@@ -47,6 +47,10 @@
 #include <libosal/pikeos/condvar.h>
 #endif
 
+#ifdef LIBOSAL_BUILD_WIN32
+#include <libosal/win32/condvar.h>
+#endif
+
 #define OSAL_CONDVAR_ATTR__TYPE__MASK             0x00000003u
 #define OSAL_CONDVAR_ATTR__TYPE__NORMAL           0x00000000u
 #define OSAL_CONDVAR_ATTR__TYPE__ERRORCHECK       0x00000001u

@@ -1,13 +1,13 @@
 /**
- * \file vxworks/mutex.c
+ * \file win32/mutex.c
  *
  * \author Robert Burger <robert.burger@dlr.de>
  *
  * \date 07 Aug 2022
  *
- * \brief OSAL mutex vxworks source.
+ * \brief OSAL mutex win32 source.
  *
- * OSAL mutex vxworks source.
+ * OSAL mutex win32 source.
  */
 
 /*
@@ -43,51 +43,13 @@ osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) 
     assert(mtx != NULL);
 
     osal_retval_t ret = OSAL_OK;
-#if 0
-    int posix_ret;
 
-    pthread_mutexattr_t posix_attr;
-    pthread_mutexattr_t *pposix_attr = NULL;
+    SECURITY_ATTRIBUTES sec_attr;
+    sec_attr.nLength = sizeof(SECURITY_ATTRIBUTES);
+    sec_attr.lpSecurityDescriptor = NULL;
+    sec_attr.bInheritHandle = FALSE;
 
-    if (attr != NULL) {
-        pthread_mutexattr_init(&posix_attr);
-
-        if (((*attr) & OSAL_MUTEX_ATTR__TYPE__MASK) == OSAL_MUTEX_ATTR__TYPE__NORMAL) {
-            pthread_mutexattr_settype(&posix_attr, PTHREAD_MUTEX_NORMAL);
-        } else if (((*attr) & OSAL_MUTEX_ATTR__TYPE__MASK) == OSAL_MUTEX_ATTR__TYPE__ERRORCHECK) {
-            pthread_mutexattr_settype(&posix_attr, PTHREAD_MUTEX_ERRORCHECK);
-        } else if (((*attr) & OSAL_MUTEX_ATTR__TYPE__MASK) == OSAL_MUTEX_ATTR__TYPE__RECURSIVE) {
-            pthread_mutexattr_settype(&posix_attr, PTHREAD_MUTEX_RECURSIVE);
-        } else  {}
-
-#if LIBOSAL_HAVE_PTHREAD_MUTEXATTR_SETROBUST == 1
-        if (((*attr) & OSAL_MUTEX_ATTR__ROBUST) == OSAL_MUTEX_ATTR__ROBUST) {
-            pthread_mutexattr_setrobust(&posix_attr, PTHREAD_MUTEX_ROBUST);
-        }
-#endif
-
-        if (((*attr) & OSAL_MUTEX_ATTR__PROCESS_SHARED) == OSAL_MUTEX_ATTR__PROCESS_SHARED) {
-            pthread_mutexattr_setpshared(&posix_attr, PTHREAD_PROCESS_SHARED);
-        }
-        
-        if (((*attr) & OSAL_MUTEX_ATTR__PROTOCOL__MASK) == OSAL_MUTEX_ATTR__PROTOCOL__NONE) {
-            pthread_mutexattr_setprotocol(&posix_attr, PTHREAD_PRIO_NONE);
-        } else if (((*attr) & OSAL_MUTEX_ATTR__PROTOCOL__MASK) == OSAL_MUTEX_ATTR__PROTOCOL__INHERIT) {
-            pthread_mutexattr_setprotocol(&posix_attr, PTHREAD_PRIO_INHERIT);
-        } else if (((*attr) & OSAL_MUTEX_ATTR__PROTOCOL__MASK) == OSAL_MUTEX_ATTR__PROTOCOL__PROTECT) {
-            pthread_mutexattr_setprotocol(&posix_attr, PTHREAD_PRIO_PROTECT);
-        } else {}
-
-        if (((*attr) & OSAL_MUTEX_ATTR__PRIOCEILING__MASK) != 0u) {
-            int prioceiling = (((*attr) & OSAL_MUTEX_ATTR__PRIOCEILING__MASK) >> OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT);
-            pthread_mutexattr_setprioceiling(&posix_attr, prioceiling);
-        }
-
-        pposix_attr = &posix_attr;
-    }
-#endif
-
-    mtx->win32_mtx = CreateMutexA(NULL, FALSE, NULL);
+    mtx->win32_mtx = CreateMutexA(&sec_attr, FALSE, NULL);
 
     if (mtx->win32_mtx == NULL) {
         //DWORD last_error = GetLastError();
@@ -136,28 +98,20 @@ osal_retval_t osal_mutex_lock(osal_mutex_t *mtx) {
 osal_retval_t osal_mutex_trylock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
-    osal_retval_t ret;
-    int posix_ret;
+    osal_retval_t ret = OSAL_OK;
+    DWORD local_ret;
 
-    posix_ret = pthread_mutex_trylock(&mtx->posix_mtx);
-    if (posix_ret != 0) {
-        if (posix_ret == EAGAIN) {
-            ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
-        } else if (posix_ret == EINVAL) {
-            ret = OSAL_ERR_INVALID_PARAM; 
-#if LIBOSAL_HAVE_ENOTRECOVERABLE == 1
-        } else if (posix_ret == ENOTRECOVERABLE) {
-            ret = OSAL_ERR_NOT_RECOVERABLE;
-#endif
-        } else if (posix_ret == EOWNERDEAD) {
+    local_ret = WaitForSingleObject(mtx->win32_mtx, 0);
+    if (local_ret != WAIT_OBJECT_0) {
+        if (local_ret == WAIT_ABANDONED) {
             ret = OSAL_ERR_OWNER_DEAD;
-        } else if (posix_ret == EBUSY) {
-            ret = OSAL_ERR_BUSY;
+        } else if (local_ret == WAIT_TIMEOUT) {
+            ret = OSAL_ERR_TIMEOUT;
+        } else if (local_ret == WAIT_FAILED) {
+            ret = OSAL_ERR_OPERATION_FAILED;
         } else {
-            ret = OSAL_ERR_UNAVAILABLE;
+            ret = OSAL_ERR_OPERATION_FAILED;
         }
-    } else {
-        ret = OSAL_OK;
     }
 
     return ret;
@@ -193,10 +147,10 @@ osal_retval_t osal_mutex_destroy(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     osal_retval_t ret = OSAL_OK;
-    int posix_ret;
+    BOOL local_ret;
 
-    posix_ret = pthread_mutex_destroy(&mtx->posix_mtx);
-    if (posix_ret != 0) {
+    local_ret = CloseHandle(mtx->win32_mtx);
+    if (local_ret == 0) {
         ret = OSAL_ERR_OPERATION_FAILED;
     }
 

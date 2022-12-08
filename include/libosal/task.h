@@ -46,6 +46,10 @@
 #include <libosal/pikeos/task.h>
 #endif
 
+#ifdef LIBOSAL_BUILD_WIN32
+#include <libosal/win32/task.h>
+#endif
+
 #define TASK_NAME_LEN   64u
 
 typedef osal_uint32_t osal_task_sched_policy_t;
