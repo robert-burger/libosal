@@ -4,6 +4,7 @@ includedir = $(prefix)/include/libosal
 includeposixdir = $(prefix)/include/libosal/posix
 includepikeosdir = $(prefix)/include/libosal/pikeos
 includevxworksdir = $(prefix)/include/libosal/vxworks
+includewin32dir = $(prefix)/include/libosal/win32
 
 lib_LTLIBRARIES = libosal.la
 
@@ -24,6 +25,7 @@ include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
 includeposix_HEADERS = 
 includepikeos_HEADERS = 
 includevxworks_HEADERS =
+includewin32_HEADERS =
 
 libosal_la_SOURCES	= 
 
@@ -83,22 +85,11 @@ endif
 
 if BUILD_WIN32
 
-includewin32_HEADERS   += #$(top_srcdir)/include/libosal/win32/binary_semaphore.h \
-#						   $(top_srcdir)/include/libosal/win32/condvar.h \
+includewin32_HEADERS   += 
 						   $(top_srcdir)/include/libosal/win32/mutex.h 
-#				  		   $(top_srcdir)/include/libosal/win32/semaphore.h \
-#				  		   $(top_srcdir)/include/libosal/win32/task.h \
-#				  		   $(top_srcdir)/include/libosal/win32/spinlock.h \
-#				  		   $(top_srcdir)/include/libosal/win32/shm.h 
 
-#libosal_la_SOURCES += win32/binary_semaphore.c
-#libosal_la_SOURCES += win32/condvar.c
 libosal_la_SOURCES += win32/mutex.c
-#libosal_la_SOURCES += win32/semaphore.c
-#libosal_la_SOURCES += win32/task.c
-#libosal_la_SOURCES += win32/timer.c
-#libosal_la_SOURCES += win32/io.c
-#libosal_la_SOURCES += win32/shm.c
+libosal_la_SOURCES += win32/semaphore.c
 
 endif
 

@@ -90,6 +90,7 @@ fi
 AM_CONDITIONAL([BUILD_POSIX], [ test x$BUILD_POSIX = xtrue]) 
 AM_CONDITIONAL([BUILD_VXWORKS], [ test x$BUILD_VXWORKS = xtrue]) 
 AM_CONDITIONAL([BUILD_PIKEOS], [ test x$BUILD_PIKEOS = xtrue]) 
+AM_CONDITIONAL([BUILD_WIN32], [ text x$BUILD_WIN32 = xtrue])
 
 # Checks for libraries.
 
