@@ -30,6 +30,7 @@
 #include <libosal/osal.h>
 #include <assert.h>
 #include <errno.h>
+#include <time.h>
 
 #define timespec_add(tvp, sec, nsec) { \
     (tvp)->tv_nsec += (nsec); \
