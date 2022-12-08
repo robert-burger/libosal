@@ -66,15 +66,25 @@ if test x$BUILD_POSIX == xtrue; then
     ])], [AC_DEFINE([HAVE_SIGCONT], [1])],
          [AC_DEFINE([HAVE_SIGCONT], [0])])
             
+    PTHREAD_LIBS=""
+    RT_LIBS=""
+
     AC_DEFINE([HAVE_PTHREAD_MUTEXATTR_SETROBUST], [], [Check if posix function pthread_mutexattr_setrobust present.])
     AC_CHECK_LIB(pthread, pthread_mutexattr_setrobust,
-                 [AC_DEFINE([HAVE_PTHREAD_MUTEXATTR_SETROBUST], [1])],
+                 [AC_DEFINE([HAVE_PTHREAD_MUTEXATTR_SETROBUST], [1])
+                 PTHREAD_LIBS="-lpthread"],
                  [AC_DEFINE([HAVE_PTHREAD_MUTEXATTR_SETROBUST], [0])])
     
     AC_DEFINE([HAVE_PTHREAD_SETAFFINITY_NP], [], [Check if posix function pthread_setaffinity_np present.])
     AC_CHECK_LIB(pthread, pthread_setaffinity_np,
-                 [AC_DEFINE([HAVE_PTHREAD_SETAFFINITY_NP], [1])],
+                 [AC_DEFINE([HAVE_PTHREAD_SETAFFINITY_NP], [1])
+                 PTHREAD_LIBS="-lpthread"],
                  [AC_DEFINE([HAVE_PTHREAD_SETAFFINITY_NP], [0])])
+
+    AC_CHECK_LIB(pthread, pthread_create, PTHREAD_LIBS="-lpthread")
+    AC_CHECK_LIB(rt, clock_gettime, RT_LIBS="-lrt")
+    AC_SUBST(PTHREAD_LIBS)
+    AC_SUBST(RT_LIBS)
 fi
 
 AM_CONDITIONAL([BUILD_POSIX], [ test x$BUILD_POSIX = xtrue]) 

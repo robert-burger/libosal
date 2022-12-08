@@ -27,6 +27,8 @@ includevxworks_HEADERS =
 
 libosal_la_SOURCES	= 
 
+ADD_LIBS = 
+
 if BUILD_POSIX
 includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/binary_semaphore.h \
 						   $(top_srcdir)/include/libosal/posix/condvar.h \
@@ -44,6 +46,8 @@ libosal_la_SOURCES += posix/semaphore.c
 libosal_la_SOURCES += posix/spinlock.c
 libosal_la_SOURCES += posix/io.c
 libosal_la_SOURCES += posix/shm.c
+
+ADD_LIBS += @PTHREAD_LIBS@ @RT_LIBS@
 endif
 
 if BUILD_VXWORKS
@@ -78,6 +82,6 @@ libosal_la_SOURCES += pikeos/shm.c
 endif
 
 libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror -Wno-unused-const-variable -I$(top_srcdir)/include
-libosal_la_LDFLAGS	= -Wall -Werror -no-undefined
-libosal_la_LIBS     = -lm
+libosal_la_LDFLAGS	= -Wall -Werror -no-undefined $(AM_LDFLAGS) $(ADD_LIBS)
+libosal_la_LIBS     = -lm $(ADD_LIBS)
 
