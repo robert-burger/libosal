@@ -81,6 +81,27 @@ libosal_la_SOURCES += pikeos/shm.c
 
 endif
 
+if BUILD_WIN32
+
+includewin32_HEADERS   += #$(top_srcdir)/include/libosal/win32/binary_semaphore.h \
+#						   $(top_srcdir)/include/libosal/win32/condvar.h \
+						   $(top_srcdir)/include/libosal/win32/mutex.h 
+#				  		   $(top_srcdir)/include/libosal/win32/semaphore.h \
+#				  		   $(top_srcdir)/include/libosal/win32/task.h \
+#				  		   $(top_srcdir)/include/libosal/win32/spinlock.h \
+#				  		   $(top_srcdir)/include/libosal/win32/shm.h 
+
+#libosal_la_SOURCES += win32/binary_semaphore.c
+#libosal_la_SOURCES += win32/condvar.c
+libosal_la_SOURCES += win32/mutex.c
+#libosal_la_SOURCES += win32/semaphore.c
+#libosal_la_SOURCES += win32/task.c
+#libosal_la_SOURCES += win32/timer.c
+#libosal_la_SOURCES += win32/io.c
+#libosal_la_SOURCES += win32/shm.c
+
+endif
+
 libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror -Wno-unused-const-variable -I$(top_srcdir)/include
 libosal_la_LDFLAGS	= -Wall -Werror -no-undefined $(AM_LDFLAGS) $(ADD_LIBS)
 libosal_la_LIBS     = -lm $(ADD_LIBS)
