@@ -78,6 +78,6 @@ libosal_la_SOURCES += pikeos/shm.c
 endif
 
 libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror -Wno-unused-const-variable -I$(top_srcdir)/include
-libosal_la_LDFLAGS	= -Wall -Werror 
+libosal_la_LDFLAGS	= -Wall -Werror -no-undefined
 libosal_la_LIBS     = -lm
 
