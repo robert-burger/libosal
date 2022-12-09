@@ -145,7 +145,7 @@ osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, cons
     osal_retval_t ret = OSAL_OK;
     DWORD local_ret;
 
-    local_ret = WaitForSingleObject(sem->win32_bs, to->sec*1000. + to->nsec/1000000.);
+    local_ret = WaitForSingleObject(sem->win32_bs, (DWORD)(to->sec*1000. + to->nsec/1000000.));
     if (local_ret != WAIT_OBJECT_0) {
         if (local_ret == WAIT_ABANDONED) {
             ret = OSAL_ERR_OWNER_DEAD;

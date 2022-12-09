@@ -28,6 +28,7 @@
  */
 
 #include <libosal/osal.h>
+#include <libosal/mutex.h>
 
 #include <assert.h>
 
