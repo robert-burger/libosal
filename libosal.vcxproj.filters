@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Quelldateien">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Headerdateien">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Ressourcendateien">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Headerdateien\include">
+      <UniqueIdentifier>{1c234c56-1cfd-472e-9ae9-d524101704fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\include\libosal">
+      <UniqueIdentifier>{14b57045-21ee-4335-b5b4-5956dc5fc605}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\src">
+      <UniqueIdentifier>{63c8974d-3782-42c8-9e35-508b58e0708e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quelldateien\src\win32">
+      <UniqueIdentifier>{0c62805b-3867-45d9-9c39-936b2bba49af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headerdateien\include\libosal\win32">
+      <UniqueIdentifier>{f596cf83-1715-4a8c-b3ee-1c0acf28dc0e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\libosal\binary_semaphore.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\condvar.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\config.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\io.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\mutex.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\osal.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\queue.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\semaphore.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\shm.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\spinlock.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\task.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\timer.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\types.h">
+      <Filter>Headerdateien\include\libosal</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\win32\binary_semaphore.h">
+      <Filter>Headerdateien\include\libosal\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\win32\condvar.h">
+      <Filter>Headerdateien\include\libosal\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\win32\mutex.h">
+      <Filter>Headerdateien\include\libosal\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\win32\semaphore.h">
+      <Filter>Headerdateien\include\libosal\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\win32\spinlock.h">
+      <Filter>Headerdateien\include\libosal\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="include\libosal\win32\task.h">
+      <Filter>Headerdateien\include\libosal\win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\win32\binary_semaphore.c">
+      <Filter>Quelldateien\src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32\mutex.c">
+      <Filter>Quelldateien\src\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\win32\semaphore.c">
+      <Filter>Quelldateien\src\win32</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
