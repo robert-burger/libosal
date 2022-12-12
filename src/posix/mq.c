@@ -341,6 +341,12 @@ osal_retval_t osal_mq_close(osal_mq_t *mq) {
     assert(mq != NULL);
 
     osal_retval_t ret = OSAL_OK;
+    int local_ret = mq_close(mq->mq_desc);
+    if (local_ret == -1) {
+        // only EBADF could be set
+        ret = OSAL_ERR_INVALID_PARAM;
+    }
+
     return ret;
 }
 
