@@ -122,10 +122,13 @@ osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osa
 //! \brief Map a shm.
 /*!
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
+ * \param[in]   size    Size of memory to map.
+ * \param[in]   attr    Pointer to map attributes.
+ * \param[out]  ptr     Pointer where to returned mapped data pointer.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, osal_void_t **ptr) {
+osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_shm_map_attr_t *attr, osal_void_t **ptr) {
     assert(shm != NULL);
     assert(ptr != NULL);
     osal_retval_t ret = OSAL_OK;
