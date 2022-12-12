@@ -29,9 +29,14 @@
 
 #include <libosal/shm.h>
 #include <libosal/osal.h>
+#include <libosal/config.h>
 
 #include <assert.h>
+
+#ifdef LIBOSAL_HAVE_SYS_MMAN_H
 #include <sys/mman.h>
+#endif
+
 #include <sys/stat.h>        /* For mode constants */
 #include <fcntl.h>           /* For O_* constants */
 #include <errno.h>
