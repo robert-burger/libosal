@@ -47,7 +47,10 @@ libosal_la_SOURCES += posix/timer.c
 libosal_la_SOURCES += posix/semaphore.c
 libosal_la_SOURCES += posix/spinlock.c
 libosal_la_SOURCES += posix/io.c
+
+if HAVE_MQUEUE_H
 libosal_la_SOURCES += posix/mq.c
+endif
 
 if HAVE_SYS_MMAN_H
 libosal_la_SOURCES += posix/shm.c

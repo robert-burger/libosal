@@ -97,10 +97,12 @@ AM_CONDITIONAL([BUILD_WIN32], [ text x$BUILD_WIN32 = xtrue])
 # Checks for header files.
 AC_CHECK_HEADERS([stdint.h])
 AC_CHECK_HEADERS([sys/mman.h], HAVE_SYS_MMAN_H=true, HAVE_SYS_MMAN_H=false)
+AC_CHECK_HEADERS([mqueue.h], HAVE_MQUEUE_H=true, HAVE_MQUEUE_H=false)
 dnl check for sys/prctl for setting thread name on Linux
 AC_CHECK_HEADERS([sys/prctl.h], [], [], [AC_INCLUDES_DEFAULT])
 
 AM_CONDITIONAL([HAVE_SYS_MMAN_H], [ test x$HAVE_SYS_MMAN_H = xtrue])
+AM_CONDITIONAL([HAVE_MQUEUE_H], [ test x$HAVE_MQUEUE_H = xtrue])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_UINT32_T
