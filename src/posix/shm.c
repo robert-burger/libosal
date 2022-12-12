@@ -40,6 +40,7 @@
 #include <sys/stat.h>        /* For mode constants */
 #include <fcntl.h>           /* For O_* constants */
 #include <errno.h>
+#include <unistd.h>
 
 //! \brief Initialize a shm.
 /*!
@@ -122,13 +123,93 @@ osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osa
 //! \brief Map a shm.
 /*!
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
+ * \param[in]   size    Size of memory to map.
+ * \param[in]   attr    Pointer to map attributes.
+ * \param[out]  ptr     Pointer where to returned mapped data pointer.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, osal_void_t **ptr) {
+osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_shm_map_attr_t *attr, osal_void_t **ptr) {
     assert(shm != NULL);
     assert(ptr != NULL);
     osal_retval_t ret = OSAL_OK;
+
+    int prot = 0;
+    int flags = 0;
+
+    if (attr != NULL) {
+        if ((*attr & OSAL_SHM_MAP_ATTR__PROT_EXEC) != 0u) {
+            prot |= PROT_EXEC;
+        }
+        if ((*attr & OSAL_SHM_MAP_ATTR__PROT_READ) != 0u) {
+            prot |= PROT_READ;
+        }
+        if ((*attr & OSAL_SHM_MAP_ATTR__PROT_WRITE) != 0u) {
+            prot |= PROT_WRITE;
+        }
+        if ((*attr & OSAL_SHM_MAP_ATTR__PROT_NONE) != 0u) {
+            prot |= PROT_NONE;
+        }
+
+        if ((*attr & OSAL_SHM_MAP_ATTR__SHARED) != 0u) {
+            flags |= MAP_SHARED;
+        }
+        if ((*attr & OSAL_SHM_MAP_ATTR__PRIVATE) != 0u) {
+            flags |= MAP_PRIVATE;
+        }
+    }
+
+    *ptr = mmap(NULL, size, prot, flags, shm->fd, 0);
+
+    if (*ptr == (void *)-1) {
+        switch (errno) {
+            case EACCES:    // A file descriptor refers to a non-regular file.  Or a file mapping was requested, 
+                            // but fd is not open for reading.  Or MAP_SHARED was requested and  PROT_WRITE is
+                            // set, but fd is not open in read/write (O_RDWR) mode. Or PROT_WRITE is set, but 
+                            // the file is append-only.
+                ret = OSAL_ERR_PERMISSION_DENIED;
+                break;
+            case EAGAIN:    // The file has been locked, or too much memory has been locked (see setrlimit(2)).
+                ret = OSAL_ERR_OPERATION_FAILED;
+                break;
+            case EBADF:     // fd is not a valid file descriptor (and MAP_ANONYMOUS was not set).
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+            case EEXIST:    // MAP_FIXED_NOREPLACE was specified in flags, and the range covered by addr and 
+                            // length clashes with an existing mapping.
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+            case EINVAL:    // We don't like addr, length, or offset (e.g., they are too large, or not aligned 
+                            // on a page boundary). flags contained none of MAP_PRIVATE, MAP_SHARED or MAP_SHARED_VALIDATE.
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+            case ENFILE:    // The system-wide limit on the total number of open files has been reached.
+                ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
+                break;
+            case ENODEV:    // The underlying filesystem of the specified file does not support memory mapping.
+                ret = OSAL_ERR_NOT_IMPLEMENTED;
+                break;
+            case ENOMEM:    // No memory is available. The process's maximum number of mappings would have been 
+                            // exceeded. This error can also occur for munmap(), when unmapping a region in the 
+                            // middle of an existing mapping, since this results in two smaller mappings on either 
+                            // side of the region being unmapped.
+                ret = OSAL_ERR_OUT_OF_MEMORY;
+                break;
+            case EOVERFLOW: // On 32-bit architecture together with the large file extension (i.e., using 64-bit off_t): 
+                            // the number of pages used for length plus number of pages used for offset would 
+                            // overflow unsigned long  (32 bits).
+                ret = OSAL_ERR_OPERATION_FAILED;
+                break;
+            case EPERM:     // The prot argument asks for PROT_EXEC but the mapped area belongs to a file on a 
+                            // filesystem that was mounted no-exec.
+                            // The operation was prevented by a file seal; see fcntl(2).
+                ret = OSAL_ERR_PERMISSION_DENIED;
+                break;
+            case ETXTBSY:   // MAP_DENYWRITE was set but the object specified by fd is open for writing.
+                ret = OSAL_ERR_PERMISSION_DENIED;
+                break;
+        }
+    }
 
     return ret;
 }
@@ -142,6 +223,8 @@ osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, osal_void_t 
 osal_retval_t osal_shm_close(osal_shm_t *shm) {
     assert(shm != NULL);
     osal_retval_t ret = OSAL_OK;
+
+    close(shm->fd);
 
     return ret;
 }

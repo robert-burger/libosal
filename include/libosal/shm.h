@@ -57,6 +57,7 @@
 #define OSAL_SHM_ATTR__MODE__SHIFT            16u
 
 typedef osal_uint32_t osal_shm_attr_t;
+typedef osal_uint32_t osal_shm_map_attr_t;
 
 #ifdef __cplusplus
 extern "C" {
@@ -72,13 +73,24 @@ extern "C" {
  */
 osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr_t *attr);
 
+#define OSAL_SHM_MAP_ATTR__PROT_EXEC          0x00000001u
+#define OSAL_SHM_MAP_ATTR__PROT_READ          0x00000002u
+#define OSAL_SHM_MAP_ATTR__PROT_WRITE         0x00000004u
+#define OSAL_SHM_MAP_ATTR__PROT_NONE          0x00000008u
+
+#define OSAL_SHM_MAP_ATTR__SHARED             0x00000100u
+#define OSAL_SHM_MAP_ATTR__PRIVATE            0x00000200u
+
 //! \brief Map a shm.
 /*!
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
+ * \param[in]   size    Size of memory to map.
+ * \param[in]   attr    Pointer to map attributes.
+ * \param[out]  ptr     Pointer where to returned mapped data pointer.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, osal_void_t **ptr);
+osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_shm_map_attr_t *attr, osal_void_t **ptr);
 
 //! \brief Closes an open shm.
 /*!
