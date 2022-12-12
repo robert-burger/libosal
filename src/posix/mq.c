@@ -116,6 +116,9 @@ osal_retval_t osal_mq_open(osal_mq_t *mq, const osal_char_t *name,  const osal_m
                                 // queues_max limit was encountered; see mq_overview(7).
                 ret = OSAL_ERR_OUT_OF_MEMORY;
                 break;
+            default:
+                ret = OSAL_ERR_OPERATION_FAILED;
+                break;
         }
     }
 
@@ -136,6 +139,32 @@ osal_retval_t osal_mq_send(osal_mq_t *mq, const osal_char_t *msg, const osal_siz
     assert(msg != NULL);
 
     osal_retval_t ret = OSAL_OK;
+    int local_ret = mq_send(mq->mq_desc, msg, msg_len, prio);
+    if (local_ret == -1) {
+        switch (errno) {
+            case EAGAIN:    // The queue was full, and the O_NONBLOCK flag was set for the message queue description 
+                            // referred to by mqdes.
+                ret = OSAL_ERR_BUSY;
+                break;
+            case EBADF:     // The descriptor specified in mqdes was invalid or not opened for writing.
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+            case EINTR:     // The call was interrupted by a signal handler; see signal(7).
+                ret = OSAL_ERR_INTERRUPTED;
+                break;
+            case EINVAL:    // The call would have blocked, and abs_timeout was invalid, either because tv_sec 
+                            // was less than zero, or because tv_nsec was less than zero or greater than 1000 million.
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+            case EMSGSIZE:  // msg_len was greater than the mq_msgsize attribute of the message queue.
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+            default:
+                ret = OSAL_ERR_OPERATION_FAILED;
+                break;
+        }
+    }
+
     return ret;
 }
 
@@ -157,6 +186,45 @@ osal_retval_t osal_mq_timedsend(osal_mq_t *mq, const osal_char_t *msg, const osa
     assert(to != NULL);
 
     osal_retval_t ret = OSAL_OK;
+
+    struct timespec ts;
+    ts.tv_sec = to->sec;
+    ts.tv_nsec = to->nsec;
+
+    while (ret != OSAL_ERR_TIMEOUT) {
+        int local_ret = mq_timedsend(mq->mq_desc, msg, msg_len, prio, &ts);
+        if (local_ret == -1) {
+            switch (errno) {
+                case EAGAIN:    // The queue was full, and the O_NONBLOCK flag was set for the message queue description 
+                                // referred to by mqdes.
+                    ret = OSAL_ERR_BUSY;
+                    break;
+                case EBADF:     // The descriptor specified in mqdes was invalid or not opened for writing.
+                    ret = OSAL_ERR_INVALID_PARAM;
+                    break;
+                case EINTR:     // The call was interrupted by a signal handler; see signal(7).
+                    ret = OSAL_ERR_INTERRUPTED;
+                    break;
+                case EINVAL:    // The call would have blocked, and abs_timeout was invalid, either because tv_sec 
+                                // was less than zero, or because tv_nsec was less than zero or greater than 1000 million.
+                    ret = OSAL_ERR_INVALID_PARAM;
+                    break;
+                case EMSGSIZE:  // msg_len was greater than the mq_msgsize attribute of the message queue.
+                    ret = OSAL_ERR_INVALID_PARAM;
+                    break;
+                case ETIMEDOUT: // The call timed out before a message could be transferred.
+                    ret = OSAL_ERR_TIMEOUT;
+                    break;
+                default:
+                    ret = OSAL_ERR_OPERATION_FAILED;
+                    break;
+            }
+        } else {
+            ret = OSAL_OK;
+            break;
+        }
+    }
+
     return ret;
 }
 
@@ -164,17 +232,42 @@ osal_retval_t osal_mq_timedsend(osal_mq_t *mq, const osal_char_t *msg, const osa
 //! \brief Receive a message through message queue.
 /*!
  * \param[in]   mq      Pointer to osal mq structure. Content is OS dependent.
- * \param[in]   msg     Pointer to message buffer.
+ * \param[out]  msg     Pointer to message buffer.
  * \param[in]   msg_len Lenght of message to receive.
- * \param[in]   prio    Receive priority.
+ * \param[out]  prio    Receive priority.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_mq_receive(osal_mq_t *mq, const osal_char_t *msg, const osal_size_t msg_len, const osal_uint32_t prio) {
+osal_retval_t osal_mq_receive(osal_mq_t *mq, osal_char_t *msg, const osal_size_t msg_len, osal_uint32_t *prio) {
     assert(mq != NULL);
     assert(msg != NULL);
 
     osal_retval_t ret = OSAL_OK;
+    int local_ret = mq_receive(mq->mq_desc, msg, msg_len, prio);
+    if (local_ret == -1) {
+        switch (errno) {
+            case EAGAIN:    // The queue was full, and the O_NONBLOCK flag was set for the message queue description 
+                            // referred to by mqdes.
+                ret = OSAL_ERR_BUSY;
+                break;
+            case EBADF:     // The descriptor specified in mqdes was invalid or not opened for writing.
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+            case EINTR:     // The call was interrupted by a signal handler; see signal(7).
+                ret = OSAL_ERR_INTERRUPTED;
+                break;
+            case EINVAL:    // The call would have blocked, and abs_timeout was invalid, either because tv_sec 
+                            // was less than zero, or because tv_nsec was less than zero or greater than 1000 million.
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+            case EMSGSIZE:  // msg_len was greater than the mq_msgsize attribute of the message queue.
+                ret = OSAL_ERR_INVALID_PARAM;
+                break;
+            default:
+                ret = OSAL_ERR_OPERATION_FAILED;
+                break;
+        }
+    }
     return ret;
 }
 
@@ -182,20 +275,58 @@ osal_retval_t osal_mq_receive(osal_mq_t *mq, const osal_char_t *msg, const osal_
 //! \brief Receive a message through message queue.
 /*!
  * \param[in]   mq      Pointer to osal mq structure. Content is OS dependent.
- * \param[in]   msg     Pointer to message buffer.
+ * \param[out]  msg     Pointer to message buffer.
  * \param[in]   msg_len Lenght of message to receive.
- * \param[in]   prio    Receive priority.
+ * \param[out]  prio    Receive priority.
  * \param[in]   to      Timeout waiting if message queue is full.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_mq_timedreceive(osal_mq_t *mq, const osal_char_t *msg, const osal_size_t msg_len, 
-        const osal_uint32_t prio, const osal_timer_t *to) {
+osal_retval_t osal_mq_timedreceive(osal_mq_t *mq, osal_char_t *msg, const osal_size_t msg_len, 
+        osal_uint32_t *prio, const osal_timer_t *to) {
     assert(mq != NULL);
     assert(msg != NULL);
     assert(to != NULL);
 
     osal_retval_t ret = OSAL_OK;
+
+    struct timespec ts;
+    ts.tv_sec = to->sec;
+    ts.tv_nsec = to->nsec;
+
+    while (ret != OSAL_ERR_TIMEOUT) {
+        int local_ret = mq_timedreceive(mq->mq_desc, msg, msg_len, prio, &ts);
+        if (local_ret == -1) {
+            switch (errno) {
+                case EAGAIN:    // The queue was full, and the O_NONBLOCK flag was set for the message queue description 
+                                // referred to by mqdes.
+                    ret = OSAL_ERR_BUSY;
+                    break;
+                case EBADF:     // The descriptor specified in mqdes was invalid or not opened for writing.
+                    ret = OSAL_ERR_INVALID_PARAM;
+                    break;
+                case EINTR:     // The call was interrupted by a signal handler; see signal(7).
+                    ret = OSAL_ERR_INTERRUPTED;
+                    break;
+                case EINVAL:    // The call would have blocked, and abs_timeout was invalid, either because tv_sec 
+                                // was less than zero, or because tv_nsec was less than zero or greater than 1000 million.
+                    ret = OSAL_ERR_INVALID_PARAM;
+                    break;
+                case EMSGSIZE:  // msg_len was greater than the mq_msgsize attribute of the message queue.
+                    ret = OSAL_ERR_INVALID_PARAM;
+                    break;
+                case ETIMEDOUT: // The call timed out before a message could be transferred.
+                    ret = OSAL_ERR_TIMEOUT;
+                    break;
+                default:
+                    ret = OSAL_ERR_OPERATION_FAILED;
+                    break;
+            }
+        } else {
+            ret = OSAL_OK;
+            break;
+        }
+    }
     return ret;
 }
 

@@ -101,26 +101,26 @@ osal_retval_t osal_mq_timedsend(osal_mq_t *mq, const osal_char_t *msg, const osa
 //! \brief Receive a message through message queue.
 /*!
  * \param[in]   mq      Pointer to osal mq structure. Content is OS dependent.
- * \param[in]   msg     Pointer to message buffer.
+ * \param[out]  msg     Pointer to message buffer.
  * \param[in]   msg_len Lenght of message to receive.
- * \param[in]   prio    Receive priority.
+ * \param[out]  prio    Receive priority.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_mq_receive(osal_mq_t *mq, const osal_char_t *msg, const osal_size_t msg_len, const osal_uint32_t prio);
+osal_retval_t osal_mq_receive(osal_mq_t *mq, osal_char_t *msg, const osal_size_t msg_len, osal_uint32_t *prio);
 
 //! \brief Receive a message through message queue.
 /*!
  * \param[in]   mq      Pointer to osal mq structure. Content is OS dependent.
- * \param[in]   msg     Pointer to message buffer.
+ * \param[out]  msg     Pointer to message buffer.
  * \param[in]   msg_len Lenght of message to receive.
- * \param[in]   prio    Receive priority.
+ * \param[out]  prio    Receive priority.
  * \param[in]   to      Timeout waiting if message queue is full.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_mq_timedreceive(osal_mq_t *mq, const osal_char_t *msg, const osal_size_t msg_len, 
-        const osal_uint32_t prio, const osal_timer_t *to);
+osal_retval_t osal_mq_timedreceive(osal_mq_t *mq, osal_char_t *msg, const osal_size_t msg_len, 
+        osal_uint32_t *prio, const osal_timer_t *to);
 
 //! \brief Closes an open mq.
 /*!

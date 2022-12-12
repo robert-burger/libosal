@@ -45,6 +45,7 @@
 #define OSAL_ERR_NOT_FOUND              -12
 #define OSAL_ERR_NOT_IMPLEMENTED        -13
 #define OSAL_ERR_NO_DATA                -14
+#define OSAL_ERR_INTERRUPTED            -15
 
 #include <libosal/types.h>
 #include <libosal/task.h>
