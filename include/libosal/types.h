@@ -60,5 +60,7 @@ typedef int16_t    osal_int16_t;
 typedef int32_t    osal_int32_t;
 typedef int64_t    osal_int64_t;
 
+typedef uint64_t   osal_mode_t;
+
 #endif /* LIBOSAL_TYPES__H */
 
