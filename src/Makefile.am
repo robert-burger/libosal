@@ -37,6 +37,7 @@ includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/binary_semaphore.
 						   $(top_srcdir)/include/libosal/posix/mutex.h \
 				  		   $(top_srcdir)/include/libosal/posix/semaphore.h \
 				  		   $(top_srcdir)/include/libosal/posix/task.h \
+				  		   $(top_srcdir)/include/libosal/posix/shm.h \
 				  		   $(top_srcdir)/include/libosal/posix/spinlock.h 
 
 libosal_la_SOURCES += posix/binary_semaphore.c
