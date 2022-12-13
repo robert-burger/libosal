@@ -51,6 +51,17 @@ typedef struct osal_timer {
         }                                                           \
     } while (0)
 
+#define osal_timer_add_nsec(a, n, result)                           \
+    do {                                                            \
+        (result)->sec = (a)->sec;                                   \
+        (result)->nsec = (a)->nsec + (n);                           \
+        if ((result)->nsec >= 1E9)                                  \
+        {                                                           \
+            ++(result)->sec;                                        \
+            (result)->nsec -= 1E9;                                  \
+        }                                                           \
+    } while (0)
+
 #define osal_timer_cmp(a, b, CMP)                                   \
     (((a)->sec == (b)->sec) ?                                       \
      ((a)->nsec CMP (b)->nsec) :                                    \
@@ -65,6 +76,14 @@ extern "C" {
  * \param[in] nsec      Time to sleep in nanoseconds.
  */
 void osal_sleep(osal_int64_t nsec);
+
+//! Sleep until timer expired
+/*!
+ * \param[in]   timer   Pointer to timer struct with absolute end time.
+ *
+ * \retval OSAL_OK      On success.
+ */
+osal_retval_t osal_sleep_until(osal_timer_t *timer);
 
 //! Gets filled timer struct with current time.
 /*!
