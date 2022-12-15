@@ -33,11 +33,13 @@
 
 #include <libosal/config.h>
 #include <libosal/types.h>
+#include <libosal/timer.h>
+
+#define LIBOSAL_IO_SHM_MAX_MSG_SIZE 512
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 //! \brief Get the current state of a created thread.
 /*!
@@ -46,6 +48,32 @@ extern "C" {
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_printf(const osal_char_t *fmt, ...)  __attribute__ ((format (printf, 1, 2)));
+
+//! \brief Write message to stdout
+/*!
+ * \param[in]   msg     Message to be printed.
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_puts(const osal_char_t *msg);
+
+//! \brief Set up printing to shm instead of stdout
+/*!
+ * \param[in]   shm_name    Name of logging shared memory.
+ *
+ * \return OSAL_OK on success, otherwise OSAL_ERR_*
+ */
+osal_retval_t osal_io_shm_setup(const osal_char_t *shm_name);
+
+//! \brief Get next message printed to shm.
+/*!
+ * \param[out]   msg        Message to be returned.
+ * \param[in]    to         Timeout when waiting if no message is available.
+ *
+ * \return OSAL_OK on success otherwise OSAL_ERR_UNAVAILABLE 
+ */
+osal_retval_t osal_io_shm_get_message(osal_char_t msg[LIBOSAL_IO_SHM_MAX_MSG_SIZE],
+        const osal_timer_t *to);
 
 #ifdef __cplusplus
 };

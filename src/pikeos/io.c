@@ -44,13 +44,13 @@
 #include <vm_debug.h>
 #endif
 
-//! \brief Get the current state of a created thread.
+//! \brief Write message to stdout
 /*!
- * \param[in]   fmt     Print format.
+ * \param[in]   msg     Message to be printed.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_printf(const osal_char_t *fmt, ...) {
+osal_retval_t osal_puts(const osal_char_t *msg) {
     assert(fmt != NULL);
 
     osal_retval_t ret = OSAL_OK;
@@ -64,23 +64,10 @@ osal_retval_t osal_printf(const osal_char_t *fmt, ...) {
 
     /* vm_cprintf is not reentrant */
     if (osal_mutex_lock(&mutex_printf) == OSAL_OK) {
-        char buf[512];
-
-        // cppcheck-suppress misra-c2012-17.1
-        va_list va;
-
-        // cppcheck-suppress misra-c2012-17.1
-        va_start(va, fmt);
-        (void)vsnprintf(buf, 512, fmt, va);
-        
-        // cppcheck-suppress misra-c2012-17.1
-        va_end(va);
-
-        vm_cprintf("%s", buf);
+        vm_cprintf("%s", msg);
         (void)osal_mutex_unlock(&mutex_printf);
     }
 
     return ret;
 }
-
 

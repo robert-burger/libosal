@@ -159,6 +159,7 @@ osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_s
         }
     }
 
+    ftruncate(shm->fd, size);
     *ptr = mmap(NULL, size, prot, flags, shm->fd, 0);
 
     if (*ptr == (void *)-1) {
@@ -207,6 +208,9 @@ osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_s
                 break;
             case ETXTBSY:   // MAP_DENYWRITE was set but the object specified by fd is open for writing.
                 ret = OSAL_ERR_PERMISSION_DENIED;
+                break;
+            default:
+                ret = OSAL_ERR_OPERATION_FAILED;
                 break;
         }
     }
