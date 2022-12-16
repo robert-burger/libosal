@@ -63,7 +63,7 @@ osal_retval_t osal_puts(const osal_char_t *msg);
  *
  * \return OSAL_OK on success, otherwise OSAL_ERR_*
  */
-osal_retval_t osal_io_shm_setup(const osal_char_t *shm_name);
+osal_retval_t osal_io_shm_setup(const osal_char_t *shm_name, const osal_size_t max_msgs, const osal_size_t max_msg_size);
 
 //! \brief Get next message printed to shm.
 /*!

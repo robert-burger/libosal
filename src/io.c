@@ -41,20 +41,20 @@
 #include <string.h>
 #include <stdio.h>
 
-#define LIBOSAL_IO_SHM_SIZE         0x100000
 #define LIBOSAL_IO_SHM_MAGIC        0x00AFFE00
-#define LIBOSAL_IO_SHM_MAX_MSG_SIZE 512
-#define LIBOSAL_IO_SHM_MAX_MSGS     100
 
 typedef struct osal_io_shm {
-	osal_mutex_t mtx;
-	osal_semaphore_t sem;
-	osal_bool_t new_msg;
-	osal_uint32_t magic;
+	osal_uint32_t       magic;
+    osal_size_t         max_messages;
+    osal_size_t         max_message_size;
 
-    osal_uint32_t act_printed;
-    osal_uint32_t act_written;
-	char msg[LIBOSAL_IO_SHM_MAX_MSGS][LIBOSAL_IO_SHM_MAX_MSG_SIZE];
+	osal_mutex_t        mtx;
+	osal_semaphore_t    sem;
+	osal_bool_t         new_msg;
+
+    osal_uint32_t       act_printed;
+    osal_uint32_t       act_written;
+	char                msgs[0];
 } osal_io_shm_t;
 
 static osal_shm_t osal_io_shm;
@@ -73,19 +73,32 @@ osal_retval_t osal_io_shm_get_message(osal_char_t msg[LIBOSAL_IO_SHM_MAX_MSG_SIZ
     }
 
     if (osal_io_shm_buffer->act_printed != osal_io_shm_buffer->act_written) {
-        osal_io_shm_buffer->act_printed = (osal_io_shm_buffer->act_printed + 1) % LIBOSAL_IO_SHM_MAX_MSGS;
-        strncpy(msg, osal_io_shm_buffer->msg[osal_io_shm_buffer->act_printed], LIBOSAL_IO_SHM_MAX_MSG_SIZE);
+        osal_io_shm_buffer->act_printed = (osal_io_shm_buffer->act_printed + 1) % osal_io_shm_buffer->max_messages;
+        osal_char_t *tmp = osal_io_shm_buffer->msgs + (osal_io_shm_buffer->act_printed * osal_io_shm_buffer->max_message_size);
+        strncpy(msg, tmp, osal_io_shm_buffer->max_message_size);
         ret = OSAL_OK;
     }
 
     return ret;
 }
 
-osal_retval_t osal_io_shm_setup(const osal_char_t *shm_name) {
-    osal_shm_attr_t shm_attr_msr = OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__MAP | 
-        OSAL_SHM_ATTR__FLAG__CREAT;
+osal_retval_t osal_io_shm_setup(const osal_char_t *shm_name, const osal_size_t max_msgs, const osal_size_t max_msg_size) 
+{
+    assert(shm_name != NULL);
+
+    osal_shm_attr_t shm_attr_msr = OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__MAP;
     shm_attr_msr |= 0666 << OSAL_SHM_ATTR__MODE__SHIFT;
-    osal_retval_t local_retval = osal_shm_open(&osal_io_shm, shm_name, &shm_attr_msr);
+    osal_size_t expected_shm_size = sizeof(osal_io_shm) + (max_msg_size * max_msgs);
+
+    osal_retval_t local_retval = osal_shm_open(&osal_io_shm, shm_name, &shm_attr_msr, expected_shm_size);
+        
+    if (local_retval != OSAL_OK) {
+        osal_printf("shared memory %s does not exists, try creating a new one\n", shm_name);
+
+        shm_attr_msr |= OSAL_SHM_ATTR__FLAG__CREAT;
+        local_retval = osal_shm_open(&osal_io_shm, shm_name, &shm_attr_msr, expected_shm_size);
+    }
+
     if (local_retval != OSAL_OK) {
         osal_printf("osal_shm_open(%p, %s, %p) returned error: %d\n", 
                 &osal_io_shm, shm_name, &shm_attr_msr, local_retval);
@@ -93,17 +106,21 @@ osal_retval_t osal_io_shm_setup(const osal_char_t *shm_name) {
         osal_void_t *tmp = NULL;
         osal_shm_map_attr_t map_attr;
         map_attr = OSAL_SHM_MAP_ATTR__PROT_WRITE | OSAL_SHM_MAP_ATTR__PROT_READ | OSAL_SHM_MAP_ATTR__SHARED;
-        local_retval = osal_shm_map(&osal_io_shm, LIBOSAL_IO_SHM_SIZE, &map_attr, (osal_void_t **)&tmp);
+        local_retval = osal_shm_map(&osal_io_shm, &map_attr, (osal_void_t **)&tmp);
         if (local_retval != OSAL_OK) {
-            osal_printf("osal_shm_map(%p, %d, %p) returned error: %d\n", &osal_io_shm, LIBOSAL_IO_SHM_SIZE, &tmp, local_retval);
+            osal_printf("osal_shm_map(%p, %p) returned error: %d\n", &osal_io_shm, &tmp, local_retval);
         } else {
-            osal_printf("SHM opened and mapped successfully!\n");
+            osal_printf("osal_io_shm: opened and mapped successfully!\n");
             osal_io_shm_buffer = (osal_io_shm_t *)tmp;
     
-            osal_printf("%X, %d %d\n", osal_io_shm_buffer->magic, osal_io_shm_buffer->act_printed, osal_io_shm_buffer->act_written);
             if (osal_io_shm_buffer->magic == LIBOSAL_IO_SHM_MAGIC) {
-                osal_printf("found LIBOSAL_IO_SHM_MAGIC, skipping initialization.\n");
+                osal_printf("osal_io_shm: found magic, skipping initialization.\n");
+                osal_printf("osal_io_shm: maximum number of messages -> %ld\n", osal_io_shm_buffer->max_messages); 
+                osal_printf("osal_io_shm: maximum length of messages -> %ld\n", osal_io_shm_buffer->max_message_size); 
             } else {
+                osal_io_shm_buffer->max_messages = max_msgs;
+                osal_io_shm_buffer->max_message_size = max_msg_size;
+
                 osal_io_shm_buffer->act_printed = 0;
                 osal_io_shm_buffer->act_written = 0;
 
@@ -115,10 +132,6 @@ osal_retval_t osal_io_shm_setup(const osal_char_t *shm_name) {
 
                 osal_io_shm_buffer->magic = LIBOSAL_IO_SHM_MAGIC;
                 osal_io_shm_buffer->new_msg = 0;
-
-                for (int i = 0; i < LIBOSAL_IO_SHM_MAX_MSGS; ++i) {
-                    osal_io_shm_buffer->msg[i][0] = '\0';
-                }
             }
         }
     }
@@ -150,14 +163,14 @@ osal_retval_t osal_printf(const osal_char_t *fmt, ...) {
     va_end(va);
 
     if (osal_io_shm_buffer != NULL) {
-        osal_uint32_t next_write = (osal_io_shm_buffer->act_written + 1) % LIBOSAL_IO_SHM_MAX_MSGS;
-        char *tmp = &osal_io_shm_buffer->msg[next_write][0];
+        osal_uint32_t next_write = (osal_io_shm_buffer->act_written + 1) % osal_io_shm_buffer->max_messages;
+        char *tmp = osal_io_shm_buffer->msgs + (next_write * osal_io_shm_buffer->max_message_size);
 
         if (next_write == osal_io_shm_buffer->act_printed) {
-            osal_io_shm_buffer->act_printed = (osal_io_shm_buffer->act_printed + 1) % LIBOSAL_IO_SHM_MAX_MSGS;
+            osal_io_shm_buffer->act_printed = (osal_io_shm_buffer->act_printed + 1) % osal_io_shm_buffer->max_messages;
         }
 
-        strncpy(tmp, buf, LIBOSAL_IO_SHM_MAX_MSG_SIZE);
+        strncpy(tmp, buf, osal_io_shm_buffer->max_message_size);
         osal_io_shm_buffer->act_written = next_write;
         osal_semaphore_post(&osal_io_shm_buffer->sem);
     } else {

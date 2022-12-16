@@ -15,7 +15,7 @@ extern int main(int argc, char **argv) {
     //printf("max messages: %d\n", LIBOSAL_IO_SHM_MAX_MSGS);
     //printf("max message size: %d\n", LIBOSAL_IO_SHM_MAX_MSG_SIZE);
 
-    osal_io_shm_setup(argv[1]);
+    osal_io_shm_setup(argv[1], 1000, 512);
 
     osal_char_t msg[LIBOSAL_IO_SHM_MAX_MSG_SIZE];
 

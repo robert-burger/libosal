@@ -32,6 +32,7 @@
 
 typedef struct osal_shm {
     int fd;
+    osal_size_t size;
 } osal_shm_t;
 
 #endif /* LIBOSAL_POSIX_SHM__H */
