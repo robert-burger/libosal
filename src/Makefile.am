@@ -1,4 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
+AM_LDFLAGS = -no-undefined
 
 includedir = $(prefix)/include/libosal
 includeposixdir = $(prefix)/include/libosal/posix
@@ -102,6 +103,6 @@ libosal_la_SOURCES += win32/semaphore.c
 endif
 
 libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror -Wno-unused-const-variable -I$(top_srcdir)/include
-libosal_la_LDFLAGS	= -Wall -Werror -no-undefined $(AM_LDFLAGS) $(ADD_LIBS)
+libosal_la_LDFLAGS	= -Wall -Werror $(AM_LDFLAGS) $(ADD_LIBS)
 libosal_la_LIBS     = -lm $(ADD_LIBS)
 

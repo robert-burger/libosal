@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdio.h>
     
-int main(int argc, char **argv) {
+extern int main(int argc, char **argv) {
     if (argc < 2) {
         printf("usage: %s <shm_name>\n", argv[0]);
         return 0;
