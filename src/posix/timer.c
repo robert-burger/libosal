@@ -73,7 +73,7 @@ void set_normalized_timespec(struct timespec *ts, time_t sec, int64_t nsec)
     ts->tv_nsec = nsec;
 }
 
-inline struct timespec timespec_sub(struct timespec a, struct timespec b) {
+static inline struct timespec timespec_sub(struct timespec a, struct timespec b) {
     struct timespec ret;
     set_normalized_timespec(&ret, a.tv_sec - b.tv_sec, a.tv_nsec - b.tv_nsec);
 
