@@ -26,6 +26,7 @@ case $target_os in
     mingw32*)
         BUILD_POSIX=true
         AC_DEFINE([BUILD_POSIX], [true], [Use POSIX build on linux])
+        AX_APPEND_FLAG([-DPTW32_STATIC_LIB], [CFLAGS])
         ;;
     linux*)
         BUILD_POSIX=true
