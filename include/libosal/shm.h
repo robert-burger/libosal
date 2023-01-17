@@ -68,10 +68,11 @@ extern "C" {
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
  * \param[in]   attr    Pointer to initial shm attributes. Can be NULL then
  *                      the defaults of the underlying shm will be used.
+ * \param[in]   size    Size for shm creation. Ignored in case shm already existed.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr_t *attr);
+osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr_t *attr, const osal_size_t size);
 
 #define OSAL_SHM_MAP_ATTR__PROT_EXEC          0x00000001u
 #define OSAL_SHM_MAP_ATTR__PROT_READ          0x00000002u
@@ -84,13 +85,12 @@ osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osa
 //! \brief Map a shm.
 /*!
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
- * \param[in]   size    Size of memory to map.
  * \param[in]   attr    Pointer to map attributes.
  * \param[out]  ptr     Pointer where to returned mapped data pointer.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_shm_map_attr_t *attr, osal_void_t **ptr);
+osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_shm_map_attr_t *attr, osal_void_t **ptr);
 
 //! \brief Closes an open shm.
 /*!

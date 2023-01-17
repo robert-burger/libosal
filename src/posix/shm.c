@@ -37,6 +37,7 @@
 #include <sys/mman.h>
 #endif
 
+#include <sys/types.h>
 #include <sys/stat.h>        /* For mode constants */
 #include <fcntl.h>           /* For O_* constants */
 #include <errno.h>
@@ -47,10 +48,11 @@
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
  * \param[in]   attr    Pointer to initial shm attributes. Can be NULL then
  *                      the defaults of the underlying shm will be used.
+ * \param[in]   size    Size for shm creation. Ignored in case shm already existed.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr_t *attr) {
+osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr_t *attr, const osal_size_t size) {
     assert(shm != NULL);
     assert(name != NULL);
     
@@ -85,6 +87,16 @@ osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osa
     int local_retval = shm_open(name, oflag, mode);
     if (local_retval > 0) {
         shm->fd = local_retval;
+
+        struct stat buf;
+        fstat(shm->fd, &buf);
+
+        if (buf.st_size > 0) {
+            shm->size = buf.st_size;
+        } else {
+            shm->size = size;
+            ftruncate(shm->fd, shm->size);
+        }
     } else {
         switch (errno) {
             case EACCES:        // Permission was denied to shm_open() name in the specified  mode,
@@ -123,13 +135,12 @@ osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osa
 //! \brief Map a shm.
 /*!
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
- * \param[in]   size    Size of memory to map.
  * \param[in]   attr    Pointer to map attributes.
  * \param[out]  ptr     Pointer where to returned mapped data pointer.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_shm_map_attr_t *attr, osal_void_t **ptr) {
+osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_shm_map_attr_t *attr, osal_void_t **ptr) {
     assert(shm != NULL);
     assert(ptr != NULL);
     osal_retval_t ret = OSAL_OK;
@@ -159,7 +170,7 @@ osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_s
         }
     }
 
-    *ptr = mmap(NULL, size, prot, flags, shm->fd, 0);
+    *ptr = mmap(NULL, shm->size, prot, flags, shm->fd, 0);
 
     if (*ptr == (void *)-1) {
         switch (errno) {
@@ -207,6 +218,9 @@ osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_s
                 break;
             case ETXTBSY:   // MAP_DENYWRITE was set but the object specified by fd is open for writing.
                 ret = OSAL_ERR_PERMISSION_DENIED;
+                break;
+            default:
+                ret = OSAL_ERR_OPERATION_FAILED;
                 break;
         }
     }
