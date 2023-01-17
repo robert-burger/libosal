@@ -35,6 +35,8 @@
 #include <libosal/mutex.h>
 #include <libosal/semaphore.h>
 
+#include <inttypes.h>
+
 #include <assert.h>
         
 #include <stdarg.h>
@@ -115,8 +117,8 @@ osal_retval_t osal_io_shm_setup(const osal_char_t *shm_name, const osal_size_t m
     
             if (osal_io_shm_buffer->magic == LIBOSAL_IO_SHM_MAGIC) {
                 osal_printf("osal_io_shm: found magic, skipping initialization.\n");
-                osal_printf("osal_io_shm: maximum number of messages -> %ld\n", osal_io_shm_buffer->max_messages); 
-                osal_printf("osal_io_shm: maximum length of messages -> %ld\n", osal_io_shm_buffer->max_message_size); 
+                osal_printf("osal_io_shm: maximum number of messages -> %" PRIu64 "\n", osal_io_shm_buffer->max_messages); 
+                osal_printf("osal_io_shm: maximum length of messages -> %" PRIu64 "\n", osal_io_shm_buffer->max_message_size); 
             } else {
                 osal_io_shm_buffer->max_messages = max_msgs;
                 osal_io_shm_buffer->max_message_size = max_msg_size;
