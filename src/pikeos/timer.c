@@ -36,7 +36,7 @@
 #include <assert.h>
 
 // sleep in nanoseconds
-void osal_sleep(osal_int64_t nsec) {
+void osal_sleep(osal_uint64_t nsec) {
     p4_sleep(P4_NSEC(nsec));
 }
 
@@ -55,14 +55,14 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
 }
 
 // gets time in nanoseconds
-osal_int64_t osal_timer_gettime_nsec(void) {
-    osal_int64_t ret = p4_get_time();
+osal_uint64_t osal_timer_gettime_nsec(void) {
+    osal_uint64_t ret = p4_get_time();
 
     return ret;
 }
 
 // initialize timer with timeout 
-void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout) {
+void osal_timer_init(osal_timer_t *timer, osal_uint64_t timeout) {
     assert(timer != NULL);
 
     osal_uint64_t local_time;
@@ -96,4 +96,22 @@ osal_retval_t osal_timer_expired(osal_timer_t *timer) {
     return ret;
 }
 
+// Sleep until timer expired.
+osal_retval_t osal_sleep_until(osal_timer_t *timer) {
+    uint64_t abs_time = timer->sec * 1E9 + timer->nsec;
+    return osal_sleep_until_nsec(abs_time);
+}
+
+// Sleep until current time equals nsec value expired
+osal_retval_t osal_sleep_until_nsec(osal_uint64_t nsec) {
+    osal_retval_t ret = OSAL_OK;
+    P4_e_t local_ret = p4_sleep(P4_TIMEOUT_ABS(nsec));
+
+    if (local_ret != 0) {
+        ret = OSAL_ERR_OPERATION_FAILED;
+    }
+
+    return ret;
+
+}
 
