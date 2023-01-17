@@ -106,3 +106,7 @@ libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror -Wno-unused-const-variable -I$(top_
 libosal_la_LDFLAGS	= -Wall -Werror $(AM_LDFLAGS) $(ADD_LIBS)
 libosal_la_LIBS     = -lm $(ADD_LIBS)
 
+install-exec-hook: 
+	find $(DESTDIR)$(libdir) -type f -name \*.la -delete
+
+

@@ -36,8 +36,8 @@
 
 //! timer structure
 typedef struct osal_timer {
-    osal_int64_t sec;       //!< seconds
-    osal_int64_t nsec;      //!< nanoseconds
+    osal_uint64_t sec;       //!< seconds
+    osal_uint64_t nsec;      //!< nanoseconds
 } osal_timer_t;
 
 #define osal_timer_add(a, b, result)                                \
@@ -75,7 +75,7 @@ extern "C" {
 /*!
  * \param[in] nsec      Time to sleep in nanoseconds.
  */
-void osal_sleep(osal_int64_t nsec);
+void osal_sleep(osal_uint64_t nsec);
 
 //! Sleep until timer expired
 /*!
@@ -84,6 +84,14 @@ void osal_sleep(osal_int64_t nsec);
  * \retval OSAL_OK      On success.
  */
 osal_retval_t osal_sleep_until(osal_timer_t *timer);
+
+//! Sleep until current time equals nsec value expired
+/*!
+ * \param[in]   nsec   Absolute time in [ns].
+ *
+ * \retval OSAL_OK      On success.
+ */
+osal_retval_t osal_sleep_until_nsec(osal_uint64_t nsec);
 
 //! Gets filled timer struct with current time.
 /*!
@@ -99,7 +107,7 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer);
 /*!
  * \return              Current timer in nanosecond.
  */
-osal_int64_t osal_timer_gettime_nsec(void);
+osal_uint64_t osal_timer_gettime_nsec(void);
 
 //! Initialize timer with timeout.
 /*!
@@ -108,7 +116,7 @@ osal_int64_t osal_timer_gettime_nsec(void);
  * \param[in] timeout   Timeout in nanoseconds. If set to 0, then this function
  *                      will do the same as \link osal_timer_gettime \endlink.
  */
-void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout);
+void osal_timer_init(osal_timer_t *timer, osal_uint64_t timeout);
 
 //! Checks if timer is expired.
 /*!

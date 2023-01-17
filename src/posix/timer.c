@@ -73,7 +73,7 @@ void set_normalized_timespec(struct timespec *ts, time_t sec, int64_t nsec)
     ts->tv_nsec = nsec;
 }
 
-inline struct timespec timespec_sub(struct timespec a, struct timespec b) {
+static inline struct timespec timespec_sub(struct timespec a, struct timespec b) {
     struct timespec ret;
     set_normalized_timespec(&ret, a.tv_sec - b.tv_sec, a.tv_nsec - b.tv_nsec);
 
@@ -81,7 +81,7 @@ inline struct timespec timespec_sub(struct timespec a, struct timespec b) {
 }
 
 // sleep in nanoseconds
-void osal_sleep(osal_int64_t nsec) {
+void osal_sleep(osal_uint64_t nsec) {
     struct timespec ts = { (nsec / NSEC_PER_SEC), (nsec % NSEC_PER_SEC) };
     struct timespec rest;
     
@@ -118,6 +118,14 @@ osal_retval_t osal_sleep_until(osal_timer_t *timer) {
     return ret;
 }
 
+//! Sleep until current time equals nsec value expired
+osal_retval_t osal_sleep_until_nsec(osal_uint64_t nsec) {
+    osal_timer_t abs_to;
+    abs_to.sec = nsec / NSEC_PER_SEC;
+    abs_to.nsec = nsec % NSEC_PER_SEC;
+    return osal_sleep_until(&abs_to);
+}
+
 //! gets timer 
 osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
     assert(timer != NULL);
@@ -136,8 +144,8 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
 }
 
 // gets time in nanoseconds
-osal_int64_t osal_timer_gettime_nsec(void) {
-    osal_int64_t ret = 0;
+osal_uint64_t osal_timer_gettime_nsec(void) {
+    osal_uint64_t ret = 0;
     osal_timer_t tmr = { 0, 0 };
     int local_ret = osal_timer_gettime(&tmr);
 
@@ -149,7 +157,7 @@ osal_int64_t osal_timer_gettime_nsec(void) {
 }
 
 // initialize timer with timeout 
-void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout) {
+void osal_timer_init(osal_timer_t *timer, osal_uint64_t timeout) {
     assert(timer != NULL);
 
     struct timespec ts;
