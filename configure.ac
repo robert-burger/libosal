@@ -25,7 +25,9 @@ AC_PROG_LIBTOOL
 case $target_os in
     mingw32*)
         BUILD_POSIX=true
-        AC_DEFINE([BUILD_POSIX], [true], [Use POSIX build on linux])
+        BUILD_MINGW32=true
+        AC_DEFINE([BUILD_POSIX], [true], [Use POSIX build on windows mingw32])
+        AC_DEFINE([BUILD_MINGW32], [true], [Use MINGW32 build on windows mingw32])
         AX_APPEND_FLAG([-DPTW32_STATIC_LIB], [CFLAGS])
         ;;
     linux*)
@@ -89,6 +91,7 @@ if test x$BUILD_POSIX == xtrue; then
 fi
 
 AM_CONDITIONAL([BUILD_POSIX], [ test x$BUILD_POSIX = xtrue]) 
+AM_CONDITIONAL([BUILD_MINGW32], [ test x$BUILD_MINGW32 = xtrue]) 
 AM_CONDITIONAL([BUILD_VXWORKS], [ test x$BUILD_VXWORKS = xtrue]) 
 AM_CONDITIONAL([BUILD_PIKEOS], [ test x$BUILD_PIKEOS = xtrue]) 
 AM_CONDITIONAL([BUILD_WIN32], [ text x$BUILD_WIN32 = xtrue])

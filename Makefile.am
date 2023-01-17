@@ -5,7 +5,9 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS=src
 
 if BUILD_POSIX
+if !BUILD_MINGW32
 SUBDIRS += src/tools/logger 
+endif
 endif
 
 #pkgconfig_DATA = libethercat.pc
