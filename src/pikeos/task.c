@@ -65,7 +65,7 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
     tattr.context_flags = P4_THREAD_ARG_FPU | P4_THREAD_ARG_DEBUG;
     hdl->tid = P4EXT_THR_NUM_INVALID;
 
-    local_ret = p4ext_thr_create(&hdl->tid, 0, 
+    local_ret = p4ext_thr_create(&hdl->tid, &tattr, 
             (strlen(attr->task_name) > 0u) ? attr->task_name : "thread", 
             handler, 1, arg);
     if (local_ret != P4_E_OK) {
