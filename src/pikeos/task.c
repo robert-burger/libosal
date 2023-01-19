@@ -41,6 +41,28 @@
 #include <vm_debug.h>
 #endif
 
+typedef struct posix_start_args {
+    int running;
+
+    osal_task_handler_t user_handler;
+    osal_task_handler_arg_t user_arg;
+    const osal_task_attr_t *user_attr;
+} posix_start_args_t;
+
+static void *pikeos_task_wrapper(void *args) {
+    // cppcheck-suppress misra-c2012-11.5
+    posix_start_args_t *start_args = (posix_start_args_t *)args;
+
+    // copy all stuff to local stack-objects, they will be destroyed after 'start_args->running = 1;'
+    osal_task_handler_t user_handler = start_args->user_handler;
+    osal_task_handler_arg_t user_arg = start_args->user_arg;
+
+    // after setting running to 1, we start_args will be invalid
+    start_args->running = 1;
+
+    return (*user_handler)(user_arg);
+}
+
 //! \brief Create a task.
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
@@ -65,14 +87,23 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
     tattr.context_flags = P4_THREAD_ARG_FPU | P4_THREAD_ARG_DEBUG;
     hdl->tid = P4EXT_THR_NUM_INVALID;
 
-    local_ret = p4ext_thr_create(&hdl->tid, 0, 
+    posix_start_args_t start_args = { 0, handler, arg, attr };
+
+    local_ret = p4ext_thr_create(&hdl->tid, &tattr, 
             (strlen(attr->task_name) > 0u) ? attr->task_name : "thread", 
-            handler, 1, arg);
+            pikeos_task_wrapper, 1, &start_args);
     if (local_ret != P4_E_OK) {
         if (local_ret == P4_E_INVAL) {
             ret = OSAL_ERR_INVALID_PARAM;
         } else {
             ret = OSAL_ERR_OPERATION_FAILED;
+        }
+    }
+
+    if (ret == OSAL_OK) {
+        // only wait if thread has been started successfully
+        while (start_args.running == 0) {
+            osal_sleep(1000000);
         }
     }
 

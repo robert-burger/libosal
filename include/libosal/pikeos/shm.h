@@ -34,6 +34,7 @@
 
 typedef struct osal_shm {
     vm_file_desc_t fd;
+    osal_size_t size;
 } osal_shm_t;
 
 #endif /* LIBOSAL_PIKEOS_SHM__H */

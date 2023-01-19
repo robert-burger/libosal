@@ -40,15 +40,18 @@
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
  * \param[in]   attr    Pointer to initial shm attributes. Can be NULL then
  *                      the defaults of the underlying shm will be used.
+ * \param[in]   size    Size for shm creation. Ignored in case shm already existed.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr_t *attr) {
+osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr_t *attr, const osal_size_t size) {
     assert(shm != NULL);
     assert(name != NULL);
     
     osal_retval_t ret = OSAL_OK;
     P4_e_t local_retval;
+
+    shm->size = size;
 
     vm_file_access_mode_t oflags = 0;
     if (attr != 0) {
@@ -122,25 +125,24 @@ osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osa
 //! \brief Map a shm.
 /*!
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
- * \param[in]   size    Size of memory to map.
  * \param[in]   attr    Pointer to map attributes.
  * \param[out]  ptr     Pointer where to returned mapped data pointer.
  *
  * \return OK or ERROR_CODE.
  */
-osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_size_t size, const osal_shm_map_attr_t *attr, osal_void_t **ptr) {
+osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_shm_map_attr_t *attr, osal_void_t **ptr) {
     assert(shm != NULL);
     assert(ptr != NULL);
     osal_retval_t ret = OSAL_OK;
 
     /* Allocate virtual memory to map the shared memory. Enforce an PAGE alignment */
-    *ptr = (struct comm_str *)p4ext_vmem_alloc_aligned(size, (P4_phys_addr_t)P4_PAGESIZE);
+    *ptr = (struct comm_str *)p4ext_vmem_alloc_aligned(shm->size, (P4_phys_addr_t)P4_PAGESIZE);
     if (*ptr == NULL) {
         ret = OSAL_ERR_OUT_OF_MEMORY;
     }
 
     if (ret == OSAL_OK) {
-        int local_retval = vm_map(&shm->fd, 0, size, VM_MEM_ACCESS_RD_WR, 0, (P4_address_t)*ptr);
+        int local_retval = vm_map(&shm->fd, 0, shm->size, VM_MEM_ACCESS_RD_WR, 0, (P4_address_t)*ptr);
         if (local_retval != P4_E_OK) {
             switch (local_retval) {
                 case P4_E_PERM:     // if the partition does not have prot access rights to file fd.
