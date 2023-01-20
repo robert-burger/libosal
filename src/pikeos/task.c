@@ -81,16 +81,21 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
     osal_retval_t ret = OSAL_OK;
     P4_e_t local_ret;
     p4ext_thr_attr_t tattr;
+    p4ext_thr_attr_t *ptattr = NULL;
 
-    p4ext_thr_attr_init(&tattr);
-    tattr.prio = attr->priority;
-    tattr.context_flags = P4_THREAD_ARG_FPU | P4_THREAD_ARG_DEBUG;
+    if ((attr != NULL) && (attr->priority > 0)) {
+        p4ext_thr_attr_init(&tattr);
+        tattr.prio = attr->priority;
+        tattr.context_flags = P4_THREAD_ARG_FPU | P4_THREAD_ARG_DEBUG;
+        ptattr = &tattr;
+    }
+
     hdl->tid = P4EXT_THR_NUM_INVALID;
 
     posix_start_args_t start_args = { 0, handler, arg, attr };
 
-    local_ret = p4ext_thr_create(&hdl->tid, &tattr, 
-            (strlen(attr->task_name) > 0u) ? attr->task_name : "thread", 
+    local_ret = p4ext_thr_create(&hdl->tid, ptattr, 
+            (attr != NULL) ? (strlen(attr->task_name) > 0u) ? attr->task_name : "thread" : "thread", 
             pikeos_task_wrapper, 1, &start_args);
     if (local_ret != P4_E_OK) {
         if (local_ret == P4_E_INVAL) {
