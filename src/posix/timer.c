@@ -150,7 +150,7 @@ osal_uint64_t osal_timer_gettime_nsec(void) {
     int local_ret = osal_timer_gettime(&tmr);
 
     if (local_ret == OSAL_OK) {
-        ret = ((tmr.sec * 1E9) + tmr.nsec);
+        ret = ((tmr.sec * NSEC_PER_SEC) + tmr.nsec);
     }
 
     return ret;
