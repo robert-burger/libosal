@@ -23,6 +23,10 @@ include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
 				  $(top_srcdir)/include/libosal/shm.h \
 				  $(top_srcdir)/include/libosal/io.h
 
+if HAVE_MQUEUE_H
+include_HEADERS += $(top_srcdir)/include/libosal/mq.h
+endif
+
 includeposix_HEADERS = 
 includepikeos_HEADERS = 
 includevxworks_HEADERS =
@@ -51,6 +55,7 @@ libosal_la_SOURCES += posix/spinlock.c
 libosal_la_SOURCES += posix/io.c
 
 if HAVE_MQUEUE_H
+includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/mq.h
 libosal_la_SOURCES += posix/mq.c
 endif
 
