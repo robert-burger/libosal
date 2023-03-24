@@ -57,7 +57,7 @@ osal_retval_t osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osa
 
     pthread_condattr_t cond_attr;
     pthread_condattr_init(&cond_attr);
-    pthread_condattr_setclock(&cond_attr, CLOCK_REALTIME);
+    pthread_condattr_setclock(&cond_attr, LIBOSAL_CLOCK);
 
     pthread_mutex_init(&sem->posix_mtx, NULL);
     pthread_cond_init(&sem->posix_cond, &cond_attr);

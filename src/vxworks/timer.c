@@ -57,7 +57,7 @@ int osal_timer_gettime(osal_timer_t *timer) {
     int ret = OSAL_OK;
 
     struct timespec ts;
-    if (clock_gettime(CLOCK_REALTIME, &ts) == -1) {
+    if (clock_gettime(CLOCK_MONOTONIC, &ts) == -1) {
         perror("clock_gettime");
         ret = OSAL_ERR_UNAVAILABLE;
     } else {
@@ -86,7 +86,7 @@ void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout) {
     assert(timer != NULL);
 
     struct timespec ts;
-    if (clock_gettime(CLOCK_REALTIME, &ts) == -1) {
+    if (clock_gettime(CLOCK_MONOTONIC, &ts) == -1) {
         perror("clock_gettime");
     }
 

@@ -37,56 +37,13 @@
 #include <assert.h>
 #include <errno.h>
 
-/**
- * set_normalized_timespec - set timespec sec and nsec parts and normalize
- *
- * @ts:		pointer to timespec variable to be set
- * @sec:	seconds to set
- * @nsec:	nanoseconds to set
- *
- * Set seconds and nanoseconds field of a timespec variable and
- * normalize to the timespec storage format
- *
- * Note: The tv_nsec part is always in the range of
- *	0 <= tv_nsec < NSEC_PER_SEC
- * For negative values only the tv_sec field is negative !
- */
-#define NSEC_PER_SEC 1000000000
-void set_normalized_timespec(struct timespec *ts, time_t sec, int64_t nsec)
-{
-    while (nsec >= NSEC_PER_SEC) {
-        /*
-         * The following asm() prevents the compiler from
-         * optimising this loop into a modulo operation. See
-         * also __iter_div_u64_rem() in include/linux/time.h
-         */
-        asm("" : "+rm"(nsec));
-        nsec -= NSEC_PER_SEC;
-        ++sec;
-    }
-    while (nsec < 0) {
-        asm("" : "+rm"(nsec));
-        nsec += NSEC_PER_SEC;
-        --sec;
-    }
-    ts->tv_sec = sec;
-    ts->tv_nsec = nsec;
-}
-
-static inline struct timespec timespec_sub(struct timespec a, struct timespec b) {
-    struct timespec ret;
-    set_normalized_timespec(&ret, a.tv_sec - b.tv_sec, a.tv_nsec - b.tv_nsec);
-
-    return ret;
-}
-
 // sleep in nanoseconds
 void osal_sleep(osal_uint64_t nsec) {
     struct timespec ts = { (nsec / NSEC_PER_SEC), (nsec % NSEC_PER_SEC) };
     struct timespec rest;
     
     while (1) {
-        int ret = nanosleep(&ts, &rest);
+        int ret = clock_nanosleep(LIBOSAL_CLOCK, 0, &ts, &rest);
         if (ret == 0) {
             break;
         }
@@ -101,14 +58,10 @@ osal_retval_t osal_sleep_until(osal_timer_t *timer) {
     osal_retval_t ret = OSAL_OK;
     int local_ret;
 
-    struct timespec ts_end = { timer->sec, timer->nsec }, ts_now, ts_diff, ts_rem;
-
-    clock_gettime(CLOCK_REALTIME, &ts_now);
-    ts_diff = timespec_sub(ts_end, ts_now);
+    struct timespec ts = { timer->sec, timer->nsec };
 
     do {
-        local_ret = nanosleep(&ts_diff, &ts_rem);
-        ts_diff = ts_rem;
+        local_ret = clock_nanosleep(LIBOSAL_CLOCK, TIMER_ABSTIME, &ts, NULL);
     } while (local_ret == EINTR);
 
     if (local_ret != 0) {
@@ -132,7 +85,7 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
     osal_retval_t ret = OSAL_OK;
 
     struct timespec ts;
-    if (clock_gettime(CLOCK_REALTIME, &ts) == -1) {
+    if (clock_gettime(LIBOSAL_CLOCK, &ts) == -1) {
         perror("clock_gettime");
         ret = OSAL_ERR_UNAVAILABLE;
     } else {
@@ -161,7 +114,7 @@ void osal_timer_init(osal_timer_t *timer, osal_uint64_t timeout) {
     assert(timer != NULL);
 
     struct timespec ts;
-    if (clock_gettime(CLOCK_REALTIME, &ts) == -1) {
+    if (clock_gettime(LIBOSAL_CLOCK, &ts) == -1) {
         perror("clock_gettime");
     }
 

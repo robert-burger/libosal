@@ -55,7 +55,7 @@ osal_retval_t osal_condvar_init(osal_condvar_t *cv, const osal_condvar_attr_t *a
 
     pthread_condattr_t cond_attr;
     pthread_condattr_init(&cond_attr);
-    pthread_condattr_setclock(&cond_attr, CLOCK_REALTIME);
+    pthread_condattr_setclock(&cond_attr, LIBOSAL_CLOCK);
 
     pthread_cond_init(&cv->posix_cond, &cond_attr);
     return OSAL_OK;

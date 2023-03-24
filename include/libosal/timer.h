@@ -32,6 +32,10 @@
 
 #include <libosal/types.h>
 
+#ifdef LIBOSAL_BUILD_POSIX
+#include <libosal/posix/timer.h>
+#endif
+
 #define NSEC_PER_SEC                1000000000
 
 //! timer structure
