@@ -141,7 +141,7 @@ osal_retval_t osal_io_shm_setup(const osal_char_t *shm_name, const osal_size_t m
     return OSAL_OK;
 }
 
-//! \brief Get the current state of a created thread.
+//! \brief Format and print data.
 /*!
  * \param[in]   fmt     Print format.
  *
