@@ -178,15 +178,19 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
                 break;
             case P4_E_LIMIT:        // if the caller could not acquire \a sem and the number of waiting
                                     // threads would exceed P4_SEM_MAX_COUNT.
+                ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
+                break;
+            case P4_E_NOABILITY:    // if the semaphore is shareable (P4_SEM_SHARED is used),
+                                    // but the task of the calling thread does not have the ability
+                                    // P4_AB_ULOCK_SHARED enabled.
+                ret = OSAL_ERR_PERMISSION_DENIED;
+                break;
             case P4_E_PAGEFAULT:    // if \a sem is not fully mapped
                                     // in the caller's virtual address space.
             case P4_E_BADUID:       // if \a sem references invalid waiting threads.
             case P4_E_CANCEL:       // if the function was canceled by another thread, the calling thread
                                     // was moved to another time partition, or the thread was migrated to
                                     // another CPU.
-            case P4_E_NOABILITY:    // if the semaphore is shareable (P4_SEM_SHARED is used),
-                                    // but the task of the calling thread does not have the ability
-                                    // P4_AB_ULOCK_SHARED enabled.
             default:
                 ret = OSAL_ERR_OPERATION_FAILED;
                 break;
