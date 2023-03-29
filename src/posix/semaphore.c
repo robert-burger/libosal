@@ -119,18 +119,20 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
     ts.tv_sec = to->sec;
     ts.tv_nsec = to->nsec;
 
-    while (ret != OSAL_ERR_TIMEOUT) {
+    while (ret == OSAL_OK) {
         int local_ret = sem_timedwait(&sem->posix_sem, &ts);
         int local_errno = errno;
 
         if (local_ret == 0) {
             break;
+        } else if (local_errno == EINTR) {
+            // continue while loop here
+        } else if (local_errno == EINVAL) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else if (local_errno == ETIMEDOUT) {
+            ret = OSAL_ERR_TIMEOUT;
         } else {
-            if (local_errno == ETIMEDOUT) {
-                ret = OSAL_ERR_TIMEOUT;
-            } else {
-                ret = OSAL_ERR_OPERATION_FAILED;
-            }
+            ret = OSAL_ERR_OPERATION_FAILED;
         }
     }
 
