@@ -129,6 +129,8 @@ osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval) {
 
     osal_retval_t ret = OSAL_OK;
 
+
+
     if (retval != NULL) {
         *retval = NULL;
     }
@@ -317,11 +319,47 @@ osal_retval_t osal_task_delete(osal_void_t) {
  */
 osal_retval_t osal_task_get_state(osal_task_t *hdl, osal_task_state_t *state) {
     assert(hdl != NULL);
+    assert(state != NULL);
     
     (void)hdl;
     (void)state;
 
-    osal_retval_t ret = OSAL_ERR_NOT_IMPLEMENTED;
+    osal_retval_t ret = OSAL_OK;
+    P4_thread_attr_t attrib;
+
+    /* forward to OS system call */
+    if (p4_thread_get_attr(hdl->tid, &attrib) != P4_E_OK) {
+        (*state) = OSAL_STATE_THREAD_UNKNOWN_ID;
+        ret = OSAL_ERR_INVALID_PARAM;
+    } else { /* call was successful, now extract state information from
+                structure */
+        switch (attrib.state) {
+            case P4_THREAD_STOPPED:
+            case P4_THREAD_READY:
+                (*state) = OSAL_STATE_THREAD_INACTIVE;
+                break;
+
+            case P4_THREAD_CURRENT:
+                (*state) = OSAL_STATE_THREAD_ACTIVE;
+                break;
+
+            case P4_THREAD_SLEEPING: /* Thread is blocked in the kernel waiting for a
+                                        timeout.*/
+            case P4_THREAD_WAIT_RX:  /* Thread is blocked in an IPC receive
+                                        operation.*/
+            case P4_THREAD_WAIT_RX_EV: /* Thread is blocked in an IPC receive and
+                                          event wait operation.*/
+            case P4_THREAD_WAIT_TX: /* Thread is blocked in an IPC send operation.*/
+            case P4_THREAD_WAIT_EV: /* Thread is blocked in an event wait operation.*/
+            case P4_THREAD_WAIT_INT: /* Thread is blocked waiting for an interrupt to
+                                        occur.*/
+                (*state) = OSAL_STATE_THREAD_BLOCKED;
+                break;
+
+            default:
+                break;
+        }
+    }
 
     return ret;
 }

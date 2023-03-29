@@ -69,6 +69,11 @@ typedef void * osal_task_retval_t;
 
 typedef osal_uint32_t osal_task_state_t;
 
+#define OSAL_STATE_THREAD_UNKNOWN_ID    (0u)   /** @brief The thread has an unknown ID         */
+#define OSAL_STATE_THREAD_ACTIVE        (1u)   /** @brief The thread is in an active state     */
+#define OSAL_STATE_THREAD_INACTIVE      (2u)   /** @brief The thread is in an inactive state   */
+#define OSAL_STATE_THREAD_BLOCKED       (3u)   /** @brief The thread is in a blocked state     */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
