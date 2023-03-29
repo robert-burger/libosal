@@ -129,7 +129,17 @@ osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval) {
 
     osal_retval_t ret = OSAL_OK;
 
+    osal_task_state_t state;
+    do {
+        ret = osal_task_get_state(hdl, &state);
+        if (ret != OSAL_OK) {
+            break;
+        }
 
+        if (state == OSAL_STATE_THREAD_ACTIVE) {
+            osal_sleep(1000000); // 1 [ms]
+        }
+    } while (state == OSAL_STATE_THREAD_ACTIVE);
 
     if (retval != NULL) {
         *retval = NULL;
