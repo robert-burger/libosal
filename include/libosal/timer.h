@@ -75,6 +75,8 @@ typedef struct osal_timer {
 extern "C" {
 #endif
 
+#define osal_microsleep(usdelay)    osal_sleep((osal_uint64_t)(usdelay) * 1000u)
+
 //! Sleep in nanoseconds
 /*!
  * \param[in] nsec      Time to sleep in nanoseconds.
