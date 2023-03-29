@@ -161,7 +161,12 @@ osal_retval_t osal_mutex_unlock(osal_mutex_t *mtx) {
 
     osal_retval_t ret = OSAL_OK;
     int local_ret = p4_mutex_unlock(&mtx->pikeos_mtx);
-    if (local_ret != 0) {
+    if (local_ret != P4_E_OK) {
+        if (local_ret == P4_E_STATE) {  /* specifically check for this error code */
+            ret = OSAL_ERR_MUTEX_IS_LOCKED;
+        } else {                        /* generic error code */
+            ret = OSAL_ERR_OPERATION_FAILED;
+        }
     }
 
     return ret;

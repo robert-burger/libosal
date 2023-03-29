@@ -46,6 +46,7 @@
 #define OSAL_ERR_NOT_IMPLEMENTED        -13
 #define OSAL_ERR_NO_DATA                -14
 #define OSAL_ERR_INTERRUPTED            -15
+#define OSAL_ERR_MUTEX_IS_LOCKED        -16
 
 #include <libosal/types.h>
 #include <libosal/task.h>
