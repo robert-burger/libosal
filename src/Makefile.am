@@ -32,7 +32,7 @@ includepikeos_HEADERS =
 includevxworks_HEADERS =
 includewin32_HEADERS =
 
-libosal_la_SOURCES	= io.c
+libosal_la_SOURCES	= io.c osal.c
 
 ADD_LIBS = 
 

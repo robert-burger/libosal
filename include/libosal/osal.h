@@ -56,5 +56,11 @@
 #include <libosal/timer.h>
 #include <libosal/condvar.h>
 
+//! Initialize OSAL internals.
+void osal_init(void);
+
+//! Destroy OSAL internals.
+void osal_destroy(void);
+
 #endif /* LIBOSAL_OSAL__H */
 
