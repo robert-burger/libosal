@@ -89,8 +89,8 @@ static void *posix_task_wrapper(void *args) {
                     (void)osal_printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
                             (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
                 }
-            }
 #endif
+            }
         }
 
 #if LIBOSAL_HAVE_SYS_PRCTL_H == 1
