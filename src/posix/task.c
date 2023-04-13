@@ -74,19 +74,21 @@ static void *posix_task_wrapper(void *args) {
                         (void *)pthread_self(), policy, user_attr->priority, strerror(errno));
             }
 
+            if (user_attr->affinity > 0u) {
 #if LIBOSAL_HAVE_PTHREAD_SETAFFINITY_NP
-            cpu_set_t cpuset;
-            CPU_ZERO(&cpuset);
-            for (uint32_t i = 0u; i < (sizeof(user_attr->affinity) * 8u); ++i) {
-                if ((user_attr->affinity & ((uint32_t)1u << i)) != 0u) {
-                    CPU_SET(i, &cpuset);
+                cpu_set_t cpuset;
+                CPU_ZERO(&cpuset);
+                for (uint32_t i = 0u; i < (sizeof(user_attr->affinity) * 8u); ++i) {
+                    if ((user_attr->affinity & ((uint32_t)1u << i)) != 0u) {
+                        CPU_SET(i, &cpuset);
+                    }
                 }
-            }
 
-            int ret = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
-            if (ret != 0) {
-                (void)osal_printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
-                        (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
+                int ret = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
+                if (ret != 0) {
+                    (void)osal_printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
+                            (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
+                }
             }
 #endif
         }
