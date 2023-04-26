@@ -64,33 +64,16 @@ static void *posix_task_wrapper(void *args) {
     const osal_task_attr_t *user_attr = start_args->user_attr;
 
     if (user_attr != NULL) {
+        if (user_attr->policy != 0u) {
+            (void)osal_task_set_policy(NULL, user_attr->policy);
+        }
+
         if (user_attr->priority != 0u) {
-            struct sched_param param;
-            int policy = SCHED_FIFO;
+            (void)osal_task_set_priority(NULL, user_attr->priority);
+        }
 
-            param.sched_priority = user_attr->priority;
-            if (pthread_setschedparam(pthread_self(), policy, &param) != 0) {
-                (void)osal_printf("libosal: pthread_setschedparam(%p, %d, %u): %s\n",
-                        (void *)pthread_self(), policy, user_attr->priority, strerror(errno));
-            }
-
-            if (user_attr->affinity > 0u) {
-#if LIBOSAL_HAVE_PTHREAD_SETAFFINITY_NP
-                cpu_set_t cpuset;
-                CPU_ZERO(&cpuset);
-                for (uint32_t i = 0u; i < (sizeof(user_attr->affinity) * 8u); ++i) {
-                    if ((user_attr->affinity & ((uint32_t)1u << i)) != 0u) {
-                        CPU_SET(i, &cpuset);
-                    }
-                }
-
-                int ret = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset);
-                if (ret != 0) {
-                    (void)osal_printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
-                            (void *) pthread_self(), user_attr->affinity, ret, strerror(ret));
-                }
-#endif
-            }
+        if (user_attr->affinity > 0u) {
+            (void)osal_task_set_affinity(NULL, user_attr->affinity);
         }
 
 #if LIBOSAL_HAVE_SYS_PRCTL_H == 1
@@ -319,6 +302,101 @@ osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
     return ret;
 }
 
+//! \brief Change the policy of the specified thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *                      If <b> hdl is NULL, set policy for calling thread.
+ * \param[in]   prio    The thread prio as member of osal_task_sched_policy_t
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_set_policy(osal_task_t *hdl, osal_task_sched_policy_t policy)
+{
+    assert(hdl != NULL);
+
+    osal_retval_t ret = OSAL_OK;
+    int local_ret;
+
+    int tmp_policy;
+    struct sched_param param;
+    pthread_t tid = hdl != NULL ? hdl->tid : pthread_self();
+    local_ret = pthread_getschedparam(tid, &tmp_policy, &param);
+
+    if (local_ret != 0) {
+        if ((local_ret == ESRCH) || (local_ret == EINVAL)) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else if (local_ret == EPERM) {
+            ret = OSAL_ERR_PERMISSION_DENIED;
+        } else {
+            ret = OSAL_ERR_OPERATION_FAILED;
+        }
+    }
+
+    if (ret == OSAL_OK) {
+        if (policy == OSAL_SCHED_POLICY_FIFO) {
+            tmp_policy = SCHED_FIFO;
+        } else if (policy == OSAL_SCHED_POLICY_ROUND_ROBIN) {
+            tmp_policy = SCHED_RR;
+        } else {
+            tmp_policy = SCHED_OTHER;
+        }
+
+        if (sched_get_priority_min(tmp_policy) > param.sched_priority) {
+            param.sched_priority = sched_get_priority_min(tmp_policy);
+        } else if (sched_get_priority_max(tmp_policy) < param.sched_priority) {
+            param.sched_priority = sched_get_priority_max(tmp_policy);
+        }
+
+        (void)pthread_setschedparam(pthread_self(), tmp_policy, &param);
+    }
+
+    return ret;
+}
+
+//! \brief Get the current policy of the specified thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *                      If <b> hdl is NULL, get policy for calling thread.
+ * \param[out]  prio    The thread's current policy
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_get_policy(osal_task_t *hdl, osal_task_sched_policy_t *policy) 
+{
+    assert(hdl != NULL);
+    assert(policy != NULL);
+
+    osal_retval_t ret = OSAL_OK;
+    int local_ret;
+
+    int tmp_policy;
+    struct sched_param param;
+    pthread_t tid = hdl != NULL ? hdl->tid : pthread_self();
+    local_ret = pthread_getschedparam(tid, &tmp_policy, &param);
+
+    if (local_ret != 0) {
+        if ((local_ret == ESRCH) || (local_ret == EINVAL)) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else if (local_ret == EPERM) {
+            ret = OSAL_ERR_PERMISSION_DENIED;
+        } else {
+            ret = OSAL_ERR_OPERATION_FAILED;
+        }
+    }
+
+    if (ret == OSAL_OK) {
+        if (tmp_policy == SCHED_FIFO) {
+            (*policy) = OSAL_SCHED_POLICY_FIFO;
+        } else if (tmp_policy == SCHED_RR) {
+            (*policy) = OSAL_SCHED_POLICY_ROUND_ROBIN;
+        } else {
+            (*policy) = OSAL_SCHED_POLICY_OTHER;
+        }
+    }
+
+    return ret;
+}
+
 //! \brief Change the priority of the specified thread.
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
@@ -334,7 +412,9 @@ osal_retval_t osal_task_set_priority(osal_task_t *hdl,
 
     int policy;
     struct sched_param param;
-    local_ret = pthread_getschedparam(hdl->tid, &policy, &param);
+    pthread_t tid = hdl != NULL ? hdl->tid : pthread_self();
+    local_ret = pthread_getschedparam(tid, &policy, &param);
+
     if (local_ret != 0) {
         if ((local_ret == ESRCH) || (local_ret == EINVAL)) {
             ret = OSAL_ERR_INVALID_PARAM;
@@ -347,7 +427,15 @@ osal_retval_t osal_task_set_priority(osal_task_t *hdl,
 
     if (ret == OSAL_OK) {
         param.sched_priority = prio;
-        local_ret = pthread_setschedparam(hdl->tid, policy, &param);
+
+        if (sched_get_priority_min(tmp_policy) > param.sched_priority) {
+            param.sched_priority = sched_get_priority_min(tmp_policy);
+        } else if (sched_get_priority_max(tmp_policy) < param.sched_priority) {
+            param.sched_priority = sched_get_priority_max(tmp_policy);
+        }
+
+        local_ret = pthread_setschedparam(tid, policy, &param);
+
         if (local_ret != 0) {
             if ((local_ret == ESRCH) || (local_ret == EINVAL)) {
                 ret = OSAL_ERR_INVALID_PARAM;
@@ -377,7 +465,8 @@ osal_retval_t osal_task_get_priority(osal_task_t *hdl,
 
     int policy;
     struct sched_param param;
-    local_ret = pthread_getschedparam(hdl->tid, &policy, &param);
+    pthread_t tid = hdl != NULL ? hdl->tid : pthread_self();
+    local_ret = pthread_getschedparam(tid, &policy, &param);
     if (local_ret == 0) {
         *prio = param.sched_priority;
     } else {
@@ -390,6 +479,76 @@ osal_retval_t osal_task_get_priority(osal_task_t *hdl,
         }
     }
 
+    return ret;
+}
+
+//! \brief Change the affinity of the specified thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *                      If <b> hdl is NULL, set affinity for calling thread.
+ * \param[in]   prio    The thread affinity as member of osal_task_sched_priority_t
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_set_affinity(osal_task_t *hdl, 
+                                        osal_task_sched_affinity_t affinity) 
+{
+    osal_retval_t ret = OSAL_OK;
+    
+    if (affinity > 0u) {
+#if LIBOSAL_HAVE_PTHREAD_SETAFFINITY_NP
+        pthread_t tid = hdl != NULL ? hdl->tid : pthread_self();
+        cpu_set_t cpuset;
+        CPU_ZERO(&cpuset);
+        for (uint32_t i = 0u; i < (sizeof(affinity) * 8u); ++i) {
+            if ((affinity & ((uint32_t)1u << i)) != 0u) {
+                CPU_SET(i, &cpuset);
+            }
+        }
+
+        int ret = pthread_setaffinity_np(tid, sizeof(cpu_set_t), &cpuset);
+        if (ret != 0) {
+            (void)osal_printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
+                    (void *)tid, affinity, ret, strerror(ret));
+        }
+#endif
+    }
+
+    return ret;
+}
+
+//! \brief Change the affinity of the specified thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *                      If <b> hdl is NULL, set affinity for calling thread.
+ * \param[in]   prio    The thread affinity as member of osal_task_sched_priority_t
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_get_affinity(osal_task_t *hdl, 
+                                        osal_task_sched_affinity_t *affinity) 
+{
+    osal_retval_t ret = OSAL_OK;
+    int local_ret;
+
+    pthread_t tid = hdl != NULL ? hdl->tid : pthread_self();
+
+#if LIBOSAL_HAVE_PTHREAD_SETAFFINITY_NP
+    cpu_set_t cpuset;
+    (*affinity) = 0;
+    CPU_ZERO(&cpuset);
+
+    local_ret = pthread_getaffinity_np(tid, sizeof(cpuset), &cpuset);
+    if (local_ret != 0) {
+        ret = OSAL_ERR_INVALID_PARAM;
+    } else {
+        for (osal_uint32_t j = 0; j < CPU_SETSIZE; j++) {
+            if (CPU_ISSET(j, &cpuset) != 0u) {
+                (*affinity) |= (1u << j);
+            }
+        }
+    }
+#endif
     return ret;
 }
 

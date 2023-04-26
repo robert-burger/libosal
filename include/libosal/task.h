@@ -50,6 +50,10 @@
 #include <libosal/win32/task.h>
 #endif
 
+#define OSAL_SCHED_POLICY_FIFO          ((osal_uint32_t)0x00000001u)
+#define OSAL_SCHED_POLICY_ROUND_ROBIN   ((osal_uint32_t)0x00000002u)
+#define OSAL_SCHED_POLICY_OTHER         ((osal_uint32_t)0x00000003u)
+
 #define TASK_NAME_LEN   64u
 
 typedef osal_uint32_t osal_task_sched_policy_t;
@@ -134,9 +138,32 @@ osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
  */
 osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
 
+//! \brief Change the policy of the specified thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *                      If <b> hdl is NULL, set policy for calling thread.
+ * \param[in]   prio    The thread prio as member of osal_task_sched_policy_t
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_set_policy(osal_task_t *hdl,
+                                        osal_task_sched_policy_t policy);
+
+//! \brief Get the current policy of the specified thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *                      If <b> hdl is NULL, get policy for calling thread.
+ * \param[out]  prio    The thread's current policy
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_get_policy(osal_task_t *hdl,
+                                        osal_task_sched_policy_t *policy);
+
 //! \brief Change the priority of the specified thread.
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *                      If <b> hdl is NULL, set priority for calling thread.
  * \param[in]   prio    The thread prio as member of osal_task_sched_priority_t
  *
  * \return OK or ERROR_CODE.
@@ -147,12 +174,35 @@ osal_retval_t osal_task_set_priority(osal_task_t *hdl,
 //! \brief Get the current priority of the specified thread.
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *                      If <b> hdl is NULL, get priority for calling thread.
  * \param[out]  prio    The thread's current prio
  *
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_task_get_priority(osal_task_t *hdl,
                                         osal_task_sched_priority_t *prio);
+
+//! \brief Change the affinity of the specified thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *                      If <b> hdl is NULL, set affinity for calling thread.
+ * \param[in]   prio    The thread affinity as member of osal_task_sched_priority_t
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_set_affinity(osal_task_t *hdl, 
+                                        osal_task_sched_affinity_t affinity);
+
+//! \brief Change the affinity of the specified thread.
+/*!
+ * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
+ *                      If <b> hdl is NULL, set affinity for calling thread.
+ * \param[in]   prio    The thread affinity as member of osal_task_sched_priority_t
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_task_get_affinity(osal_task_t *hdl, 
+                                        osal_task_sched_affinity_t *affinity);
 
 //! \brief Suspend a thread from running.
 /*!
