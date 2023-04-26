@@ -529,11 +529,11 @@ osal_retval_t osal_task_get_affinity(osal_task_t *hdl,
                                         osal_task_sched_affinity_t *affinity) 
 {
     osal_retval_t ret = OSAL_OK;
-    int local_ret;
-
-    pthread_t tid = hdl != NULL ? hdl->tid : pthread_self();
 
 #if LIBOSAL_HAVE_PTHREAD_SETAFFINITY_NP
+    int local_ret;
+    pthread_t tid = hdl != NULL ? hdl->tid : pthread_self();
+
     cpu_set_t cpuset;
     (*affinity) = 0;
     CPU_ZERO(&cpuset);
