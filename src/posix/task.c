@@ -428,10 +428,10 @@ osal_retval_t osal_task_set_priority(osal_task_t *hdl,
     if (ret == OSAL_OK) {
         param.sched_priority = prio;
 
-        if (sched_get_priority_min(tmp_policy) > param.sched_priority) {
-            param.sched_priority = sched_get_priority_min(tmp_policy);
-        } else if (sched_get_priority_max(tmp_policy) < param.sched_priority) {
-            param.sched_priority = sched_get_priority_max(tmp_policy);
+        if (sched_get_priority_min(policy) > param.sched_priority) {
+            param.sched_priority = sched_get_priority_min(policy);
+        } else if (sched_get_priority_max(policy) < param.sched_priority) {
+            param.sched_priority = sched_get_priority_max(policy);
         }
 
         local_ret = pthread_setschedparam(tid, policy, &param);
