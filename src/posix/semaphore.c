@@ -96,10 +96,18 @@ osal_retval_t osal_semaphore_wait(osal_semaphore_t *sem) {
  */
 osal_retval_t osal_semaphore_trywait(osal_semaphore_t *sem) {
     assert(sem != NULL);
+    osal_retval_t ret = OSAL_OK;
 
-    sem_trywait(&sem->posix_sem);
+    int local_ret = sem_trywait(&sem->posix_sem);
+    if (local_ret != 0) {
+        if (local_ret == EAGAIN) {
+            ret = OSAL_ERR_BUSY;
+        } else {
+            ret = OSAL_ERR_OPERATION_FAILED;
+        }
+    }
 
-    return OSAL_OK;
+    return ret;
 }
 
 //! \brief Wait for a semaphore.
