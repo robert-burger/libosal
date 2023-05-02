@@ -89,6 +89,9 @@ if test x$BUILD_POSIX == xtrue; then
     AC_SUBST(PTHREAD_LIBS)
     AC_SUBST(RT_LIBS)
 fi
+    
+AC_CHECK_LIB(m, sqrt, MATH_LIBS="-lm")
+AC_SUBST(MATH_LIBS)
 
 AM_CONDITIONAL([BUILD_POSIX], [ test x$BUILD_POSIX = xtrue]) 
 AM_CONDITIONAL([BUILD_MINGW32], [ test x$BUILD_MINGW32 = xtrue]) 
@@ -100,6 +103,7 @@ AM_CONDITIONAL([BUILD_WIN32], [ text x$BUILD_WIN32 = xtrue])
 
 # Checks for header files.
 AC_CHECK_HEADERS([stdint.h])
+AC_CHECK_HEADERS([math.h])
 AC_CHECK_HEADERS([sys/mman.h], HAVE_SYS_MMAN_H=true, HAVE_SYS_MMAN_H=false)
 AC_CHECK_HEADERS([mqueue.h], HAVE_MQUEUE_H=true, HAVE_MQUEUE_H=false)
 dnl check for sys/prctl for setting thread name on Linux

@@ -20,6 +20,7 @@ include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
 				  $(top_srcdir)/include/libosal/binary_semaphore.h \
 				  $(top_srcdir)/include/libosal/condvar.h \
 				  $(top_srcdir)/include/libosal/queue.h \
+				  $(top_srcdir)/include/libosal/trace.h \
 				  $(top_srcdir)/include/libosal/shm.h \
 				  $(top_srcdir)/include/libosal/io.h
 
@@ -32,9 +33,9 @@ includepikeos_HEADERS =
 includevxworks_HEADERS =
 includewin32_HEADERS =
 
-libosal_la_SOURCES	= io.c osal.c
+libosal_la_SOURCES	= io.c osal.c trace.c
 
-ADD_LIBS = 
+ADD_LIBS = @MATH_LIBS@
 
 if BUILD_POSIX
 includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/binary_semaphore.h \
