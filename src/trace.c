@@ -31,10 +31,131 @@
 #include <libosal/osal.h>
 #include <libosal/trace.h>
 #include <assert.h>
+#include <stdlib.h>
 
 #if LIBOSAL_HAVE_MATH_H == 1
 #include <math.h>
 #endif
+
+#if LIBOSAL_HAVE_STRING_H == 1
+#include <string.h>
+#endif
+
+//! \brief Allocate trace struct.
+/*!
+ * \param[out]  trace   Pointer to trace* where allocated trace struct is returned.
+ * \param[in]   cnt     Number of samples to allocate.
+ *                      the defaults of the underlying task will be used.
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_trace_alloc(osal_trace_t **trace, osal_uint32_t cnt) {
+    assert(trace != NULL);
+    osal_retval_t ret = OSAL_OK;
+
+    (*trace) = malloc(sizeof(osal_trace_t));
+    memset((*trace), 0, sizeof(osal_trace_t));
+
+    if ((*trace) == NULL) {
+        ret = OSAL_ERR_OUT_OF_MEMORY;
+    } else {
+        (*trace)->cnt       = cnt;
+        (*trace)->act_buf   = 0;
+        (*trace)->pos       = 0;
+
+        ret = osal_binary_semaphore_init(&(*trace)->sync_sem, NULL);
+        if (ret != OSAL_OK) {
+            goto error_exit;
+        }
+        
+        (*trace)->time_in_ns[0] = malloc(sizeof(osal_uint64_t) * cnt);
+        (*trace)->time_in_ns[1] = malloc(sizeof(osal_uint64_t) * cnt);
+        (*trace)->tmp           = malloc(sizeof(osal_uint64_t) * cnt);
+
+        if (    ((*trace)->time_in_ns[0] == NULL) ||
+                ((*trace)->time_in_ns[1] == NULL) ||
+                ((*trace)->tmp           == NULL)) {
+            ret = OSAL_ERR_OUT_OF_MEMORY;
+            goto error_exit;
+        }
+    }
+
+    return ret;
+
+error_exit:
+    if ((*trace) != NULL) {
+        if ((*trace)->tmp != 0) {
+            free((*trace)->tmp);
+        }
+
+        if ((*trace)->time_in_ns[1] != 0) {
+            free((*trace)->time_in_ns[1]);
+        }
+
+        if ((*trace)->time_in_ns[0] != 0) {
+            free((*trace)->time_in_ns[0]);
+        }
+
+        free((*trace));
+    }
+
+    return ret;
+}
+
+//! \brief Free trace struct.
+/*!
+ * \param[in]   trace   Pointer to trace struct to free.
+ *
+ * \return N/A
+ */
+void osal_trace_free(osal_trace_t *trace) {
+    assert(trace != NULL);
+
+    if (trace->tmp != 0) {
+        free(trace->tmp);
+    }
+
+    if (trace->time_in_ns[1] != 0) {
+        free(trace->time_in_ns[1]);
+    }
+
+    if (trace->time_in_ns[0] != 0) {
+        free(trace->time_in_ns[0]);
+    }
+
+    free(trace);
+}
+
+//! \brief Trace time.
+/*!
+ * \param[in]   trace   Pointer to trace struct.
+ *
+ * \return N/A
+ */
+void osal_trace_point(osal_trace_t *trace) {
+    assert(trace != NULL);
+
+    trace->time_in_ns[trace->act_buf][trace->pos] = osal_timer_gettime_nsec();
+
+    trace->pos++;
+    if (trace->pos >= trace->cnt) {
+        trace->act_buf = trace->act_buf == 0 ? 1 : 0;
+        trace->pos = 0;
+
+        osal_binary_semaphore_post(&(trace->sync_sem));
+    }
+}
+
+//! \brief Sync to trace when buffer is full.
+/*!
+ * \param[in]   trace   Pointer to trace struct.
+ *
+ * \return N/A
+ */
+osal_retval_t osal_trace_timedwait(osal_trace_t *trace, osal_timer_t *timeout) {
+    osal_retval_t ret = osal_binary_semaphore_timedwait(&(trace->sync_sem), timeout);
+    return ret;
+}
 
 //! \brief Analyze trace and return average and jitters.
 /*!

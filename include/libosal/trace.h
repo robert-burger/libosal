@@ -34,14 +34,13 @@
 #include <libosal/types.h>
 #include <libosal/osal.h>
 #include <libosal/trace.h>
-#include <libosal/task.h>
+#include <libosal/timer.h>
 
 typedef struct osal_trace {
     osal_uint32_t cnt;
     osal_uint32_t act_buf;
     osal_uint32_t pos;
     osal_binary_semaphore_t sync_sem;
-    osal_task_t task;
     osal_uint64_t *time_in_ns[2];
     osal_uint64_t *tmp;
 } osal_trace_t;
@@ -58,7 +57,7 @@ extern "C" {
  *
  * \return OK or ERROR_CODE.
  */
-int osal_trace_alloc(osal_trace_t **trace, osal_uint32_t cnt);
+osal_retval_t osal_trace_alloc(osal_trace_t **trace, osal_uint32_t cnt);
 
 //! \brief Free trace struct.
 /*!
@@ -76,21 +75,14 @@ void osal_trace_free(osal_trace_t *trace);
  */
 void osal_trace_point(osal_trace_t *trace);
 
-//! \brief Run trace task.
+//! \brief Sync to trace when buffer is full.
 /*!
  * \param[in]   trace   Pointer to trace struct.
  *
- * \return N/A
+ * \return OSAL_OK          success
+ * \return OSAL_ERR_TIMEOUT timeout occured
  */
-void osal_trace_run(osal_trace_t *trace);
-
-//! \brief Stop trace task.
-/*!
- * \param[in]   trace   Pointer to trace struct.
- *
- * \return N/A
- */
-void osal_trace_stop(osal_trace_t *trace);
+osal_retval_t osal_trace_timedwait(osal_trace_t *trace, osal_timer_t *timeout);
 
 //! \brief Analyze trace and return average and jitters.
 /*!
