@@ -134,7 +134,7 @@ int main(int argc, char **argv) {
 
 The trace framework is used to do time-tracing of cyclic/periodic tasks. 
 
-This is an example of how this is meant to use:
+This is an example of how this is meant to be used:
 
 ```c
 osal_trace_t my_trace;
