@@ -20,6 +20,7 @@ include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
 				  $(top_srcdir)/include/libosal/binary_semaphore.h \
 				  $(top_srcdir)/include/libosal/condvar.h \
 				  $(top_srcdir)/include/libosal/queue.h \
+				  $(top_srcdir)/include/libosal/trace.h \
 				  $(top_srcdir)/include/libosal/shm.h \
 				  $(top_srcdir)/include/libosal/io.h
 
@@ -43,7 +44,6 @@ includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/binary_semaphore.
 						   $(top_srcdir)/include/libosal/posix/semaphore.h \
 						   $(top_srcdir)/include/libosal/posix/task.h \
 						   $(top_srcdir)/include/libosal/posix/timer.h \
-						   $(top_srcdir)/include/libosal/trace.h \
 						   $(top_srcdir)/include/libosal/posix/shm.h \
 						   $(top_srcdir)/include/libosal/posix/spinlock.h 
 
