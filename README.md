@@ -42,7 +42,41 @@ do {
 
 ## Mutexes
 
-Mutual exclusion locks.
+The mutexes are mutual exclusion locks which are commonly used to protect shared memory structures from concurrent access.
+
+```c
+osal_mutex_t mtx;
+some_struct_protected_by_mutex_t obj;
+
+void *task_1(void *) {
+  while (1) {
+    osal_mutex_lock(&mtx);
+    // wait for event, do some stuff on 'obj'
+    osal_mutex_unlock(&mtx);
+    
+    // do other work
+  }
+  return NULL;
+}
+
+void *task_2(void *) {
+  while (1) {
+    osal_mutex_lock(&mtx);
+    // wait for event, do some stuff on 'obj'
+    osal_mutex_unlock(&mtx);
+    
+    // do other work
+  }
+  return NULL;
+}
+
+void main(int argc, char **argv) {
+  osal_mutex_init(&mtx, NULL);
+  // create tasks, do other things...
+  
+  return 0;
+}
+```
 
 ## Semaphores
 
