@@ -7,14 +7,24 @@ Features:
 
 ## Timers
 
+
+
 ## Mutexes
+
+Mutual exclusion locks.
 
 ## Semaphores
 
 ## Binary Semaphores
 
+Binary semaphores are a special case of a semaphore for signalling one event to one waiter.
+
 ## Conditions
+
 
 ## Spinlocks
 
+
 ## Tasks
+
+Task/Thread abstraction.
