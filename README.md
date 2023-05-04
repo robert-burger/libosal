@@ -80,10 +80,11 @@ void main(int argc, char **argv) {
 
 ## Semaphores
 
+Semaphores are a synchronization mechanism with a counter.
+
 ## Binary Semaphores
 
-Binary semaphores are a special case of a semaphore for signalling one event to one waiter. The state of the semaphore should be preserved until a waiter has consumed it. It is guaranteed that no event will be missed e.g. because of no one was waiting on the semaphore while it was posted.
-
+Binary semaphores are a special case of a semaphore for signalling one event to one waiter. The state of the semaphore is be preserved until a waiter has consumed it. It is guaranteed that no event will be missed e.g. because of no one was waiting on the semaphore while it was posted.
 
 ```c
 osal_binary_semaphore_t binsem;
@@ -113,7 +114,21 @@ void *task_2(void *) {
 
 ## Tasks
 
+Task/Thread abstraction.
+
+```c
+void *my_task_handler(void *arg) {
+  // do task work
+  return NULL;
+}
+
+int main(int argc, char **argv) {
+  osal_task_create(&my_task_handle, NULL, my_task_handler, NULL);
+  
+  // do other work
+  return 0;
+}
+```
+
 ## Trace
 
-
-Task/Thread abstraction.
