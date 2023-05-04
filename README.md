@@ -108,6 +108,7 @@ void *task_2(void *) {
 
 ## Conditions
 
+Conditions are another thread synchronization mechanism. 
 
 ## Spinlocks
  
