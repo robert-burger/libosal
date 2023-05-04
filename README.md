@@ -92,4 +92,7 @@ Binary semaphores are a special case of a semaphore for signalling one event to 
 
 ## Tasks
 
+## Trace
+
+
 Task/Thread abstraction.
