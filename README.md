@@ -110,7 +110,10 @@ void *task_2(void *) {
 
 
 ## Spinlocks
+ 
+Spinlocks are similar to mutexes but if locking a spinlock does not succeed it does busy-waiting until it is available.
 
+They are used the same as a mutex. For an example please look at 'mutexes'.
 
 ## Tasks
 
