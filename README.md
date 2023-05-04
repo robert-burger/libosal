@@ -82,7 +82,28 @@ void main(int argc, char **argv) {
 
 ## Binary Semaphores
 
-Binary semaphores are a special case of a semaphore for signalling one event to one waiter.
+Binary semaphores are a special case of a semaphore for signalling one event to one waiter. The state of the semaphore should be preserved until a waiter has consumed it. It is guaranteed that no event will be missed e.g. because of no one was waiting on the semaphore while it was posted.
+
+
+```c
+osal_binary_semaphore_t binsem;
+
+void *task_1(void *) {
+  while (1) {
+    osal_binary_semaphore_wait(&binsem);
+    // do other work
+  }
+  return NULL;
+}
+
+void *task_2(void *) {
+  while (1) {   
+    // wait for event, do some stuff
+    osal_binary_semaphore_post(&binsem);
+  }
+  return NULL;
+}
+```
 
 ## Conditions
 
