@@ -132,3 +132,39 @@ int main(int argc, char **argv) {
 
 ## Trace
 
+The trace framework is used to do time-tracing of cyclic/periodic tasks. 
+
+This is an example of how this is meant to use:
+
+```c
+osal_trace_t my_trace;
+
+void *cyclic_task(void *arg) {
+  osal_uint64_t cycle_rate = 1000000; // values are in nanoseconds
+  osal_uint64_t abs_timeout = osal_timer_gettime_nsec();
+  osal_retval_t ret;
+
+  do { 
+    osal_trace_point(&my_trace);
+    
+    // your work goes here
+  
+    abs_timeout += cycle_rate;
+    ret = osal_sleep_until_nsec(abs_timeout);
+  } while (ret == OSAL_OK);
+  return NULL;
+}
+
+void *print_task(void *arg) {
+  osal_uint64_t avg, avg_jit, max_jit;
+  while (1) {
+    osal_timer_t timeout;
+    osal_timer_init(&timeout, 1000000000);
+    if (osal_trace_timedwait(&my_trace, &timeout) == OSAL_OK)) {
+      osal_trace_analyze(&my_trace, &avg, &avg_jit, &max_jit);
+      // print this
+    }
+  }
+  return NULL;
+}
+```
