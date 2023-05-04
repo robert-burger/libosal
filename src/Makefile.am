@@ -20,7 +20,6 @@ include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
 				  $(top_srcdir)/include/libosal/binary_semaphore.h \
 				  $(top_srcdir)/include/libosal/condvar.h \
 				  $(top_srcdir)/include/libosal/queue.h \
-				  $(top_srcdir)/include/libosal/trace.h \
 				  $(top_srcdir)/include/libosal/shm.h \
 				  $(top_srcdir)/include/libosal/io.h
 
@@ -41,11 +40,12 @@ if BUILD_POSIX
 includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/binary_semaphore.h \
 						   $(top_srcdir)/include/libosal/posix/condvar.h \
 						   $(top_srcdir)/include/libosal/posix/mutex.h \
-				  		   $(top_srcdir)/include/libosal/posix/semaphore.h \
-				  		   $(top_srcdir)/include/libosal/posix/task.h \
-				  		   $(top_srcdir)/include/libosal/posix/timer.h \
-				  		   $(top_srcdir)/include/libosal/posix/shm.h \
-				  		   $(top_srcdir)/include/libosal/posix/spinlock.h 
+						   $(top_srcdir)/include/libosal/posix/semaphore.h \
+						   $(top_srcdir)/include/libosal/posix/task.h \
+						   $(top_srcdir)/include/libosal/posix/timer.h \
+						   $(top_srcdir)/include/libosal/trace.h \
+						   $(top_srcdir)/include/libosal/posix/shm.h \
+						   $(top_srcdir)/include/libosal/posix/spinlock.h 
 
 libosal_la_SOURCES += posix/binary_semaphore.c
 libosal_la_SOURCES += posix/mutex.c
