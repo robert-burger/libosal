@@ -1,5 +1,10 @@
 var NAVTREEINDEX1 =
 {
+"structosal__trace.html#a6abe983374b2434064d46c1fcebb5e12":[2,0,3,1],
+"structosal__trace.html#ab884c794411863453b9b7d034534c243":[2,0,3,4],
+"structosal__trace.html#ac7b9915084826afef11143b21c52f001":[2,0,3,3],
+"task_8h.html":[3,0,0,0,10],
+"task_8h.html#a0f0eb162f23d4d24f578e7e76e8935d6":[3,0,0,0,10,26],
 "task_8h.html#a2423c4869f8e2858c1c6b886bbe9457e":[3,0,0,0,10,1],
 "task_8h.html#a2676c8b65bc70137399d1621578e8f81":[3,0,0,0,10,8],
 "task_8h.html#a303c2a5a20b19b5dcc4695c3f888eca1":[3,0,0,0,10,5],
