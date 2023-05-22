@@ -1,5 +1,4 @@
-# libosal
-[![Build Status](https://rmc-jenkins.robotic.dlr.de/jenkins/buildStatus/icon?job=common%2libosal%2Fmaster)](https://rmc-jenkins.robotic.dlr.de/jenkins/job/common/job/libosal/job/master/)
+# libosal [![Build Status](https://rmc-jenkins.robotic.dlr.de/jenkins/buildStatus/icon?job=common%2libosal%2Fmaster)](https://rmc-jenkins.robotic.dlr.de/jenkins/job/common/job/libosal/job/master/)
 
 libosal is an <ins>**o**</ins>perating <ins>**s**</ins>ystem <ins>**a**</ins>bstraction <ins>**l**</ins>ayer Library. It's purpose is to write os-independent code for easy portability between different systems and architectures.
 
@@ -11,7 +10,7 @@ The timer framework of libosal provides functions for sleeping and waiting for s
 
 Here are some common example on how to use the timer frameworks:
 
-**wait for timeout example**
+### wait for timeout example
 
 This example can be used to do some work until a specified timeout occured or is finished otherwise.
 
@@ -23,7 +22,8 @@ do {
   // your work goes here
 } while (osal_timer_expired(&timeout) != OSAL_ERR_TIMEOUT);
 ```
-**deterministic 1 ms loop example**
+
+### deterministic 1 ms loop example
 
 This example implements a loop which can be used as deterministic (with appropriate priority) clock source for a control appllication.
 

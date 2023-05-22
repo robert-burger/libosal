@@ -50,7 +50,14 @@
 #include <libosal/win32/mutex.h>
 #endif
 
-#define OSAL_MUTEX_ATTR__TYPE__MASK             0x00000003u
+/** \defgroup mutex_group Mutex
+ * The mutexes are mutual exclusion locks which are commonly used to protect 
+ * shared memory structures from concurrent access.
+ *
+ * @{
+ */
+
+#define OSAL_MUTEX_ATTR__TYPE__MASK             0x00000003u     //!< \brief Mutex attribute type mask.
 #define OSAL_MUTEX_ATTR__TYPE__NORMAL           0x00000000u
 #define OSAL_MUTEX_ATTR__TYPE__ERRORCHECK       0x00000001u
 #define OSAL_MUTEX_ATTR__TYPE__RECURSIVE        0x00000002u
@@ -71,7 +78,7 @@ typedef osal_uint32_t osal_mutex_attr_t;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+ 
 //! \brief Initialize a mutex.
 /*!
  * \param[in]   mtx     Pointer to osal mutex structure. Content is OS dependent.
@@ -117,6 +124,8 @@ osal_retval_t osal_mutex_destroy(osal_mutex_t *mtx);
 #ifdef __cplusplus
 };
 #endif
+
+/** @} */
 
 #endif /* LIBOSAL_MUTEX__H */
 
