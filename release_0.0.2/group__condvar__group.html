@@ -192,7 +192,13 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Condvar is invalid/not initalized. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -219,7 +225,13 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_BUSY</td><td>Condition destruction alread in progress. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -250,6 +262,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Initialize a condvar. </p>
+<p>This function initializes a condition variable.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">cv</td><td>Pointer to osal condvar structure. Content is OS dependent. </td></tr>
@@ -257,7 +270,17 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OUT_OF_MEMORY</td><td>Not enough memory to initialize condition variable. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>One of the parameters are invalid. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_UNAVAILABLE</td><td>Initialization failed, try again. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_BUSY</td><td>Condition was initialized before. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Other errors. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -284,7 +307,13 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Condvar is invalid/not initalized. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -329,7 +358,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_TIMEOUT</td><td>Timeout expired waiting on condition. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Mutex was not owner by thread. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Condvar is invalid/not initalized. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -367,7 +404,12 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
