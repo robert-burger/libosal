@@ -84,11 +84,18 @@ extern "C" {
 
 //! \brief Initialize a condvar.
 /*!
- * \param[in]   cv     Pointer to osal condvar structure. Content is OS dependent.
+ * This function initializes a condition variable.
+ *
+ * \param[in]   cv      Pointer to osal condvar structure. Content is OS dependent.
  * \param[in]   attr    Pointer to initial condvar attributes. Can be NULL then
  *                      the defaults of the underlying condvar will be used.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                      On success.
+ * \retval OSAL_ERR_OUT_OF_MEMORY       Not enough memory to initialize condition variable.
+ * \retval OSAL_ERR_INVALID_PARAM       One of the parameters are invalid.
+ * \retval OSAL_ERR_UNAVAILABLE         Initialization failed, try again.
+ * \retval OSAL_ERR_BUSY                Condition was initialized before.
+ * \retval OSAL_ERR_OPERATION_FAILED    Other errors.
  */
 osal_retval_t osal_condvar_init(osal_condvar_t *cv, const osal_condvar_attr_t *attr);
 
@@ -97,7 +104,7 @@ osal_retval_t osal_condvar_init(osal_condvar_t *cv, const osal_condvar_attr_t *a
  * \param[in]   cv     Pointer to osal condvar structure. Content is OS dependent.
  * \param[in]   mtx    Pointer to osal mutex structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                  On success.
  */
 osal_retval_t osal_condvar_wait(osal_condvar_t *cv, osal_mutex_t *mtx);
 
@@ -107,7 +114,10 @@ osal_retval_t osal_condvar_wait(osal_condvar_t *cv, osal_mutex_t *mtx);
  * \param[in]   mtx     Pointer to osal mutex structure. Content is OS dependent.
  * \param[in]   to      Timeout
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                      On success.
+ * \retval OSAL_ERR_TIMEOUT             Timeout expired waiting on condition.
+ * \retval OSAL_ERR_PERMISSION_DENIED   Mutex was not owner by thread.
+ * \retval OSAL_ERR_INVALID_PARAM   Condvar is invalid/not initalized.
  */
 osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, const osal_timer_t *timeout);
 
@@ -115,7 +125,8 @@ osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, cons
 /*!
  * \param[in]   cv     Pointer to osal condvar structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                  On success.
+ * \retval OSAL_ERR_INVALID_PARAM   Condvar is invalid/not initalized.
  */
 osal_retval_t osal_condvar_signal(osal_condvar_t *cv);
 
@@ -123,7 +134,8 @@ osal_retval_t osal_condvar_signal(osal_condvar_t *cv);
 /*!
  * \param[in]   cv     Pointer to osal condvar structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                  On success.
+ * \retval OSAL_ERR_INVALID_PARAM   Condvar is invalid/not initalized.
  */
 osal_retval_t osal_condvar_broadcast(osal_condvar_t *cv);
 
@@ -131,7 +143,8 @@ osal_retval_t osal_condvar_broadcast(osal_condvar_t *cv);
 /*!
  * \param[in]   cv     Pointer to osal condvar structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                      On success.
+ * \retval OSAL_ERR_BUSY                Condition destruction alread in progress.
  */
 osal_retval_t osal_condvar_destroy(osal_condvar_t *cv);
 

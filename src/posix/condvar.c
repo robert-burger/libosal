@@ -54,12 +54,42 @@ osal_retval_t osal_condvar_init(osal_condvar_t *cv, const osal_condvar_attr_t *a
 
     (void)attr;
 
-    pthread_condattr_t cond_attr;
-    pthread_condattr_init(&cond_attr);
-    pthread_condattr_setclock(&cond_attr, LIBOSAL_CLOCK);
+    osal_retval_t ret = OSAL_OK;
+    int local_ret;
 
-    pthread_cond_init(&cv->posix_cond, &cond_attr);
-    return OSAL_OK;
+    pthread_condattr_t cond_attr;
+    local_ret = pthread_condattr_init(&cond_attr);
+    if (local_ret != 0) {
+        // should only return ENOMEM
+        ret = OSAL_ERR_OUT_OF_MEMORY;
+    } else {
+        local_ret = pthread_condattr_setclock(&cond_attr, LIBOSAL_CLOCK);
+        if (local_ret != 0) {
+            // should only return EINVAL
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else {
+            if (ret == OSAL_OK) {
+                local_ret = pthread_cond_init(&cv->posix_cond, &cond_attr);
+                if (local_ret != 0) {
+                    if (local_ret == EAGAIN) {
+                        ret = OSAL_ERR_UNAVAILABLE;
+                    } else if (local_ret == ENOMEM) {
+                        ret = OSAL_ERR_OUT_OF_MEMORY;
+                    } else if (local_ret == EBUSY) {
+                        ret = OSAL_ERR_BUSY;
+                    } else if (local_ret == EINVAL) {
+                        ret = OSAL_ERR_INVALID_PARAM;
+                    } else {
+                        ret = OSAL_ERR_OPERATION_FAILED;
+                    }
+                }
+            }
+        }
+                    
+        pthread_condattr_destroy(&cond_attr);
+    }
+
+    return ret;
 }
 
 //! \brief Signals one waiter on a condvar.
@@ -70,8 +100,15 @@ osal_retval_t osal_condvar_init(osal_condvar_t *cv, const osal_condvar_attr_t *a
  */
 osal_retval_t osal_condvar_signal(osal_condvar_t *cv) {
     assert(cv != NULL);
-    pthread_cond_signal(&cv->posix_cond);
-    return OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
+
+    int local_ret = pthread_cond_signal(&cv->posix_cond);
+    if (local_ret != 0) {
+        // should only return EINVAL
+        ret = OSAL_ERR_INVALID_PARAM;
+    }
+    
+    return ret;
 }
 
 //! \brief Broadcast (Wakes) all waiters on a condvar.
@@ -82,8 +119,15 @@ osal_retval_t osal_condvar_signal(osal_condvar_t *cv) {
  */
 osal_retval_t osal_condvar_broadcast(osal_condvar_t *cv) {
     assert(cv != NULL);
-    pthread_cond_broadcast(&cv->posix_cond);
-    return OSAL_OK;
+    osal_retval_t ret = OSAL_OK;
+
+    int local_ret = pthread_cond_broadcast(&cv->posix_cond);
+    if (local_ret != 0) {
+        // should only return EINVAL
+        ret = OSAL_ERR_INVALID_PARAM;
+    }
+    
+    return ret;
 }
 
 //! \brief Wait for a condvar.
@@ -124,6 +168,10 @@ osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, cons
         if (local_ret == ETIMEDOUT) {
             ret = OSAL_ERR_TIMEOUT;
             break;
+        } else if (local_ret == EINVAL) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else if (local_ret == EPERM) {
+            ret = OSAL_ERR_PERMISSION_DENIED;
         }
     } while (local_ret != 0);
 
@@ -139,9 +187,15 @@ osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, cons
 osal_retval_t osal_condvar_destroy(osal_condvar_t *cv) {
     assert(cv != NULL);
 
-    pthread_cond_destroy(&cv->posix_cond);
+    osal_retval_t ret = OSAL_OK;
 
-    return OSAL_OK;
+    int local_ret = pthread_cond_destroy(&cv->posix_cond);
+    if (local_ret != 0) {
+        // should only return EBUSY
+        ret = OSAL_ERR_BUSY;
+    }
+
+    return ret;
 }
 
 
