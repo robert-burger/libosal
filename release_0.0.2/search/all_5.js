@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['nsec_10',['nsec',['../structosal__timer.html#ae69e70f586db6b9fe0ae34b3c5dcf827',1,'osal_timer']]],
-  ['nsec_5fper_5fsec_11',['NSEC_PER_SEC',['../group__timer.html#ga0501e82515b2bdf36453c4cc80f5e0cc',1,'timer.h']]]
+  ['nsec_11',['nsec',['../structosal__timer.html#ae69e70f586db6b9fe0ae34b3c5dcf827',1,'osal_timer']]],
+  ['nsec_5fper_5fsec_12',['NSEC_PER_SEC',['../group__timer.html#ga0501e82515b2bdf36453c4cc80f5e0cc',1,'timer.h']]]
 ];
