@@ -24,6 +24,7 @@ gh-pages:
 	@make -f Makefile.doc doc/html
 	@touch "$(BUILDDIR)/html/.nojekyll"
 	@mv "$(BUILDDIR)/html" $(DOCS)
+	@cd "$(GH_PAGES_DIR_NAME)" && python3 ../doc/create_directory_listing.py
 	# add updated branch listing
 	git -C $(GH_PAGES_DIR_NAME) add index.html
 	git -C $(GH_PAGES_DIR_NAME) add "$(BRANCH_DIR_NAME)/*"
