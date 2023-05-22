@@ -52,17 +52,25 @@
 #include <libosal/win32/condvar.h>
 #endif
 
-#define OSAL_CONDVAR_ATTR__TYPE__MASK             0x00000003u
-#define OSAL_CONDVAR_ATTR__TYPE__NORMAL           0x00000000u
-#define OSAL_CONDVAR_ATTR__TYPE__ERRORCHECK       0x00000001u
-#define OSAL_CONDVAR_ATTR__TYPE__RECURSIVE        0x00000002u
+/** \defgroup condvar_group Conditional Variable
+ * The conditional variable are a synchronization mechanism with a 
+ * surrounding mutex to work on shared data and signal waiters when
+ * data was manipulated or can be safely manipulated.
+ *
+ * @{
+ */
 
-#define OSAL_CONDVAR_ATTR__ROBUST                 0x00000010u
-#define OSAL_CONDVAR_ATTR__PROCESS_SHARED         0x00000020u
+#define OSAL_CONDVAR_ATTR__TYPE__MASK             0x00000003u   //!< \brief Attribute type mask.
+#define OSAL_CONDVAR_ATTR__TYPE__NORMAL           0x00000000u   //!< \brief Normal condition variable type.
+#define OSAL_CONDVAR_ATTR__TYPE__ERRORCHECK       0x00000001u   //!< \brief Do error checking.
+#define OSAL_CONDVAR_ATTR__TYPE__RECURSIVE        0x00000002u   //!< \brief Check if condvar was called recursively from same task.
 
-#define OSAL_CONDVAR_ATTR__PROTOCOL__MASK         0x00000300u
-#define OSAL_CONDVAR_ATTR__PROTOCOL__NONE         0x00000000u
-#define OSAL_CONDVAR_ATTR__PROTOCOL__INHERIT      0x00000100u
+#define OSAL_CONDVAR_ATTR__ROBUST                 0x00000010u   //!< \brief Condvar robustness, e.g. owner died.
+#define OSAL_CONDVAR_ATTR__PROCESS_SHARED         0x00000020u   //!< \brief Condvar is shared between processes.
+
+#define OSAL_CONDVAR_ATTR__PROTOCOL__MASK         0x00000300u   //!< \brief Protocol mask.
+#define OSAL_CONDVAR_ATTR__PROTOCOL__NONE         0x00000000u   //!< \brief None (default) protocol.
+#define OSAL_CONDVAR_ATTR__PROTOCOL__INHERIT      0x00000100u   //!< \brief 
 #define OSAL_CONDVAR_ATTR__PROTOCOL__PROTECT      0x00000200u
 
 #define OSAL_CONDVAR_ATTR__PRIOCEILING__MASK      0xFFFF0000u
@@ -130,6 +138,8 @@ osal_retval_t osal_condvar_destroy(osal_condvar_t *cv);
 #ifdef __cplusplus
 };
 #endif
+
+/** @} */
 
 #endif /* LIBOSAL_CONDVAR__H */
 
