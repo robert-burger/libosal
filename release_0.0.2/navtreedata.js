@@ -24,7 +24,7 @@
 */
 var NAVTREE =
 [
-  [ "libosal", "index.html", [
+  [ "libosal - Operating System Abstraction Layer", "index.html", [
     [ "libosal <a href=\"https://rmc-jenkins.robotic.dlr.de/jenkins/job/common/job/libosal/job/master/\"><img src=\"https://rmc-jenkins.robotic.dlr.de/jenkins/buildStatus/icon?job=common%2libosal%2Fmaster\" alt=\"Build Status\"/></a>", "index.html", [
       [ "Timers", "index.html#autotoc_md1", [
         [ "wait for timeout example", "index.html#autotoc_md2", null ],
