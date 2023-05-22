@@ -65,7 +65,9 @@ osal_retval_t osal_sleep_until(osal_timer_t *timer) {
         local_ret = clock_nanosleep(LIBOSAL_CLOCK, TIMER_ABSTIME, &ts, NULL);
     } while (local_ret == EINTR);
 
-    if (local_ret != 0) {
+    if (local_ret == EINVAL) {
+        ret = OSAL_ERR_INVALID_PARAM;
+    } else if (local_ret != 0) {
         ret = OSAL_ERR_OPERATION_FAILED;
     }
 
