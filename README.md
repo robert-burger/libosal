@@ -44,6 +44,8 @@ do {
 
 The mutexes are mutual exclusion locks which are commonly used to protect shared memory structures from concurrent access.
 
+### Mutex example with 2 tasks
+
 ```c
 osal_mutex_t mtx;
 some_struct_protected_by_mutex_t obj;
@@ -80,11 +82,35 @@ void main(int argc, char **argv) {
 
 ## Semaphores
 
-Semaphores are a synchronization mechanism with a counter.
+Semaphores are a synchronization mechanism with a counter. They are usually used to synchronize two ore more tasks. The counter counts how often \ref osal_semaphore_post was called. One of the wait function can be called as often as the counter is still greater than 0 without blocking.
+
+### Synychronization example with semaphores
+
+```c
+osal_semaphore_t mysem;
+
+void *task_1(void *) {
+  while (1) {
+    osal_semaphore_wait(&mysem);
+    // do other work
+  }
+  return NULL;
+}
+
+void *task_2(void *) {
+  while (1) {   
+    // wait for event, do some stuff
+    osal_semaphore_post(&mysem);
+  }
+  return NULL;
+}
+```
 
 ## Binary Semaphores
 
 Binary semaphores are a special case of a semaphore for signalling one event to one waiter. The state of the semaphore is be preserved until a waiter has consumed it. It is guaranteed that no event will be missed e.g. because of no one was waiting on the semaphore while it was posted.
+
+### Synychronization example with binary semaphores
 
 ```c
 osal_binary_semaphore_t binsem;
@@ -120,6 +146,8 @@ They are used the same as a mutex. For an example please look at 'mutexes'.
 
 Task/Thread abstraction.
 
+### Task creation example
+
 ```c
 void *my_task_handler(void *arg) {
   // do task work
@@ -139,6 +167,8 @@ int main(int argc, char **argv) {
 The trace framework is used to do time-tracing of cyclic/periodic tasks. 
 
 This is an example of how this is meant to be used:
+
+### Debug tracing example
 
 ```c
 osal_trace_t my_trace;

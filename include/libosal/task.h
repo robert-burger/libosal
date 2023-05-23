@@ -51,6 +51,12 @@
 #include <libosal/win32/task.h>
 #endif
 
+/** \defgroup task_group Tasks
+ *
+ *
+ * @{
+ */
+
 #define OSAL_SCHED_POLICY_FIFO          ((osal_uint32_t)0x00000001u)
 #define OSAL_SCHED_POLICY_ROUND_ROBIN   ((osal_uint32_t)0x00000002u)
 #define OSAL_SCHED_POLICY_OTHER         ((osal_uint32_t)0x00000003u)
@@ -243,6 +249,8 @@ osal_retval_t osal_task_get_state(osal_task_t *hdl,
 };
 #endif
 
-#endif /* LIBOSAL_MUTEX__H */
+/** @} */
+
+#endif /* LIBOSAL_TASK__H */
 
 

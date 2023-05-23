@@ -46,6 +46,13 @@
 #include <libosal/pikeos/shm.h>
 #endif
 
+/** \defgroup shm_group Shared memory
+ *
+ * Shared memory module
+ *
+ * @{
+ */
+
 #define OSAL_SHM_ATTR__FLAG__MASK             0x0000003Fu
 #define OSAL_SHM_ATTR__FLAG__RDONLY           0x00000001u
 #define OSAL_SHM_ATTR__FLAG__RDWR             0x00000002u
@@ -104,6 +111,8 @@ osal_retval_t osal_shm_close(osal_shm_t *shm);
 #ifdef __cplusplus
 };
 #endif
+
+/** @} */
 
 #endif /* LIBOSAL_SHM__H */
 
