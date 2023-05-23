@@ -9,5 +9,6 @@ var modules =
     [ "Shared memory", "group__shm__group.html", "group__shm__group" ],
     [ "Spinlocks", "group__spinlock__group.html", "group__spinlock__group" ],
     [ "Tasks", "group__task__group.html", "group__task__group" ],
-    [ "Timer", "group__timer.html", "group__timer" ]
+    [ "Timer", "group__timer__group.html", "group__timer__group" ],
+    [ "Trace", "group__trace__group.html", "group__trace__group" ]
 ];

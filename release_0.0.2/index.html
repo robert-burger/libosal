@@ -97,23 +97,23 @@ Timers</h1>
 wait for timeout example</h2>
 <p>This example can be used to do some work until a specified timeout occured or is finished otherwise.</p>
 <div class="fragment"><div class="line"><a class="code" href="structosal__timer.html" title="timer structure">osal_timer_t</a> timeout;</div>
-<div class="line"><a class="code" href="group__timer.html#ga4de2db9fc1991e9630ddc84edaf6b6f7" title="Initialize timer with timeout.">osal_timer_init</a>(&amp;timeout, 1000000000); <span class="comment">// values are in nanoseconds</span></div>
+<div class="line"><a class="code" href="group__timer__group.html#ga4de2db9fc1991e9630ddc84edaf6b6f7" title="Initialize timer with timeout.">osal_timer_init</a>(&amp;timeout, 1000000000); <span class="comment">// values are in nanoseconds</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">do</span> {</div>
 <div class="line">  <span class="comment">// your work goes here</span></div>
-<div class="line">} <span class="keywordflow">while</span> (<a class="code" href="group__timer.html#ga820f31b0ca2be5cc5990f2eecaef32a9" title="Checks if timer is expired.">osal_timer_expired</a>(&amp;timeout) != OSAL_ERR_TIMEOUT);</div>
+<div class="line">} <span class="keywordflow">while</span> (<a class="code" href="group__timer__group.html#ga820f31b0ca2be5cc5990f2eecaef32a9" title="Checks if timer is expired.">osal_timer_expired</a>(&amp;timeout) != OSAL_ERR_TIMEOUT);</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md3"></a>
 deterministic 1 ms loop example</h2>
 <p>This example implements a loop which can be used as deterministic (with appropriate priority) clock source for a control appllication.</p>
 <div class="fragment"><div class="line">osal_uint64_t cycle_rate = 1000000; <span class="comment">// values are in nanoseconds</span></div>
-<div class="line">osal_uint64_t abs_timeout = <a class="code" href="group__timer.html#ga235676c15f84bed64ca63bc8424dc183" title="Gets time in nanoseconds.">osal_timer_gettime_nsec</a>();</div>
+<div class="line">osal_uint64_t abs_timeout = <a class="code" href="group__timer__group.html#ga235676c15f84bed64ca63bc8424dc183" title="Gets time in nanoseconds.">osal_timer_gettime_nsec</a>();</div>
 <div class="line">osal_retval_t ret;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">do</span> { </div>
 <div class="line">  <span class="comment">// your work goes here</span></div>
 <div class="line">  </div>
 <div class="line">  abs_timeout += cycle_rate;</div>
-<div class="line">  ret = <a class="code" href="group__timer.html#gae1e16eed0d82f67aa1b0990341e7047a" title="Sleep until current time equals nsec value expired.">osal_sleep_until_nsec</a>(abs_timeout);</div>
+<div class="line">  ret = <a class="code" href="group__timer__group.html#gae1e16eed0d82f67aa1b0990341e7047a" title="Sleep until current time equals nsec value expired.">osal_sleep_until_nsec</a>(abs_timeout);</div>
 <div class="line">} <span class="keywordflow">while</span> (ret == OSAL_OK);</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
 Mutexes</h1>
@@ -228,16 +228,16 @@ Debug tracing example</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> *cyclic_task(<span class="keywordtype">void</span> *arg) {</div>
 <div class="line">  osal_uint64_t cycle_rate = 1000000; <span class="comment">// values are in nanoseconds</span></div>
-<div class="line">  osal_uint64_t abs_timeout = <a class="code" href="group__timer.html#ga235676c15f84bed64ca63bc8424dc183" title="Gets time in nanoseconds.">osal_timer_gettime_nsec</a>();</div>
+<div class="line">  osal_uint64_t abs_timeout = <a class="code" href="group__timer__group.html#ga235676c15f84bed64ca63bc8424dc183" title="Gets time in nanoseconds.">osal_timer_gettime_nsec</a>();</div>
 <div class="line">  osal_retval_t ret;</div>
 <div class="line"> </div>
 <div class="line">  <span class="keywordflow">do</span> { </div>
-<div class="line">    <a class="code" href="trace_8h.html#aaa53476df21ab43a137e3e76342ccdbb" title="Trace time.">osal_trace_point</a>(&amp;my_trace);</div>
+<div class="line">    <a class="code" href="group__trace__group.html#gaaa53476df21ab43a137e3e76342ccdbb" title="Trace time.">osal_trace_point</a>(&amp;my_trace);</div>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// your work goes here</span></div>
 <div class="line">  </div>
 <div class="line">    abs_timeout += cycle_rate;</div>
-<div class="line">    ret = <a class="code" href="group__timer.html#gae1e16eed0d82f67aa1b0990341e7047a" title="Sleep until current time equals nsec value expired.">osal_sleep_until_nsec</a>(abs_timeout);</div>
+<div class="line">    ret = <a class="code" href="group__timer__group.html#gae1e16eed0d82f67aa1b0990341e7047a" title="Sleep until current time equals nsec value expired.">osal_sleep_until_nsec</a>(abs_timeout);</div>
 <div class="line">  } <span class="keywordflow">while</span> (ret == OSAL_OK);</div>
 <div class="line">  <span class="keywordflow">return</span> NULL;</div>
 <div class="line">}</div>
@@ -246,9 +246,9 @@ Debug tracing example</h2>
 <div class="line">  osal_uint64_t avg, avg_jit, max_jit;</div>
 <div class="line">  <span class="keywordflow">while</span> (1) {</div>
 <div class="line">    <a class="code" href="structosal__timer.html" title="timer structure">osal_timer_t</a> timeout;</div>
-<div class="line">    <a class="code" href="group__timer.html#ga4de2db9fc1991e9630ddc84edaf6b6f7" title="Initialize timer with timeout.">osal_timer_init</a>(&amp;timeout, 1000000000);</div>
-<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="trace_8h.html#aafecd388efaef8bfc4d97901e7424967" title="Sync to trace when buffer is full.">osal_trace_timedwait</a>(&amp;my_trace, &amp;timeout) == OSAL_OK)) {</div>
-<div class="line">      <a class="code" href="trace_8h.html#af5cad1cb680aced2d806e4c69764615d" title="Analyze trace and return average and jitters.">osal_trace_analyze</a>(&amp;my_trace, &amp;avg, &amp;avg_jit, &amp;max_jit);</div>
+<div class="line">    <a class="code" href="group__timer__group.html#ga4de2db9fc1991e9630ddc84edaf6b6f7" title="Initialize timer with timeout.">osal_timer_init</a>(&amp;timeout, 1000000000);</div>
+<div class="line">    <span class="keywordflow">if</span> (<a class="code" href="group__trace__group.html#gaafecd388efaef8bfc4d97901e7424967" title="Sync to trace when buffer is full.">osal_trace_timedwait</a>(&amp;my_trace, &amp;timeout) == OSAL_OK)) {</div>
+<div class="line">      <a class="code" href="group__trace__group.html#gaf5cad1cb680aced2d806e4c69764615d" title="Analyze trace and return average and jitters.">osal_trace_analyze</a>(&amp;my_trace, &amp;avg, &amp;avg_jit, &amp;max_jit);</div>
 <div class="line">      <span class="comment">// print this</span></div>
 <div class="line">    }</div>
 <div class="line">  }</div>
