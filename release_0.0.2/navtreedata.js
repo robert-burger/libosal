@@ -30,13 +30,21 @@ var NAVTREE =
         [ "wait for timeout example", "index.html#autotoc_md2", null ],
         [ "deterministic 1 ms loop example", "index.html#autotoc_md3", null ]
       ] ],
-      [ "Mutexes", "index.html#autotoc_md4", null ],
-      [ "Semaphores", "index.html#autotoc_md5", null ],
-      [ "Binary Semaphores", "index.html#autotoc_md6", null ],
-      [ "Conditions", "index.html#autotoc_md7", null ],
-      [ "Spinlocks", "index.html#autotoc_md8", null ],
-      [ "Tasks", "index.html#autotoc_md9", null ],
-      [ "Trace", "index.html#autotoc_md10", null ]
+      [ "Mutexes", "index.html#autotoc_md4", [
+        [ "Mutex example with 2 tasks", "index.html#autotoc_md5", null ]
+      ] ],
+      [ "Semaphores", "index.html#autotoc_md6", null ],
+      [ "Binary Semaphores", "index.html#autotoc_md7", [
+        [ "Synychronization example with binary semaphores", "index.html#autotoc_md8", null ]
+      ] ],
+      [ "Conditions", "index.html#autotoc_md9", null ],
+      [ "Spinlocks", "index.html#autotoc_md10", null ],
+      [ "Tasks", "index.html#autotoc_md11", [
+        [ "Task creation example", "index.html#autotoc_md12", null ]
+      ] ],
+      [ "Trace", "index.html#autotoc_md13", [
+        [ "Debug tracing example", "index.html#autotoc_md14", null ]
+      ] ]
     ] ],
     [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", "annotated.html", [
@@ -62,7 +70,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"spinlock_8h.html#a80acca6b3bc1270b42df93756a4f7b97"
+"spinlock_8h.html#a055f6b77eba8d70aa4e9a04861ef9423"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

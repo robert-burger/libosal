@@ -1,5 +1,9 @@
 var NAVTREEINDEX1 =
 {
+"spinlock_8h.html#a055f6b77eba8d70aa4e9a04861ef9423":[3,0,0,0,9,10],
+"spinlock_8h.html#a129718f98f2868b3e7ca562181e5b3e8":[3,0,0,0,9,7],
+"spinlock_8h.html#a58b795b0fab093a7ea78af26130c5a55":[3,0,0,0,9,0],
+"spinlock_8h.html#a6f012d9aa24391a1c43cb95e8e8be85d":[3,0,0,0,9,4],
 "spinlock_8h.html#a80acca6b3bc1270b42df93756a4f7b97":[3,0,0,0,9,6],
 "spinlock_8h.html#a85466a65b38085410df0dff1f0f89fa8":[3,0,0,0,9,2],
 "spinlock_8h.html#a89fdcee26e6d201fc3bc606d6dfb1ca5":[3,0,0,0,9,13],

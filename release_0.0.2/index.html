@@ -118,6 +118,8 @@ deterministic 1 ms loop example</h2>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
 Mutexes</h1>
 <p>The mutexes are mutual exclusion locks which are commonly used to protect shared memory structures from concurrent access.</p>
+<h2><a class="anchor" id="autotoc_md5"></a>
+Mutex example with 2 tasks</h2>
 <div class="fragment"><div class="line">osal_mutex_t mtx;</div>
 <div class="line">some_struct_protected_by_mutex_t obj;</div>
 <div class="line"> </div>
@@ -149,12 +151,14 @@ Mutexes</h1>
 <div class="line">  </div>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md5"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md6"></a>
 Semaphores</h1>
 <p>Semaphores are a synchronization mechanism with a counter.</p>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md7"></a>
 Binary Semaphores</h1>
 <p>Binary semaphores are a special case of a semaphore for signalling one event to one waiter. The state of the semaphore is be preserved until a waiter has consumed it. It is guaranteed that no event will be missed e.g. because of no one was waiting on the semaphore while it was posted.</p>
+<h2><a class="anchor" id="autotoc_md8"></a>
+Synychronization example with binary semaphores</h2>
 <div class="fragment"><div class="line">osal_binary_semaphore_t binsem;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> *task_1(<span class="keywordtype">void</span> *) {</div>
@@ -172,16 +176,18 @@ Binary Semaphores</h1>
 <div class="line">  }</div>
 <div class="line">  <span class="keywordflow">return</span> NULL;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md7"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md9"></a>
 Conditions</h1>
 <p>Conditions are another thread synchronization mechanism.</p>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md10"></a>
 Spinlocks</h1>
 <p>Spinlocks are similar to mutexes but if locking a spinlock does not succeed it does busy-waiting until it is available.</p>
 <p>They are used the same as a mutex. For an example please look at 'mutexes'.</p>
-<h1><a class="anchor" id="autotoc_md9"></a>
+<h1><a class="anchor" id="autotoc_md11"></a>
 Tasks</h1>
 <p>Task/Thread abstraction.</p>
+<h2><a class="anchor" id="autotoc_md12"></a>
+Task creation example</h2>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> *my_task_handler(<span class="keywordtype">void</span> *arg) {</div>
 <div class="line">  <span class="comment">// do task work</span></div>
 <div class="line">  <span class="keywordflow">return</span> NULL;</div>
@@ -193,10 +199,12 @@ Tasks</h1>
 <div class="line">  <span class="comment">// do other work</span></div>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md10"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md13"></a>
 Trace</h1>
 <p>The trace framework is used to do time-tracing of cyclic/periodic tasks.</p>
 <p>This is an example of how this is meant to be used:</p>
+<h2><a class="anchor" id="autotoc_md14"></a>
+Debug tracing example</h2>
 <div class="fragment"><div class="line"><a class="code" href="structosal__trace.html">osal_trace_t</a> my_trace;</div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> *cyclic_task(<span class="keywordtype">void</span> *arg) {</div>
