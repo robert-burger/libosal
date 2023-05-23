@@ -44,16 +44,27 @@
 osal_retval_t osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_attr_t *attr, osal_int32_t initval) {
     assert(sem != NULL);
 
+    osal_retval_t ret = OSAL_OK;
+
     int pshared = 0;
     int posix_initval = initval;
+    int local_ret;
     if (attr != NULL) {
         if (((*attr) & OSAL_SEMAPHORE_ATTR__PROCESS_SHARED) == OSAL_SEMAPHORE_ATTR__PROCESS_SHARED) {
             pshared = 1;
         }
     }
 
-    sem_init(&sem->posix_sem, pshared, posix_initval);
-    return OSAL_OK;
+    local_ret = sem_init(&sem->posix_sem, pshared, posix_initval);
+    if (local_ret != 0) {
+        if (local_ret == ENOSYS) {
+            ret = OSAL_ERR_NOT_IMPLEMENTED;
+        } else { // if (local_ret == EINVAL)
+            ret = OSAL_ERR_INVALID_PARAM;
+        } 
+    }
+
+    return ret;
 }
 
 //! \brief Post a semaphore.
@@ -69,7 +80,11 @@ osal_retval_t osal_semaphore_post(osal_semaphore_t *sem) {
 
     int local_ret = sem_post(&sem->posix_sem);
     if (local_ret != 0) {
-        ret = OSAL_ERR_OPERATION_FAILED;
+        if (local_ret == EINVAL) {
+            ret = OSAL_ERR_INVALID_PARAM;
+        } else { // if (local_ret == EOVERFLOW) 
+            ret = OSAL_ERR_OPERATION_FAILED;
+        }
     }
 
     return ret;
@@ -84,9 +99,19 @@ osal_retval_t osal_semaphore_post(osal_semaphore_t *sem) {
 osal_retval_t osal_semaphore_wait(osal_semaphore_t *sem) {
     assert(sem != NULL);
 
-    sem_wait(&sem->posix_sem);
+    osal_retval_t ret = OSAL_OK;
+    int local_ret;
 
-    return OSAL_OK;
+    local_ret = sem_wait(&sem->posix_sem);
+    if (local_ret != 0) {
+        if (local_ret == EINTR) {
+            ret = OSAL_ERR_INTERRUPTED;
+        } else { // if (local_ret == EINVAL) 
+            ret = OSAL_ERR_INVALID_PARAM;
+        }
+    }
+
+    return ret;
 }
 
 //! \brief Try to wait for a semaphore but don't block.
@@ -156,9 +181,17 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
  */
 osal_retval_t osal_semaphore_destroy(osal_semaphore_t *sem) {
     assert(sem != NULL);
+    
+    osal_retval_t ret = OSAL_OK;
+    int local_ret;
 
-    sem_destroy(&sem->posix_sem);
-    return OSAL_OK;
+    local_ret = sem_destroy(&sem->posix_sem);
+    if (local_ret != 0) {
+        // should only return EINVAL !
+        ret = OSAL_ERR_INVALID_PARAM;
+    }
+    
+    return ret;
 }
 
 

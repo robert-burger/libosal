@@ -58,20 +58,20 @@
  */
 
 #define OSAL_MUTEX_ATTR__TYPE__MASK             0x00000003u     //!< \brief Mutex attribute type mask.
-#define OSAL_MUTEX_ATTR__TYPE__NORMAL           0x00000000u
-#define OSAL_MUTEX_ATTR__TYPE__ERRORCHECK       0x00000001u
-#define OSAL_MUTEX_ATTR__TYPE__RECURSIVE        0x00000002u
+#define OSAL_MUTEX_ATTR__TYPE__NORMAL           0x00000000u     //!< \brief Mutex normal (default) type.
+#define OSAL_MUTEX_ATTR__TYPE__ERRORCHECK       0x00000001u     //!< \brief Mutex with error checks.
+#define OSAL_MUTEX_ATTR__TYPE__RECURSIVE        0x00000002u     //!< \brief Mutex avoiding recursive deadlocks.
 
-#define OSAL_MUTEX_ATTR__ROBUST                 0x00000010u
-#define OSAL_MUTEX_ATTR__PROCESS_SHARED         0x00000020u
+#define OSAL_MUTEX_ATTR__ROBUST                 0x00000010u     //!< \brief Robust mutex (unlocks if owner died)
+#define OSAL_MUTEX_ATTR__PROCESS_SHARED         0x00000020u     //!< \brief Process shared mutex.
 
-#define OSAL_MUTEX_ATTR__PROTOCOL__MASK         0x00000300u
-#define OSAL_MUTEX_ATTR__PROTOCOL__NONE         0x00000000u
-#define OSAL_MUTEX_ATTR__PROTOCOL__INHERIT      0x00000100u
-#define OSAL_MUTEX_ATTR__PROTOCOL__PROTECT      0x00000200u
+#define OSAL_MUTEX_ATTR__PROTOCOL__MASK         0x00000300u     //!< \brief Mutex protocol mask.
+#define OSAL_MUTEX_ATTR__PROTOCOL__NONE         0x00000000u     //!< \brief Mutex protocol default.
+#define OSAL_MUTEX_ATTR__PROTOCOL__INHERIT      0x00000100u     //!< \brief Mutex protocol inherit priority.
+#define OSAL_MUTEX_ATTR__PROTOCOL__PROTECT      0x00000200u     //!< \brief Mutex protocol protect priority.
 
-#define OSAL_MUTEX_ATTR__PRIOCEILING__MASK      0xFFFF0000u
-#define OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT     16u
+#define OSAL_MUTEX_ATTR__PRIOCEILING__MASK      0xFFFF0000u     //!< \brief Priority ceiling mask.
+#define OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT     16u             //!< \brief Priority ceiling value.
 
 typedef osal_uint32_t osal_mutex_attr_t;
 
@@ -81,43 +81,77 @@ extern "C" {
  
 //! \brief Initialize a mutex.
 /*!
+ * This function initializes a mutex structure given by \p mtx. If no attributes
+ * are given with \p attr a default mutex is initiazed.
+ *
  * \param[in]   mtx     Pointer to osal mutex structure. Content is OS dependent.
  * \param[in]   attr    Pointer to initial mutex attributes. Can be NULL then
  *                      the defaults of the underlying mutex will be used.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_SYSTEM_LIMIT_REACHED    Not enough system resources.
+ * \retval OSAL_ERR_OUT_OF_MEMORY           System is out of memory.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Permission denied opening a shared mutex.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
+ * \retval OSAL_ERR_UNAVAILABLE             Other errors. 
  */
 osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr);
 
 //! \brief Locks a mutex.
 /*!
+ * This function tries to lock a mutex. If the mutex is already locked by another
+ * task it blocks until the other task unlocks the mutex or an other error occures.
+ *
  * \param[in]   mtx     Pointer to osal mutex structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_SYSTEM_LIMIT_REACHED    Not enough system resources.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input paratemer.
+ * \retval OSAL_ERR_NOT_RECOVERABLE         Mutex not recoverable.
+ * \retval OSAL_ERR_OWNER_DEAD              Old mutex owner dead (see ROBUST).
+ * \retval OSAL_ERR_DEAD_LOCK               Would dead-lock (see RECURSIVE).
+ * \retval OSAL_ERR_UNAVAILABLE             Other errors.
  */
 osal_retval_t osal_mutex_lock(osal_mutex_t *mtx);
 
 //! \brief Tries to lock a mutex.
 /*!
+ * This function tries to lock a mutex. If it is available it locks the mutex 
+ * and returns immediately with OSAL_OK. If it is already locked by an other
+ * task it returns OSAL_ERR_BUSY without locking or waiting.
+ *
  * \param[in]   mtx     Pointer to osal mutex structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_SYSTEM_LIMIT_REACHED    Not enough system resources.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input paratemer.
+ * \retval OSAL_ERR_NOT_RECOVERABLE         Mutex not recoverable.
+ * \retval OSAL_ERR_OWNER_DEAD              Old mutex owner dead (see ROBUST).
+ * \retval OSAL_ERR_BUSY                    Mutex is already locked.
+ * \retval OSAL_ERR_UNAVAILABLE             Other errors.
  */
 osal_retval_t osal_mutex_trylock(osal_mutex_t *mtx);
 
 //! \brief Unlocks a mutex.
 /*!
+ * This function tries to unlock a previously locked mutex.
+ *
  * \param[in]   mtx     Pointer to osal mutex structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Permission denied unlocking mutex.
+ * \retval OSAL_ERR_UNAVAILABLE             Other errors.
  */
 osal_retval_t osal_mutex_unlock(osal_mutex_t *mtx);
 
 //! \brief Destroys a mutex.
 /*!
+ * This function tries to destroy a mutex.
+ *
  * \param[in]   mtx     Pointer to osal mutex structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
  */
 osal_retval_t osal_mutex_destroy(osal_mutex_t *mtx);
 

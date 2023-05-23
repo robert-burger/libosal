@@ -47,6 +47,13 @@
 #include <libosal/pikeos/mq.h>
 #endif
 
+/** \defgroup mq_group Message queue
+ * Message queues are an asynchronous communication mechanism between two or more 
+ * processes/tasks. They follow the publish/subscribe pattern.
+ *
+ * @{
+ */
+
 #define OSAL_MQ_ATTR__OFLAG__RDONLY           0x00000001u
 #define OSAL_MQ_ATTR__OFLAG__WRONLY           0x00000002u
 #define OSAL_MQ_ATTR__OFLAG__RDWR             0x00000004u
@@ -71,7 +78,14 @@ extern "C" {
  * \param[in]   attr    Pointer to initial mq attributes. Can be NULL then
  *                      the defaults of the underlying mq will be used.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Tried to open an existing queue without sufficient persmission.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Tried to create an already existing message queue.
+ * \retval OSAL_ERR_INVALID_PARAM           Name is not in correct format or it is too long.
+ * \retval OSAL_ERR_SYSTEM_LIMIT_REACHED    Limit of open files has been reached.
+ * \retval OSAL_ERR_NOT_FOUND               Tried to open a non-existing message queue.
+ * \retval OSAL_ERR_OUT_OF_MEMORY           System is out of memory.
+ * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
  */
 osal_retval_t osal_mq_open(osal_mq_t *mq, const osal_char_t *name,  const osal_mq_attr_t *attr);
 
@@ -134,6 +148,8 @@ osal_retval_t osal_mq_close(osal_mq_t *mq);
 #ifdef __cplusplus
 };
 #endif
+
+/** @} */
 
 #endif /* LIBOSAL_MQ__H */
 

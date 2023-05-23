@@ -36,6 +36,12 @@
 #include <libosal/types.h>
 #include <libosal/timer.h>
 
+/** \defgroup io_group IO
+ * IO functions.
+ *
+ * @{
+ */
+
 #define LIBOSAL_IO_SHM_MAX_MSG_SIZE 512
 
 #ifdef __cplusplus
@@ -79,6 +85,8 @@ osal_retval_t osal_io_shm_get_message(osal_char_t msg[LIBOSAL_IO_SHM_MAX_MSG_SIZ
 #ifdef __cplusplus
 };
 #endif
+
+/** @} */
 
 #endif /* LIBOSAL_MUTEX__H */
 

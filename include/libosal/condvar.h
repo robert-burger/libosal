@@ -117,7 +117,7 @@ osal_retval_t osal_condvar_wait(osal_condvar_t *cv, osal_mutex_t *mtx);
  * \retval OSAL_OK                      On success.
  * \retval OSAL_ERR_TIMEOUT             Timeout expired waiting on condition.
  * \retval OSAL_ERR_PERMISSION_DENIED   Mutex was not owner by thread.
- * \retval OSAL_ERR_INVALID_PARAM   Condvar is invalid/not initalized.
+ * \retval OSAL_ERR_INVALID_PARAM       Condvar is invalid/not initalized.
  */
 osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, const osal_timer_t *timeout);
 
