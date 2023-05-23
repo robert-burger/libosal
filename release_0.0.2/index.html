@@ -153,11 +153,30 @@ Mutex example with 2 tasks</h2>
 <div class="line">}</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md6"></a>
 Semaphores</h1>
-<p>Semaphores are a synchronization mechanism with a counter.</p>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<p>Semaphores are a synchronization mechanism with a counter. They are usually used to synchronize two ore more tasks. The counter counts how often <a class="el" href="group__semaphore__group.html#ga677aaac4869da2f16c61c2dbdf87f1ce">osal_semaphore_post</a> was called. One of the wait function can be called as often as the counter is still greater than 0 without blocking.</p>
+<h2><a class="anchor" id="autotoc_md7"></a>
+Synychronization example with semaphores</h2>
+<div class="fragment"><div class="line">osal_semaphore_t mysem;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> *task_1(<span class="keywordtype">void</span> *) {</div>
+<div class="line">  <span class="keywordflow">while</span> (1) {</div>
+<div class="line">    <a class="code" href="group__semaphore__group.html#ga4d177dabc38951f3468915dbeca38677" title="Wait for a semaphore.">osal_semaphore_wait</a>(&amp;mysem);</div>
+<div class="line">    <span class="comment">// do other work</span></div>
+<div class="line">  }</div>
+<div class="line">  <span class="keywordflow">return</span> NULL;</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> *task_2(<span class="keywordtype">void</span> *) {</div>
+<div class="line">  <span class="keywordflow">while</span> (1) {   </div>
+<div class="line">    <span class="comment">// wait for event, do some stuff</span></div>
+<div class="line">    <a class="code" href="group__semaphore__group.html#ga677aaac4869da2f16c61c2dbdf87f1ce" title="Post a semaphore.">osal_semaphore_post</a>(&amp;mysem);</div>
+<div class="line">  }</div>
+<div class="line">  <span class="keywordflow">return</span> NULL;</div>
+<div class="line">}</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md8"></a>
 Binary Semaphores</h1>
 <p>Binary semaphores are a special case of a semaphore for signalling one event to one waiter. The state of the semaphore is be preserved until a waiter has consumed it. It is guaranteed that no event will be missed e.g. because of no one was waiting on the semaphore while it was posted.</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md9"></a>
 Synychronization example with binary semaphores</h2>
 <div class="fragment"><div class="line">osal_binary_semaphore_t binsem;</div>
 <div class="line"> </div>
@@ -176,17 +195,17 @@ Synychronization example with binary semaphores</h2>
 <div class="line">  }</div>
 <div class="line">  <span class="keywordflow">return</span> NULL;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md9"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md10"></a>
 Conditions</h1>
 <p>Conditions are another thread synchronization mechanism.</p>
-<h1><a class="anchor" id="autotoc_md10"></a>
+<h1><a class="anchor" id="autotoc_md11"></a>
 Spinlocks</h1>
 <p>Spinlocks are similar to mutexes but if locking a spinlock does not succeed it does busy-waiting until it is available.</p>
 <p>They are used the same as a mutex. For an example please look at 'mutexes'.</p>
-<h1><a class="anchor" id="autotoc_md11"></a>
+<h1><a class="anchor" id="autotoc_md12"></a>
 Tasks</h1>
 <p>Task/Thread abstraction.</p>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 Task creation example</h2>
 <div class="fragment"><div class="line"><span class="keywordtype">void</span> *my_task_handler(<span class="keywordtype">void</span> *arg) {</div>
 <div class="line">  <span class="comment">// do task work</span></div>
@@ -199,11 +218,11 @@ Task creation example</h2>
 <div class="line">  <span class="comment">// do other work</span></div>
 <div class="line">  <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md13"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md14"></a>
 Trace</h1>
 <p>The trace framework is used to do time-tracing of cyclic/periodic tasks.</p>
 <p>This is an example of how this is meant to be used:</p>
-<h2><a class="anchor" id="autotoc_md14"></a>
+<h2><a class="anchor" id="autotoc_md15"></a>
 Debug tracing example</h2>
 <div class="fragment"><div class="line"><a class="code" href="structosal__trace.html">osal_trace_t</a> my_trace;</div>
 <div class="line"> </div>

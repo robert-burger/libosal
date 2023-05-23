@@ -33,17 +33,19 @@ var NAVTREE =
       [ "Mutexes", "index.html#autotoc_md4", [
         [ "Mutex example with 2 tasks", "index.html#autotoc_md5", null ]
       ] ],
-      [ "Semaphores", "index.html#autotoc_md6", null ],
-      [ "Binary Semaphores", "index.html#autotoc_md7", [
-        [ "Synychronization example with binary semaphores", "index.html#autotoc_md8", null ]
+      [ "Semaphores", "index.html#autotoc_md6", [
+        [ "Synychronization example with semaphores", "index.html#autotoc_md7", null ]
       ] ],
-      [ "Conditions", "index.html#autotoc_md9", null ],
-      [ "Spinlocks", "index.html#autotoc_md10", null ],
-      [ "Tasks", "index.html#autotoc_md11", [
-        [ "Task creation example", "index.html#autotoc_md12", null ]
+      [ "Binary Semaphores", "index.html#autotoc_md8", [
+        [ "Synychronization example with binary semaphores", "index.html#autotoc_md9", null ]
       ] ],
-      [ "Trace", "index.html#autotoc_md13", [
-        [ "Debug tracing example", "index.html#autotoc_md14", null ]
+      [ "Conditions", "index.html#autotoc_md10", null ],
+      [ "Spinlocks", "index.html#autotoc_md11", null ],
+      [ "Tasks", "index.html#autotoc_md12", [
+        [ "Task creation example", "index.html#autotoc_md13", null ]
+      ] ],
+      [ "Trace", "index.html#autotoc_md14", [
+        [ "Debug tracing example", "index.html#autotoc_md15", null ]
       ] ]
     ] ],
     [ "Modules", "modules.html", "modules" ],
@@ -70,7 +72,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"spinlock_8h.html#a055f6b77eba8d70aa4e9a04861ef9423"
+"spinlock_8h.html#a04157932b25953a62903f8ef1187c9a5"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
