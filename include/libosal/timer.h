@@ -39,7 +39,7 @@
 #include <libosal/posix/timer.h>
 #endif
 
-/** \defgroup timer
+/** \defgroup timer_group Timer
  * This module implements timers for use in realtime systems. They can be used
  * to implement timeouts, do a deterministic sleep for some amount of time or just
  * to get the current system time.

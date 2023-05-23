@@ -172,7 +172,9 @@ osal_retval_t osal_task_destroy(osal_task_t *hdl) {
 
     osal_retval_t ret = OSAL_OK;
 
-    pthread_cancel(hdl->tid);
+    if (pthread_cancel(hdl->tid) != 0) {
+        ret = OSAL_ERR_NOT_FOUND;
+    }
 
     return ret;
 }
@@ -507,10 +509,10 @@ osal_retval_t osal_task_set_affinity(osal_task_t *hdl,
             }
         }
 
-        int ret = pthread_setaffinity_np(tid, sizeof(cpu_set_t), &cpuset);
-        if (ret != 0) {
+        int local_ret = pthread_setaffinity_np(tid, sizeof(cpu_set_t), &cpuset);
+        if (local_ret != 0) {
             (void)osal_printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
-                    (void *)tid, affinity, ret, strerror(ret));
+                    (void *)tid, affinity, ret, strerror(local_ret));
         }
 #endif
     }

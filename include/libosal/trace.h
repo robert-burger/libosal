@@ -37,6 +37,12 @@
 #include <libosal/trace.h>
 #include <libosal/timer.h>
 
+/** \defgroup trace_group Trace 
+ * This module implements timing traces for use in realtime systems. 
+ *
+ * @{
+ */
+
 typedef struct osal_trace {
     osal_uint32_t cnt;
     osal_uint32_t act_buf;
@@ -56,7 +62,8 @@ extern "C" {
  * \param[in]   cnt     Number of samples to allocate.
  *                      the defaults of the underlying task will be used.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                      On success.
+ * \retval OSAL_ERR_OUT_OF_MEMORY       System out of memory.
  */
 osal_retval_t osal_trace_alloc(osal_trace_t **trace, osal_uint32_t cnt);
 
@@ -80,8 +87,8 @@ void osal_trace_point(osal_trace_t *trace);
 /*!
  * \param[in]   trace   Pointer to trace struct.
  *
- * \return OSAL_OK          success
- * \return OSAL_ERR_TIMEOUT timeout occured
+ * \retval OSAL_OK          success
+ * \retval OSAL_ERR_TIMEOUT timeout occured
  */
 osal_retval_t osal_trace_timedwait(osal_trace_t *trace, osal_timer_t *timeout);
 
@@ -99,6 +106,8 @@ void osal_trace_analyze(osal_trace_t *trace, osal_uint64_t *avg, osal_uint64_t *
 #ifdef __cplusplus
 };
 #endif
+
+/** @} */
 
 #endif /* LIBOSAL_TRACE__H */
 

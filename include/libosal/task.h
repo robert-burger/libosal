@@ -53,6 +53,7 @@
 
 /** \defgroup task_group Tasks
  *
+ * Parallelize your work with separate tasks.
  *
  * @{
  */
@@ -97,7 +98,11 @@ extern "C" {
  * \param[in]   handler Task handler to be executed.
  * \param[in]   arg     Pointer to argument passed to task handler.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_SYSTEM_LIMIT_REACHED    System is out of resources.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Permission denied for priority/policy.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
+ * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
  */
 osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr, 
         osal_task_handler_t handler, osal_task_handler_arg_t arg);
@@ -107,7 +112,11 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
  * \param[in]   retval  Task return value.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_DEAD_LOCK               Dead lock while joining task.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
+ * \retval OSAL_ERR_NOT_FOUND               No task found.
+ * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
  */
 osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval);
 
@@ -115,7 +124,8 @@ osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval);
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_NOT_FOUND               No task found.
  */
 osal_retval_t osal_task_destroy(osal_task_t *hdl);
 
@@ -123,7 +133,8 @@ osal_retval_t osal_task_destroy(osal_task_t *hdl);
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_NOT_IMPLEMENTED         Not implemented.
  */
 osal_retval_t osal_task_get_hdl(osal_task_t *hdl);
 
@@ -132,7 +143,11 @@ osal_retval_t osal_task_get_hdl(osal_task_t *hdl);
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
  * \param[in]   attr    The thread's new attributes.
  *
- * \return OK or ERROR_CODE.
+ *
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Insufficient permission to set priority/affinity/policy.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
  */
 osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
 
@@ -141,7 +156,10 @@ osal_retval_t osal_task_set_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
  * \param[out]  attr    The thread's current attributes.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Insufficient permission to get priority/affinity/policy.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
  */
 osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
 
@@ -151,7 +169,10 @@ osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
  *                      If <b> hdl is NULL, set policy for calling thread.
  * \param[in]   prio    The thread prio as member of osal_task_sched_policy_t
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Insufficient permission to set policy.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
  */
 osal_retval_t osal_task_set_policy(osal_task_t *hdl,
                                         osal_task_sched_policy_t policy);
@@ -162,7 +183,10 @@ osal_retval_t osal_task_set_policy(osal_task_t *hdl,
  *                      If <b> hdl is NULL, get policy for calling thread.
  * \param[out]  prio    The thread's current policy
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Insufficient permission to get policy.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
  */
 osal_retval_t osal_task_get_policy(osal_task_t *hdl,
                                         osal_task_sched_policy_t *policy);
@@ -173,7 +197,10 @@ osal_retval_t osal_task_get_policy(osal_task_t *hdl,
  *                      If <b> hdl is NULL, set priority for calling thread.
  * \param[in]   prio    The thread prio as member of osal_task_sched_priority_t
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Insufficient permission to set priority.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
  */
 osal_retval_t osal_task_set_priority(osal_task_t *hdl,
                                         osal_task_sched_priority_t prio);
@@ -184,7 +211,10 @@ osal_retval_t osal_task_set_priority(osal_task_t *hdl,
  *                      If <b> hdl is NULL, get priority for calling thread.
  * \param[out]  prio    The thread's current prio
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
+ * \retval OSAL_ERR_PERMISSION_DENIED       Insufficient permission to get priority.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
  */
 osal_retval_t osal_task_get_priority(osal_task_t *hdl,
                                         osal_task_sched_priority_t *prio);
@@ -195,7 +225,7 @@ osal_retval_t osal_task_get_priority(osal_task_t *hdl,
  *                      If <b> hdl is NULL, set affinity for calling thread.
  * \param[in]   prio    The thread affinity as member of osal_task_sched_priority_t
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
  */
 osal_retval_t osal_task_set_affinity(osal_task_t *hdl, 
                                         osal_task_sched_affinity_t affinity);
@@ -206,7 +236,8 @@ osal_retval_t osal_task_set_affinity(osal_task_t *hdl,
  *                      If <b> hdl is NULL, set affinity for calling thread.
  * \param[in]   prio    The thread affinity as member of osal_task_sched_priority_t
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
  */
 osal_retval_t osal_task_get_affinity(osal_task_t *hdl, 
                                         osal_task_sched_affinity_t *affinity);
@@ -215,7 +246,9 @@ osal_retval_t osal_task_get_affinity(osal_task_t *hdl,
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_NOT_IMPLEMENTED         Not implemented.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
  */
 osal_retval_t osal_task_suspend(osal_task_t *hdl);
 
@@ -223,7 +256,9 @@ osal_retval_t osal_task_suspend(osal_task_t *hdl);
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_NOT_IMPLEMENTED         Not implemented.
+ * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.
  */
 osal_retval_t osal_task_resume(osal_task_t *hdl);
 
@@ -231,7 +266,7 @@ osal_retval_t osal_task_resume(osal_task_t *hdl);
 /*!
  * \note To be used at the end of a thread's execution
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
  */
 osal_retval_t osal_task_delete(osal_void_t);
 
@@ -240,7 +275,8 @@ osal_retval_t osal_task_delete(osal_void_t);
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
  * \param[out]  state   A thread state according to osal_task_State_t
  *
- * \return OK or ERROR_CODE.
+ * \retval OSAL_OK                          On success.
+ * \retval OSAL_ERR_NOT_IMPLEMENTED         Not implemented.
  */
 osal_retval_t osal_task_get_state(osal_task_t *hdl,
                                      osal_task_state_t *state);
