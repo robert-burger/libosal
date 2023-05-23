@@ -187,13 +187,20 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Destroys a mutex. </p>
+<p>This function tries to destroy a mutex.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">mtx</td><td>Pointer to osal mutex structure. Content is OS dependent.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Other errors. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -263,13 +270,25 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Locks a mutex. </p>
+<p>This function tries to lock a mutex. If the mutex is already locked by another task it blocks until the other task unlocks the mutex or an other error occures.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">mtx</td><td>Pointer to osal mutex structure. Content is OS dependent.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_SYSTEM_LIMIT_REACHED</td><td>Not enough system resources. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input paratemer. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_NOT_RECOVERABLE</td><td>Mutex not recoverable. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OWNER_DEAD</td><td>Old mutex owner dead (see ROBUST). </td></tr>
+    <tr><td class="paramname">OSAL_ERR_DEAD_LOCK</td><td>Would dead-lock (see RECURSIVE). </td></tr>
+    <tr><td class="paramname">OSAL_ERR_UNAVAILABLE</td><td>Other errors. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -290,13 +309,25 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Tries to lock a mutex. </p>
+<p>This function tries to lock a mutex. If it is available it locks the mutex and returns immediately with OSAL_OK. If it is already locked by an other task it returns OSAL_ERR_BUSY without locking or waiting.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">mtx</td><td>Pointer to osal mutex structure. Content is OS dependent.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_SYSTEM_LIMIT_REACHED</td><td>Not enough system resources. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input paratemer. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_NOT_RECOVERABLE</td><td>Mutex not recoverable. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OWNER_DEAD</td><td>Old mutex owner dead (see ROBUST). </td></tr>
+    <tr><td class="paramname">OSAL_ERR_BUSY</td><td>Mutex is already locked. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_UNAVAILABLE</td><td>Other errors. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -317,13 +348,21 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Unlocks a mutex. </p>
+<p>This function tries to unlock a previously locked mutex.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">mtx</td><td>Pointer to osal mutex structure. Content is OS dependent.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Permission denied unlocking mutex. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_UNAVAILABLE</td><td>Other errors. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
