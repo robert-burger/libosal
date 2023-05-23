@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['condvar_2eh_2',['condvar.h',['../condvar_8h.html',1,'']]],
-  ['conditional_20variable_3',['Conditional Variable',['../group__condvar__group.html',1,'']]]
+  ['binary_5fsemaphore_2eh_1',['binary_semaphore.h',['../binary__semaphore_8h.html',1,'']]],
+  ['binary_20semaphore_2',['Binary Semaphore',['../group__binary__semaphore__group.html',1,'']]]
 ];

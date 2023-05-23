@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['binary_5fsemaphore_2eh_0',['binary_semaphore.h',['../binary__semaphore_8h.html',1,'']]],
-  ['binary_20semaphore_1',['Binary Semaphore',['../group__binary__semaphore__group.html',1,'']]]
+  ['act_5fbuf_0',['act_buf',['../structosal__trace.html#a5a6911866a6a00be4b1c6f079e0ddd47',1,'osal_trace']]]
 ];
