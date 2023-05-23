@@ -44,12 +44,12 @@
  */
 
 typedef struct osal_trace {
-    osal_uint32_t cnt;
-    osal_uint32_t act_buf;
-    osal_uint32_t pos;
-    osal_binary_semaphore_t sync_sem;
-    osal_uint64_t *time_in_ns[2];
-    osal_uint64_t *tmp;
+    osal_uint32_t cnt;                  //!< number of measurements
+    osal_uint32_t act_buf;              //!< actual number of double buffer
+    osal_uint32_t pos;                  //!< position in actual buffer.
+    osal_binary_semaphore_t sync_sem;   //!< sync when buffer is full.
+    osal_uint64_t *time_in_ns[2];       //!< time double buffer.
+    osal_uint64_t *tmp;                 //!< calculation buffer.
 } osal_trace_t;
 
 #ifdef __cplusplus
