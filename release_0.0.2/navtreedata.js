@@ -62,7 +62,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"spinlock_8h_source.html"
+"spinlock_8h.html#a9b968decbf7441ce5f8562b486eb6cc4"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
