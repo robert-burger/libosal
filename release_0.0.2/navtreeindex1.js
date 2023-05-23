@@ -1,5 +1,9 @@
 var NAVTREEINDEX1 =
 {
+"spinlock_8h.html#a80acca6b3bc1270b42df93756a4f7b97":[3,0,0,0,9,6],
+"spinlock_8h.html#a85466a65b38085410df0dff1f0f89fa8":[3,0,0,0,9,2],
+"spinlock_8h.html#a89fdcee26e6d201fc3bc606d6dfb1ca5":[3,0,0,0,9,13],
+"spinlock_8h.html#a8a76245497126680877ba4b6c57f9b16":[3,0,0,0,9,3],
 "spinlock_8h.html#a9b968decbf7441ce5f8562b486eb6cc4":[3,0,0,0,9,8],
 "spinlock_8h.html#aa35741580b19758cf6293ecc47a18cec":[3,0,0,0,9,14],
 "spinlock_8h.html#aa888d185d143f7d65155b572e2bc6f7b":[3,0,0,0,9,11],
@@ -19,9 +23,9 @@ var NAVTREEINDEX1 =
 "structosal__task__attr.html#a6418e03870b1f0df8224e68beee9dec3":[2,0,1,2],
 "structosal__task__attr.html#aa7b039b8933db1b2d1f604c901935883":[2,0,1,1],
 "structosal__task__attr.html#adb7ee03ad7efdf89e0ab5455e747b328":[2,0,1,3],
-"structosal__timer.html":[1,6,0],
-"structosal__timer.html#ad2919ba129c9ad6ca698c8a50886e735":[1,6,0,1],
-"structosal__timer.html#ae69e70f586db6b9fe0ae34b3c5dcf827":[1,6,0,0],
+"structosal__timer.html":[1,7,0],
+"structosal__timer.html#ad2919ba129c9ad6ca698c8a50886e735":[1,7,0,1],
+"structosal__timer.html#ae69e70f586db6b9fe0ae34b3c5dcf827":[1,7,0,0],
 "structosal__trace.html":[2,0,3],
 "structosal__trace.html#a031b9b3a561cac4f6ee074ad775462c8":[2,0,3,2],
 "structosal__trace.html#a5a6911866a6a00be4b1c6f079e0ddd47":[2,0,3,0],

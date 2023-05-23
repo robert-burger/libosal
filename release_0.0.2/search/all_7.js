@@ -4,5 +4,6 @@ var searchData=
   ['semaphore_2eh_116',['semaphore.h',['../semaphore_8h.html',1,'']]],
   ['semaphore_117',['Semaphore',['../group__semaphore__group.html',1,'']]],
   ['shm_2eh_118',['shm.h',['../shm_8h.html',1,'']]],
-  ['spinlock_2eh_119',['spinlock.h',['../spinlock_8h.html',1,'']]]
+  ['shared_20memory_119',['Shared memory',['../group__shm__group.html',1,'']]],
+  ['spinlock_2eh_120',['spinlock.h',['../spinlock_8h.html',1,'']]]
 ];
