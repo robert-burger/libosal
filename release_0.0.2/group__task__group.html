@@ -253,7 +253,16 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_SYSTEM_LIMIT_REACHED</td><td>System is out of resources. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Permission denied for priority/policy. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Other errors. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -275,7 +284,12 @@ Functions</h2></td></tr>
 
 <p>Delete the calling thread. </p>
 <dl class="section note"><dt>Note</dt><dd>To be used at the end of a thread's execution</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -302,7 +316,13 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_NOT_FOUND</td><td>No task found. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -340,7 +360,13 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><b> OK or ERROR_CODE. </b></dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td><b> Invalid input parameter. </b></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -367,7 +393,13 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_NOT_IMPLEMENTED</td><td>Not implemented. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -405,7 +437,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><b> OK or ERROR_CODE. </b></dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td><b> Other errors. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td><b> Insufficient permission to get policy. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td><b> Invalid input parameter. </b></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -443,7 +483,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><b> OK or ERROR_CODE. </b></dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td><b> Other errors. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td><b> Insufficient permission to get priority. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td><b> Invalid input parameter. </b></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -481,7 +529,13 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_NOT_IMPLEMENTED</td><td>Not implemented. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -519,7 +573,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Other errors. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Insufficient permission to get priority/affinity/policy. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -557,7 +619,16 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_DEAD_LOCK</td><td>Dead lock while joining task. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_NOT_FOUND</td><td>No task found. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Other errors. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -584,7 +655,14 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_NOT_IMPLEMENTED</td><td>Not implemented. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -622,7 +700,12 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><b> OK or ERROR_CODE. </b></dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -660,7 +743,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><b> OK or ERROR_CODE. </b></dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td><b> Other errors. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td><b> Insufficient permission to set policy. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td><b> Invalid input parameter. </b></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -698,7 +789,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><b> OK or ERROR_CODE. </b></dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td><b> Other errors. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td><b> Insufficient permission to set priority. </b></td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td><b> Invalid input parameter. </b></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -736,7 +835,15 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Other errors. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Insufficient permission to set priority/affinity/policy. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -763,7 +870,14 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>OK or ERROR_CODE. </dd></dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_NOT_IMPLEMENTED</td><td>Not implemented. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
