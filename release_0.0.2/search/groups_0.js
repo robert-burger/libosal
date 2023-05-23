@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['binary_20semaphore_230',['Binary Semaphore',['../group__binary__semaphore__group.html',1,'']]]
+  ['binary_20semaphore_231',['Binary Semaphore',['../group__binary__semaphore__group.html',1,'']]]
 ];
