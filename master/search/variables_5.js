@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['time_5fin_5fns_321',['time_in_ns',['../structosal__trace.html#ab884c794411863453b9b7d034534c243',1,'osal_trace']]],
-  ['tmp_322',['tmp',['../structosal__trace.html#a5eb31a7263e1a16cb3d30bd3597a4e5c',1,'osal_trace']]]
+  ['policy_332',['policy',['../structosal__task__attr.html#aa7b039b8933db1b2d1f604c901935883',1,'osal_task_attr']]],
+  ['pos_333',['pos',['../structosal__trace.html#a031b9b3a561cac4f6ee074ad775462c8',1,'osal_trace']]],
+  ['priority_334',['priority',['../structosal__task__attr.html#a6418e03870b1f0df8224e68beee9dec3',1,'osal_task_attr']]]
 ];

@@ -41,7 +41,8 @@ var menudata={children:[
 {text:"t",url:"globals.html#index_t"}]},
 {text:"Functions",url:"globals_func.html",children:[
 {text:"o",url:"globals_func.html#index_o"}]},
-{text:"Typedefs",url:"globals_type.html"},
+{text:"Typedefs",url:"globals_type.html",children:[
+{text:"o",url:"globals_type.html#index_o"}]},
 {text:"Macros",url:"globals_defs.html",children:[
 {text:"l",url:"globals_defs.html#index_l"},
 {text:"n",url:"globals_defs.html#index_n"},

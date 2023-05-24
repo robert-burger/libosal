@@ -14,6 +14,7 @@ var group__task__group =
     [ "OSAL_STATE_THREAD_INACTIVE", "group__task__group.html#ga9c3e07a9512c0cf601fed69d02e3169f", null ],
     [ "OSAL_STATE_THREAD_UNKNOWN_ID", "group__task__group.html#gacd6f173941c1bd2269b2a30c27f29d66", null ],
     [ "TASK_NAME_LEN", "group__task__group.html#ga2676c8b65bc70137399d1621578e8f81", null ],
+    [ "osal_task_attr_t", "group__task__group.html#ga963ecfebece5497379ab8383c4d94cc1", null ],
     [ "osal_task_handler_arg_t", "group__task__group.html#ga847a456cab037dbfcfaaefe5df3ed038", null ],
     [ "osal_task_handler_t", "group__task__group.html#ga47d50ef79da377f98b5349773e5762f8", null ],
     [ "osal_task_retval_t", "group__task__group.html#ga85708ea5c0dc14dc5daaf350ae72bb8b", null ],

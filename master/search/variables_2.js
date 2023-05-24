@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['nsec_317',['nsec',['../structosal__timer.html#ae69e70f586db6b9fe0ae34b3c5dcf827',1,'osal_timer']]]
+  ['max_5fmessage_5fsize_327',['max_message_size',['../structosal__mq__attr.html#ad3ca05de587dbf625a37f16431c5cfa3',1,'osal_mq_attr']]],
+  ['max_5fmessages_328',['max_messages',['../structosal__mq__attr.html#a082a46fbd4cb012d8e901beea34b51a8',1,'osal_mq_attr']]],
+  ['mode_329',['mode',['../structosal__mq__attr.html#a5c4695519af65b7d72c57df45d72b2a3',1,'osal_mq_attr']]]
 ];
