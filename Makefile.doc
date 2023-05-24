@@ -26,6 +26,8 @@ gh-pages:
 	@mv "$(BUILDDIR)/html" $(DOCS)
 	@cd "$(GH_PAGES_DIR_NAME)" && python3 ../doc/create_directory_listing.py
 	# add updated branch listing
+	cp $(BUILDDIR)/*.css $(GH_PAGES_DIR_NAME)/
+	cp $(BUILDDIR)/index.html $(GH_PAGES_DIR_NAME)/
 	git -C $(GH_PAGES_DIR_NAME) add index.html
 	git -C $(GH_PAGES_DIR_NAME) add content.html
 	git -C $(GH_PAGES_DIR_NAME) add navtree.css
