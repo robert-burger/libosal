@@ -36,10 +36,12 @@ var menudata={children:[
 {text:"Globals",url:"globals.html",children:[
 {text:"All",url:"globals.html",children:[
 {text:"n",url:"globals.html#index_n"},
-{text:"o",url:"globals.html#index_o"}]},
+{text:"o",url:"globals.html#index_o"},
+{text:"t",url:"globals.html#index_t"}]},
 {text:"Functions",url:"globals_func.html",children:[
 {text:"o",url:"globals_func.html#index_o"}]},
 {text:"Typedefs",url:"globals_type.html"},
 {text:"Macros",url:"globals_defs.html",children:[
 {text:"n",url:"globals_defs.html#index_n"},
-{text:"o",url:"globals_defs.html#index_o"}]}]}]}]}
+{text:"o",url:"globals_defs.html#index_o"},
+{text:"t",url:"globals_defs.html#index_t"}]}]}]}]}

@@ -108,16 +108,20 @@ Data Structures</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:ga2423c4869f8e2858c1c6b886bbe9457e"><td class="memItemLeft" align="right" valign="top">
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>OSAL_SCHED_POLICY_FIFO</b>&#160;&#160;&#160;((osal_uint32_t)0x00000001u)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga2423c4869f8e2858c1c6b886bbe9457e">OSAL_SCHED_POLICY_FIFO</a>&#160;&#160;&#160;((osal_uint32_t)0x00000001u)</td></tr>
+<tr class="memdesc:ga2423c4869f8e2858c1c6b886bbe9457e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task scheduling policy FIFO. <br /></td></tr>
 <tr class="separator:ga2423c4869f8e2858c1c6b886bbe9457e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5688c2d775c63a9d3a6d003975f75556"><td class="memItemLeft" align="right" valign="top">
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>OSAL_SCHED_POLICY_ROUND_ROBIN</b>&#160;&#160;&#160;((osal_uint32_t)0x00000002u)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga5688c2d775c63a9d3a6d003975f75556">OSAL_SCHED_POLICY_ROUND_ROBIN</a>&#160;&#160;&#160;((osal_uint32_t)0x00000002u)</td></tr>
+<tr class="memdesc:ga5688c2d775c63a9d3a6d003975f75556"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task scheduling policy round-robin. <br /></td></tr>
 <tr class="separator:ga5688c2d775c63a9d3a6d003975f75556"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8beaee938312d5d97b4388980d1e37c0"><td class="memItemLeft" align="right" valign="top">
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>OSAL_SCHED_POLICY_OTHER</b>&#160;&#160;&#160;((osal_uint32_t)0x00000003u)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga8beaee938312d5d97b4388980d1e37c0">OSAL_SCHED_POLICY_OTHER</a>&#160;&#160;&#160;((osal_uint32_t)0x00000003u)</td></tr>
+<tr class="memdesc:ga8beaee938312d5d97b4388980d1e37c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task scheduling policy other. <br /></td></tr>
 <tr class="separator:ga8beaee938312d5d97b4388980d1e37c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2676c8b65bc70137399d1621578e8f81"><td class="memItemLeft" align="right" valign="top">
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>TASK_NAME_LEN</b>&#160;&#160;&#160;64u</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga2676c8b65bc70137399d1621578e8f81">TASK_NAME_LEN</a>&#160;&#160;&#160;64u</td></tr>
+<tr class="memdesc:ga2676c8b65bc70137399d1621578e8f81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task maximum name length. <br /></td></tr>
 <tr class="separator:ga2676c8b65bc70137399d1621578e8f81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gacd6f173941c1bd2269b2a30c27f29d66"><td class="memItemLeft" align="right" valign="top">
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>OSAL_STATE_THREAD_UNKNOWN_ID</b>&#160;&#160;&#160;(0u)   /** @brief The thread has an unknown ID         */</td></tr>
@@ -150,24 +154,28 @@ typedef osal_uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a clas
 typedef struct <a class="el" href="structosal__task__attr.html">osal_task_attr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>osal_task_attr_t</b></td></tr>
 <tr class="separator:ga963ecfebece5497379ab8383c4d94cc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga47d50ef79da377f98b5349773e5762f8"><td class="memItemLeft" align="right" valign="top">
-typedef void *(*&#160;</td><td class="memItemRight" valign="bottom"><b>osal_task_handler_t</b>) (void *arg)</td></tr>
+typedef void *(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga47d50ef79da377f98b5349773e5762f8">osal_task_handler_t</a>) (void *arg)</td></tr>
+<tr class="memdesc:ga47d50ef79da377f98b5349773e5762f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task handler function template. <br /></td></tr>
 <tr class="separator:ga47d50ef79da377f98b5349773e5762f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga847a456cab037dbfcfaaefe5df3ed038"><td class="memItemLeft" align="right" valign="top">
-typedef void *&#160;</td><td class="memItemRight" valign="bottom"><b>osal_task_handler_arg_t</b></td></tr>
+typedef void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga847a456cab037dbfcfaaefe5df3ed038">osal_task_handler_arg_t</a></td></tr>
+<tr class="memdesc:ga847a456cab037dbfcfaaefe5df3ed038"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task handler argument type. <br /></td></tr>
 <tr class="separator:ga847a456cab037dbfcfaaefe5df3ed038"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga85708ea5c0dc14dc5daaf350ae72bb8b"><td class="memItemLeft" align="right" valign="top">
-typedef void *&#160;</td><td class="memItemRight" valign="bottom"><b>osal_task_retval_t</b></td></tr>
+typedef void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga85708ea5c0dc14dc5daaf350ae72bb8b">osal_task_retval_t</a></td></tr>
+<tr class="memdesc:ga85708ea5c0dc14dc5daaf350ae72bb8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task handler return value type. <br /></td></tr>
 <tr class="separator:ga85708ea5c0dc14dc5daaf350ae72bb8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga621f86becb7ba7848abaef28c356371a"><td class="memItemLeft" align="right" valign="top">
-typedef osal_uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>osal_task_state_t</b></td></tr>
+typedef osal_uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga621f86becb7ba7848abaef28c356371a">osal_task_state_t</a></td></tr>
+<tr class="memdesc:ga621f86becb7ba7848abaef28c356371a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task state type. <br /></td></tr>
 <tr class="separator:ga621f86becb7ba7848abaef28c356371a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga36ebe925bf2b2f58e7293e3abc4e0f0f"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga36ebe925bf2b2f58e7293e3abc4e0f0f">osal_task_create</a> (osal_task_t *hdl, const <a class="el" href="structosal__task__attr.html">osal_task_attr_t</a> *attr, osal_task_handler_t handler, osal_task_handler_arg_t arg)</td></tr>
+<tr class="memitem:ga36ebe925bf2b2f58e7293e3abc4e0f0f"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga36ebe925bf2b2f58e7293e3abc4e0f0f">osal_task_create</a> (osal_task_t *hdl, const <a class="el" href="structosal__task__attr.html">osal_task_attr_t</a> *attr, <a class="el" href="group__task__group.html#ga47d50ef79da377f98b5349773e5762f8">osal_task_handler_t</a> handler, <a class="el" href="group__task__group.html#ga847a456cab037dbfcfaaefe5df3ed038">osal_task_handler_arg_t</a> arg)</td></tr>
 <tr class="memdesc:ga36ebe925bf2b2f58e7293e3abc4e0f0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a task.  <a href="group__task__group.html#ga36ebe925bf2b2f58e7293e3abc4e0f0f">More...</a><br /></td></tr>
 <tr class="separator:ga36ebe925bf2b2f58e7293e3abc4e0f0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0f0eb162f23d4d24f578e7e76e8935d6"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga0f0eb162f23d4d24f578e7e76e8935d6">osal_task_join</a> (osal_task_t *hdl, osal_task_retval_t *retval)</td></tr>
+<tr class="memitem:ga0f0eb162f23d4d24f578e7e76e8935d6"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga0f0eb162f23d4d24f578e7e76e8935d6">osal_task_join</a> (osal_task_t *hdl, <a class="el" href="group__task__group.html#ga85708ea5c0dc14dc5daaf350ae72bb8b">osal_task_retval_t</a> *retval)</td></tr>
 <tr class="memdesc:ga0f0eb162f23d4d24f578e7e76e8935d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Joins a task.  <a href="group__task__group.html#ga0f0eb162f23d4d24f578e7e76e8935d6">More...</a><br /></td></tr>
 <tr class="separator:ga0f0eb162f23d4d24f578e7e76e8935d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga67bf1fee22f08b4b8559fb8870f3c7f0"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga67bf1fee22f08b4b8559fb8870f3c7f0">osal_task_destroy</a> (osal_task_t *hdl)</td></tr>
@@ -209,7 +217,7 @@ Functions</h2></td></tr>
 <tr class="memitem:ga460c168a8626eaa5e5644cde32d294b6"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga460c168a8626eaa5e5644cde32d294b6">osal_task_delete</a> (osal_void_t)</td></tr>
 <tr class="memdesc:ga460c168a8626eaa5e5644cde32d294b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Delete the calling thread.  <a href="group__task__group.html#ga460c168a8626eaa5e5644cde32d294b6">More...</a><br /></td></tr>
 <tr class="separator:ga460c168a8626eaa5e5644cde32d294b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga5ebfd38e91731e18be2f7bbb2d8e380b"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga5ebfd38e91731e18be2f7bbb2d8e380b">osal_task_get_state</a> (osal_task_t *hdl, osal_task_state_t *state)</td></tr>
+<tr class="memitem:ga5ebfd38e91731e18be2f7bbb2d8e380b"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga5ebfd38e91731e18be2f7bbb2d8e380b">osal_task_get_state</a> (osal_task_t *hdl, <a class="el" href="group__task__group.html#ga621f86becb7ba7848abaef28c356371a">osal_task_state_t</a> *state)</td></tr>
 <tr class="memdesc:ga5ebfd38e91731e18be2f7bbb2d8e380b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current state of a created thread.  <a href="group__task__group.html#ga5ebfd38e91731e18be2f7bbb2d8e380b">More...</a><br /></td></tr>
 <tr class="separator:ga5ebfd38e91731e18be2f7bbb2d8e380b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
