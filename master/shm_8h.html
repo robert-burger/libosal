@@ -165,23 +165,23 @@ Macros</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:gacea8e91919289a68c22d52bdae65c6f6"><td class="memItemLeft" align="right" valign="top">
-typedef osal_uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shm__group.html#gacea8e91919289a68c22d52bdae65c6f6">osal_shm_attr_t</a></td></tr>
+typedef <a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shm__group.html#gacea8e91919289a68c22d52bdae65c6f6">osal_shm_attr_t</a></td></tr>
 <tr class="memdesc:gacea8e91919289a68c22d52bdae65c6f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shared memory attribute type. <br /></td></tr>
 <tr class="separator:gacea8e91919289a68c22d52bdae65c6f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaca022c536dbfe6581cf4b2f53746eb7a"><td class="memItemLeft" align="right" valign="top">
-typedef osal_uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shm__group.html#gaca022c536dbfe6581cf4b2f53746eb7a">osal_shm_map_attr_t</a></td></tr>
+typedef <a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shm__group.html#gaca022c536dbfe6581cf4b2f53746eb7a">osal_shm_map_attr_t</a></td></tr>
 <tr class="memdesc:gaca022c536dbfe6581cf4b2f53746eb7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shared memory map attribute type. <br /></td></tr>
 <tr class="separator:gaca022c536dbfe6581cf4b2f53746eb7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gafcddb13fc7f76351bec9bdd63b44c887"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shm__group.html#gafcddb13fc7f76351bec9bdd63b44c887">osal_shm_open</a> (osal_shm_t *shm, const osal_char_t *name, const <a class="el" href="group__shm__group.html#gacea8e91919289a68c22d52bdae65c6f6">osal_shm_attr_t</a> *attr, const osal_size_t size)</td></tr>
+<tr class="memitem:gafcddb13fc7f76351bec9bdd63b44c887"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shm__group.html#gafcddb13fc7f76351bec9bdd63b44c887">osal_shm_open</a> (osal_shm_t *shm, const <a class="el" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8">osal_char_t</a> *name, const <a class="el" href="group__shm__group.html#gacea8e91919289a68c22d52bdae65c6f6">osal_shm_attr_t</a> *attr, const <a class="el" href="types_8h.html#a93f01492c0d0bfab59fb0bc3de1066ad">osal_size_t</a> size)</td></tr>
 <tr class="memdesc:gafcddb13fc7f76351bec9bdd63b44c887"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize a shm.  <a href="group__shm__group.html#gafcddb13fc7f76351bec9bdd63b44c887">More...</a><br /></td></tr>
 <tr class="separator:gafcddb13fc7f76351bec9bdd63b44c887"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga505e3a6ae95c51e27d954b1b75d06fa1"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shm__group.html#ga505e3a6ae95c51e27d954b1b75d06fa1">osal_shm_map</a> (osal_shm_t *shm, const <a class="el" href="group__shm__group.html#gaca022c536dbfe6581cf4b2f53746eb7a">osal_shm_map_attr_t</a> *attr, osal_void_t **ptr)</td></tr>
+<tr class="memitem:ga505e3a6ae95c51e27d954b1b75d06fa1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shm__group.html#ga505e3a6ae95c51e27d954b1b75d06fa1">osal_shm_map</a> (osal_shm_t *shm, const <a class="el" href="group__shm__group.html#gaca022c536dbfe6581cf4b2f53746eb7a">osal_shm_map_attr_t</a> *attr, <a class="el" href="types_8h.html#a8d459522ba11f9898f2c8a8a0b478c86">osal_void_t</a> **ptr)</td></tr>
 <tr class="memdesc:ga505e3a6ae95c51e27d954b1b75d06fa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map a shm.  <a href="group__shm__group.html#ga505e3a6ae95c51e27d954b1b75d06fa1">More...</a><br /></td></tr>
 <tr class="separator:ga505e3a6ae95c51e27d954b1b75d06fa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa63ffd1d17cdeb60c6431bb1c3a52e6f"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shm__group.html#gaa63ffd1d17cdeb60c6431bb1c3a52e6f">osal_shm_close</a> (osal_shm_t *shm)</td></tr>
+<tr class="memitem:gaa63ffd1d17cdeb60c6431bb1c3a52e6f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__shm__group.html#gaa63ffd1d17cdeb60c6431bb1c3a52e6f">osal_shm_close</a> (osal_shm_t *shm)</td></tr>
 <tr class="memdesc:gaa63ffd1d17cdeb60c6431bb1c3a52e6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes an open shm.  <a href="group__shm__group.html#gaa63ffd1d17cdeb60c6431bb1c3a52e6f">More...</a><br /></td></tr>
 <tr class="separator:gaa63ffd1d17cdeb60c6431bb1c3a52e6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
