@@ -134,15 +134,15 @@ $(document).ready(function(){initNavTree('task_8h_source.html',''); initResizabl
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#define TASK_NAME_LEN   64u</span></div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="group__task__group.html#gae50d968a2943eabf297d92c47c5cfff3">   67</a></span>&#160;<span class="keyword">typedef</span> osal_uint32_t <a class="code" href="group__task__group.html#gae50d968a2943eabf297d92c47c5cfff3" title="Type of scheduling policy.">osal_task_sched_policy_t</a>;         </div>
-<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="group__task__group.html#ga463abbe27dcabff965c35c8c18644d7f">   68</a></span>&#160;<span class="keyword">typedef</span> osal_uint32_t <a class="code" href="group__task__group.html#ga463abbe27dcabff965c35c8c18644d7f" title="Type of scheduling priority.">osal_task_sched_priority_t</a>;       </div>
-<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="group__task__group.html#ga538974a72e661000e28743eeb7277255">   69</a></span>&#160;<span class="keyword">typedef</span> osal_uint32_t <a class="code" href="group__task__group.html#ga538974a72e661000e28743eeb7277255" title="Type of scheduling affinity.">osal_task_sched_affinity_t</a>;       </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">typedef</span> osal_uint32_t osal_task_sched_policy_t;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">typedef</span> osal_uint32_t osal_task_sched_priority_t;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">typedef</span> osal_uint32_t osal_task_sched_affinity_t;</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
 <div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="structosal__task__attr.html">   71</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structosal__task__attr.html">osal_task_attr</a> {</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    osal_char_t task_name[TASK_NAME_LEN];</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <a class="code" href="group__task__group.html#gae50d968a2943eabf297d92c47c5cfff3" title="Type of scheduling policy.">osal_task_sched_policy_t</a>   policy;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <a class="code" href="group__task__group.html#ga463abbe27dcabff965c35c8c18644d7f" title="Type of scheduling priority.">osal_task_sched_priority_t</a> priority;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <a class="code" href="group__task__group.html#ga538974a72e661000e28743eeb7277255" title="Type of scheduling affinity.">osal_task_sched_affinity_t</a> affinity;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    osal_task_sched_policy_t   policy;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    osal_task_sched_priority_t priority;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    osal_task_sched_affinity_t affinity;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;} <a class="code" href="structosal__task__attr.html">osal_task_attr_t</a>;</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="keyword">typedef</span> <span class="keywordtype">void</span> *(*osal_task_handler_t)(<span class="keywordtype">void</span> *arg);</div>
@@ -180,27 +180,27 @@ $(document).ready(function(){initNavTree('task_8h_source.html',''); initResizabl
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
 <div class="line"><a name="l00177"></a><span class="lineno"><a class="line" href="group__task__group.html#ga52a287c08374d93153221f40798a3c25">  177</a></span>&#160;osal_retval_t <a class="code" href="group__task__group.html#ga52a287c08374d93153221f40798a3c25" title="Change the policy of the specified thread.">osal_task_set_policy</a>(osal_task_t *hdl,</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                                        <a class="code" href="group__task__group.html#gae50d968a2943eabf297d92c47c5cfff3" title="Type of scheduling policy.">osal_task_sched_policy_t</a> policy);</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                                        osal_task_sched_policy_t policy);</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
 <div class="line"><a name="l00191"></a><span class="lineno"><a class="line" href="group__task__group.html#ga5a5595499319c5ca33af051c6c5dd762">  191</a></span>&#160;osal_retval_t <a class="code" href="group__task__group.html#ga5a5595499319c5ca33af051c6c5dd762" title="Get the current policy of the specified thread.">osal_task_get_policy</a>(osal_task_t *hdl,</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                                        <a class="code" href="group__task__group.html#gae50d968a2943eabf297d92c47c5cfff3" title="Type of scheduling policy.">osal_task_sched_policy_t</a> *policy);</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                                        osal_task_sched_policy_t *policy);</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160; </div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
 <div class="line"><a name="l00205"></a><span class="lineno"><a class="line" href="group__task__group.html#gab9095e8d523a28dfd72380fe1bea681a">  205</a></span>&#160;osal_retval_t <a class="code" href="group__task__group.html#gab9095e8d523a28dfd72380fe1bea681a" title="Change the priority of the specified thread.">osal_task_set_priority</a>(osal_task_t *hdl,</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                                        <a class="code" href="group__task__group.html#ga463abbe27dcabff965c35c8c18644d7f" title="Type of scheduling priority.">osal_task_sched_priority_t</a> prio);</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                                        osal_task_sched_priority_t prio);</div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160; </div>
 <div class="line"><a name="l00219"></a><span class="lineno"><a class="line" href="group__task__group.html#gaf86df30f34326a18cd330a0f81b0cae8">  219</a></span>&#160;osal_retval_t <a class="code" href="group__task__group.html#gaf86df30f34326a18cd330a0f81b0cae8" title="Get the current priority of the specified thread.">osal_task_get_priority</a>(osal_task_t *hdl,</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                                        <a class="code" href="group__task__group.html#ga463abbe27dcabff965c35c8c18644d7f" title="Type of scheduling priority.">osal_task_sched_priority_t</a> *prio);</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                                        osal_task_sched_priority_t *prio);</div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
 <div class="line"><a name="l00230"></a><span class="lineno"><a class="line" href="group__task__group.html#ga967e523e4c648b06dff213a4e4706ba7">  230</a></span>&#160;osal_retval_t <a class="code" href="group__task__group.html#ga967e523e4c648b06dff213a4e4706ba7" title="Change the affinity of the specified thread.">osal_task_set_affinity</a>(osal_task_t *hdl, </div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;                                        <a class="code" href="group__task__group.html#ga538974a72e661000e28743eeb7277255" title="Type of scheduling affinity.">osal_task_sched_affinity_t</a> affinity);</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;                                        osal_task_sched_affinity_t affinity);</div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
 <div class="line"><a name="l00242"></a><span class="lineno"><a class="line" href="group__task__group.html#ga36af66b6dc54b3a8133a8eb7fa2203f2">  242</a></span>&#160;osal_retval_t <a class="code" href="group__task__group.html#ga36af66b6dc54b3a8133a8eb7fa2203f2" title="Change the affinity of the specified thread.">osal_task_get_affinity</a>(osal_task_t *hdl, </div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;                                        <a class="code" href="group__task__group.html#ga538974a72e661000e28743eeb7277255" title="Type of scheduling affinity.">osal_task_sched_affinity_t</a> *affinity);</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;                                        osal_task_sched_affinity_t *affinity);</div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
 <div class="line"><a name="l00253"></a><span class="lineno"><a class="line" href="group__task__group.html#gaf26ee2409adf714b31659de0273c41cb">  253</a></span>&#160;osal_retval_t <a class="code" href="group__task__group.html#gaf26ee2409adf714b31659de0273c41cb" title="Suspend a thread from running.">osal_task_suspend</a>(osal_task_t *hdl);</div>

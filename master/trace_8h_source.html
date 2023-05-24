@@ -116,12 +116,12 @@ $(document).ready(function(){initNavTree('trace_8h_source.html',''); initResizab
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="timer_8h.html" title="OSAL timer header.">libosal/timer.h</a>&gt;</span></div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
 <div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="structosal__trace.html">   46</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structosal__trace.html">osal_trace</a> {</div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="structosal__trace.html#a6abe983374b2434064d46c1fcebb5e12">   47</a></span>&#160;    osal_uint32_t <a class="code" href="structosal__trace.html#a6abe983374b2434064d46c1fcebb5e12" title="number of measurements">cnt</a>;                  </div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structosal__trace.html#a5a6911866a6a00be4b1c6f079e0ddd47">   48</a></span>&#160;    osal_uint32_t <a class="code" href="structosal__trace.html#a5a6911866a6a00be4b1c6f079e0ddd47" title="actual number of double buffer">act_buf</a>;              </div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="structosal__trace.html#a031b9b3a561cac4f6ee074ad775462c8">   49</a></span>&#160;    osal_uint32_t <a class="code" href="structosal__trace.html#a031b9b3a561cac4f6ee074ad775462c8" title="position in actual buffer.">pos</a>;                  </div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="structosal__trace.html#ac7b9915084826afef11143b21c52f001">   50</a></span>&#160;    osal_binary_semaphore_t <a class="code" href="structosal__trace.html#ac7b9915084826afef11143b21c52f001" title="sync when buffer is full.">sync_sem</a>;   </div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="structosal__trace.html#ab884c794411863453b9b7d034534c243">   51</a></span>&#160;    osal_uint64_t *<a class="code" href="structosal__trace.html#ab884c794411863453b9b7d034534c243" title="time double buffer.">time_in_ns</a>[2];       </div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="structosal__trace.html#a5eb31a7263e1a16cb3d30bd3597a4e5c">   52</a></span>&#160;    osal_uint64_t *<a class="code" href="structosal__trace.html#a5eb31a7263e1a16cb3d30bd3597a4e5c" title="calculation buffer.">tmp</a>;                 </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    osal_uint32_t cnt;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    osal_uint32_t act_buf;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    osal_uint32_t pos;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    osal_binary_semaphore_t sync_sem;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    osal_uint64_t *time_in_ns[2];</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    osal_uint64_t *tmp;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;} <a class="code" href="structosal__trace.html">osal_trace_t</a>;</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>

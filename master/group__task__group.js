@@ -6,9 +6,6 @@ var group__task__group =
       [ "priority", "structosal__task__attr.html#a6418e03870b1f0df8224e68beee9dec3", null ],
       [ "task_name", "structosal__task__attr.html#adb7ee03ad7efdf89e0ab5455e747b328", null ]
     ] ],
-    [ "osal_task_sched_affinity_t", "group__task__group.html#ga538974a72e661000e28743eeb7277255", null ],
-    [ "osal_task_sched_policy_t", "group__task__group.html#gae50d968a2943eabf297d92c47c5cfff3", null ],
-    [ "osal_task_sched_priority_t", "group__task__group.html#ga463abbe27dcabff965c35c8c18644d7f", null ],
     [ "osal_task_create", "group__task__group.html#ga36ebe925bf2b2f58e7293e3abc4e0f0f", null ],
     [ "osal_task_delete", "group__task__group.html#ga460c168a8626eaa5e5644cde32d294b6", null ],
     [ "osal_task_destroy", "group__task__group.html#ga67bf1fee22f08b4b8559fb8870f3c7f0", null ],
