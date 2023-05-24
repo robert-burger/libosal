@@ -64,9 +64,9 @@
 
 #define TASK_NAME_LEN   64u
 
-typedef osal_uint32_t osal_task_sched_policy_t;
-typedef osal_uint32_t osal_task_sched_priority_t;
-typedef osal_uint32_t osal_task_sched_affinity_t;
+typedef osal_uint32_t osal_task_sched_policy_t;         //!< \brief Type of scheduling policy.
+typedef osal_uint32_t osal_task_sched_priority_t;       //!< \brief Type of scheduling priority.
+typedef osal_uint32_t osal_task_sched_affinity_t;       //!< \brief Type of scheduling affinity.
 
 typedef struct osal_task_attr {
     osal_char_t task_name[TASK_NAME_LEN];
