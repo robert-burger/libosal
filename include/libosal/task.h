@@ -58,33 +58,33 @@
  * @{
  */
 
-#define OSAL_SCHED_POLICY_FIFO          ((osal_uint32_t)0x00000001u)
-#define OSAL_SCHED_POLICY_ROUND_ROBIN   ((osal_uint32_t)0x00000002u)
-#define OSAL_SCHED_POLICY_OTHER         ((osal_uint32_t)0x00000003u)
+#define OSAL_SCHED_POLICY_FIFO          ((osal_uint32_t)0x00000001u)        //!< \brief Task scheduling policy FIFO.
+#define OSAL_SCHED_POLICY_ROUND_ROBIN   ((osal_uint32_t)0x00000002u)        //!< \brief Task scheduling policy round-robin.
+#define OSAL_SCHED_POLICY_OTHER         ((osal_uint32_t)0x00000003u)        //!< \brief Task scheduling policy other.
 
-#define TASK_NAME_LEN   64u
+#define TASK_NAME_LEN   64u                             //!< \brief Task maximum name length.
 
 typedef osal_uint32_t osal_task_sched_policy_t;         //!< \brief Type of scheduling policy.
 typedef osal_uint32_t osal_task_sched_priority_t;       //!< \brief Type of scheduling priority.
 typedef osal_uint32_t osal_task_sched_affinity_t;       //!< \brief Type of scheduling affinity.
 
 typedef struct osal_task_attr {
-    osal_char_t task_name[TASK_NAME_LEN];
-    osal_task_sched_policy_t   policy;
-    osal_task_sched_priority_t priority;
-    osal_task_sched_affinity_t affinity;
-} osal_task_attr_t;
+    osal_char_t task_name[TASK_NAME_LEN];               //!< \brief Task name.
+    osal_task_sched_policy_t   policy;                  //!< \brief Task policy.
+    osal_task_sched_priority_t priority;                //!< \brief Task priority.
+    osal_task_sched_affinity_t affinity;                //!< \brief Task affinity.
+} osal_task_attr_t;                                     //!< \brief Task attribute type.
 
-typedef void *(*osal_task_handler_t)(void *arg);
-typedef void * osal_task_handler_arg_t;
-typedef void * osal_task_retval_t;
+typedef void *(*osal_task_handler_t)(void *arg);        //!< \brief Task handler function template.
+typedef void * osal_task_handler_arg_t;                 //!< \brief Task handler argument type.
+typedef void * osal_task_retval_t;                      //!< \brief Task handler return value type.
 
-typedef osal_uint32_t osal_task_state_t;
+typedef osal_uint32_t osal_task_state_t;                //!< \brief Task state type.
 
-#define OSAL_STATE_THREAD_UNKNOWN_ID    (0u)   /** @brief The thread has an unknown ID         */
-#define OSAL_STATE_THREAD_ACTIVE        (1u)   /** @brief The thread is in an active state     */
-#define OSAL_STATE_THREAD_INACTIVE      (2u)   /** @brief The thread is in an inactive state   */
-#define OSAL_STATE_THREAD_BLOCKED       (3u)   /** @brief The thread is in a blocked state     */
+#define OSAL_STATE_THREAD_UNKNOWN_ID    (0u)            //!< \brief The thread has an unknown ID
+#define OSAL_STATE_THREAD_ACTIVE        (1u)            //!< \brief The thread is in an active state
+#define OSAL_STATE_THREAD_INACTIVE      (2u)            //!< \brief The thread is in an inactive state
+#define OSAL_STATE_THREAD_BLOCKED       (3u)            //!< \brief The thread is in a blocked state
 
 #ifdef __cplusplus
 extern "C" {
@@ -221,9 +221,9 @@ osal_retval_t osal_task_get_priority(osal_task_t *hdl,
 
 //! \brief Change the affinity of the specified thread.
 /*!
- * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
- *                      If \p hdl is NULL, set affinity for calling thread.
- * \param[in]   prio    The thread affinity as member of osal_task_sched_priority_t
+ * \param[in]   hdl         Pointer to osal task structure. Content is OS dependent.
+ *                          If \p hdl is NULL, set affinity for calling thread.
+ * \param[in]   affinity    The thread affinity as member of osal_task_sched_priority_t
  *
  * \retval OSAL_OK                          On success.
  */
@@ -232,9 +232,9 @@ osal_retval_t osal_task_set_affinity(osal_task_t *hdl,
 
 //! \brief Change the affinity of the specified thread.
 /*!
- * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
- *                      If \p hdl is NULL, set affinity for calling thread.
- * \param[in]   prio    The thread affinity as member of osal_task_sched_priority_t
+ * \param[in]   hdl         Pointer to osal task structure. Content is OS dependent.
+ *                          If \p hdl is NULL, set affinity for calling thread.
+ * \param[in]   affinity    The thread affinity as member of osal_task_sched_priority_t
  *
  * \retval OSAL_OK                          On success.
  * \retval OSAL_ERR_INVALID_PARAM           Invalid input parameter.

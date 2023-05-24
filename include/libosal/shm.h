@@ -53,19 +53,27 @@
  * @{
  */
 
-#define OSAL_SHM_ATTR__FLAG__MASK             0x0000003Fu
-#define OSAL_SHM_ATTR__FLAG__RDONLY           0x00000001u
-#define OSAL_SHM_ATTR__FLAG__RDWR             0x00000002u
-#define OSAL_SHM_ATTR__FLAG__CREAT            0x00000004u
-#define OSAL_SHM_ATTR__FLAG__EXCL             0x00000008u
-#define OSAL_SHM_ATTR__FLAG__TRUNC            0x00000010u
-#define OSAL_SHM_ATTR__FLAG__MAP              0x00000020u
+#define OSAL_SHM_ATTR__FLAG__MASK             0x0000003Fu       //!< \brief Shared memory attribute flag mask.
+#define OSAL_SHM_ATTR__FLAG__RDONLY           0x00000001u       //!< \brief Shared memory attribute flag read-only.
+#define OSAL_SHM_ATTR__FLAG__RDWR             0x00000002u       //!< \brief Shared memory attribute flag read-write.
+#define OSAL_SHM_ATTR__FLAG__CREAT            0x00000004u       //!< \brief Shared memory attribute flag create.
+#define OSAL_SHM_ATTR__FLAG__EXCL             0x00000008u       //!< \brief Shared memory attribute flag exclusive.
+#define OSAL_SHM_ATTR__FLAG__TRUNC            0x00000010u       //!< \brief Shared memory attribute flag truncate. 
+#define OSAL_SHM_ATTR__FLAG__MAP              0x00000020u       //!< \brief Shared memory attribute flag mapable.
 
-#define OSAL_SHM_ATTR__MODE__MASK             0xFFFF0000u
-#define OSAL_SHM_ATTR__MODE__SHIFT            16u
+#define OSAL_SHM_ATTR__MODE__MASK             0xFFFF0000u       //!< \brief Shared memory attribute mode mask.
+#define OSAL_SHM_ATTR__MODE__SHIFT            16u               //!< \brief Shared memory attribute mode shift bits.
 
-typedef osal_uint32_t osal_shm_attr_t;
-typedef osal_uint32_t osal_shm_map_attr_t;
+#define OSAL_SHM_MAP_ATTR__PROT_EXEC          0x00000001u       //!< \brief Shared memory attribute protection executable.
+#define OSAL_SHM_MAP_ATTR__PROT_READ          0x00000002u       //!< \brief Shared memory attribute protection readable.
+#define OSAL_SHM_MAP_ATTR__PROT_WRITE         0x00000004u       //!< \brief Shared memory attribute protection writable.
+#define OSAL_SHM_MAP_ATTR__PROT_NONE          0x00000008u       //!< \brief Shared memory attribute protection none.
+
+#define OSAL_SHM_MAP_ATTR__SHARED             0x00000100u       //!< \brief Shared memory attribute shared.
+#define OSAL_SHM_MAP_ATTR__PRIVATE            0x00000200u       //!< \brief Shared memory attribute private.
+
+typedef osal_uint32_t osal_shm_attr_t;                          //!< \brief Shared memory attribute type.
+typedef osal_uint32_t osal_shm_map_attr_t;                      //!< \brief Shared memory map attribute type.
 
 #ifdef __cplusplus
 extern "C" {
@@ -74,6 +82,7 @@ extern "C" {
 //! \brief Initialize a shm.
 /*!
  * \param[in]   shm     Pointer to osal shm structure. Content is OS dependent.
+ * \param[in]   name    Shared memory name.
  * \param[in]   attr    Pointer to initial shm attributes. Can be NULL then
  *                      the defaults of the underlying shm will be used.
  * \param[in]   size    Size for shm creation. Ignored in case shm already existed.
@@ -81,14 +90,6 @@ extern "C" {
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osal_shm_attr_t *attr, const osal_size_t size);
-
-#define OSAL_SHM_MAP_ATTR__PROT_EXEC          0x00000001u
-#define OSAL_SHM_MAP_ATTR__PROT_READ          0x00000002u
-#define OSAL_SHM_MAP_ATTR__PROT_WRITE         0x00000004u
-#define OSAL_SHM_MAP_ATTR__PROT_NONE          0x00000008u
-
-#define OSAL_SHM_MAP_ATTR__SHARED             0x00000100u
-#define OSAL_SHM_MAP_ATTR__PRIVATE            0x00000200u
 
 //! \brief Map a shm.
 /*!

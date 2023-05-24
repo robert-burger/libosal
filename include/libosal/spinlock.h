@@ -75,7 +75,7 @@
 #define OSAL_SPINLOCK_ATTR__PRIOCEILING__MASK      0xFFFF0000u      //!< \brief Spinlock priority ceiling mask.
 #define OSAL_SPINLOCK_ATTR__PRIOCEILING__SHIFT     16u              //!< \brief Spinlock priority ceiling value.
 
-typedef osal_uint32_t osal_spinlock_attr_t;
+typedef osal_uint32_t osal_spinlock_attr_t;         //!< \brief Spinlock attribute type.
 
 #ifdef __cplusplus
 extern "C" {

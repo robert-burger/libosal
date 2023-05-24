@@ -36,32 +36,32 @@
 #include <stdint.h>
 #include <stddef.h>
 
-typedef uint32_t    osal_bool_t;
+typedef uint32_t    osal_bool_t;        //!< \brief boolean type
 
-#define OSAL_TRUE   ( 1u )
-#define OSAL_FALSE  ( 0u )
+#define OSAL_TRUE   ( 1u )              //!< \brief boolean true value.
+#define OSAL_FALSE  ( 0u )              //!< \brief boolean false value.
 
-typedef void        osal_void_t;
+typedef void        osal_void_t;        //!< \brief void type.
 
-typedef int         osal_retval_t;
+typedef int         osal_retval_t;      //!< \brief return value type.
 
-typedef char        osal_char_t;
+typedef char        osal_char_t;        //!< \brief char (8-bit signed) type.
 
-typedef uint64_t    osal_size_t;
-typedef int64_t     osal_ssize_t;
-typedef uint64_t    osal_off_t;
+typedef uint64_t    osal_size_t;        //!< \brief size type.
+typedef int64_t     osal_ssize_t;       //!< \brief signed size type.
+typedef uint64_t    osal_off_t;         //!< \brief offset type.
 
-typedef uint8_t     osal_uint8_t;
-typedef uint16_t    osal_uint16_t;
-typedef uint32_t    osal_uint32_t;
-typedef uint64_t    osal_uint64_t;
+typedef uint8_t     osal_uint8_t;       //!< \brief 8-bit unsigned type.
+typedef uint16_t    osal_uint16_t;      //!< \brief 16-bit unsigned type.
+typedef uint32_t    osal_uint32_t;      //!< \brief 32-bit unsigned type.
+typedef uint64_t    osal_uint64_t;      //!< \brief 64-bit unsigned type.
 
-typedef int8_t     osal_int8_t;
-typedef int16_t    osal_int16_t;
-typedef int32_t    osal_int32_t;
-typedef int64_t    osal_int64_t;
+typedef int8_t     osal_int8_t;         //!< \brief 8-bit signed type.
+typedef int16_t    osal_int16_t;        //!< \brief 16-bit signed type.
+typedef int32_t    osal_int32_t;        //!< \brief 32-bit signed type.
+typedef int64_t    osal_int64_t;        //!< \brief 64-bit signed type.
 
-typedef uint64_t   osal_mode_t;
+typedef uint64_t   osal_mode_t;         //!< \brief mode type.
 
 #endif /* LIBOSAL_TYPES__H */
 

@@ -31,23 +31,23 @@
 #ifndef LIBOSAL_OSAL__H
 #define LIBOSAL_OSAL__H
 
-#define OSAL_OK                         0
-#define OSAL_ERR_OPERATION_FAILED       -1
-#define OSAL_ERR_INVALID_PARAM          -2
-#define OSAL_ERR_PERMISSION_DENIED      -3
-#define OSAL_ERR_SYSTEM_LIMIT_REACHED   -4
-#define OSAL_ERR_TIMEOUT                -5
-#define OSAL_ERR_UNAVAILABLE            -6
-#define OSAL_ERR_OUT_OF_MEMORY          -7
-#define OSAL_ERR_NOT_RECOVERABLE        -8
-#define OSAL_ERR_OWNER_DEAD             -9
-#define OSAL_ERR_DEAD_LOCK              -10
-#define OSAL_ERR_BUSY                   -11
-#define OSAL_ERR_NOT_FOUND              -12
-#define OSAL_ERR_NOT_IMPLEMENTED        -13
-#define OSAL_ERR_NO_DATA                -14
-#define OSAL_ERR_INTERRUPTED            -15
-#define OSAL_ERR_MUTEX_IS_LOCKED        -16
+#define OSAL_OK                         0       //!< \brief Ok return code.
+#define OSAL_ERR_OPERATION_FAILED       -1      //!< \brief Error operation failed.
+#define OSAL_ERR_INVALID_PARAM          -2      //!< \brief Error invalid input parameter.
+#define OSAL_ERR_PERMISSION_DENIED      -3      //!< \brief Error permission denied.
+#define OSAL_ERR_SYSTEM_LIMIT_REACHED   -4      //!< \brief Error system limit reached.
+#define OSAL_ERR_TIMEOUT                -5      //!< \brief Error timeout occured.
+#define OSAL_ERR_UNAVAILABLE            -6      //!< \brief Error currently unavailable.
+#define OSAL_ERR_OUT_OF_MEMORY          -7      //!< \brief Error system out of memory.
+#define OSAL_ERR_NOT_RECOVERABLE        -8      //!< \brief Error not recoverable.
+#define OSAL_ERR_OWNER_DEAD             -9      //!< \brief Error current owner has died.
+#define OSAL_ERR_DEAD_LOCK              -10     //!< \brief Error dead lock detected.
+#define OSAL_ERR_BUSY                   -11     //!< \brief Error resource currently busy.
+#define OSAL_ERR_NOT_FOUND              -12     //!< \brief Error resource not found.
+#define OSAL_ERR_NOT_IMPLEMENTED        -13     //!< \brief Error function not implemented.
+#define OSAL_ERR_NO_DATA                -14     //!< \brief Error no date.
+#define OSAL_ERR_INTERRUPTED            -15     //!< \brief Error function call was interrupted.
+#define OSAL_ERR_MUTEX_IS_LOCKED        -16     //!< \brief Error mutex is locked.
 
 #include <libosal/types.h>
 #include <libosal/task.h>

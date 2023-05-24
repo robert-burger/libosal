@@ -54,19 +54,19 @@
  * @{
  */
 
-#define OSAL_MQ_ATTR__OFLAG__RDONLY           0x00000001u
-#define OSAL_MQ_ATTR__OFLAG__WRONLY           0x00000002u
-#define OSAL_MQ_ATTR__OFLAG__RDWR             0x00000004u
-#define OSAL_MQ_ATTR__OFLAG__CREAT            0x00000008u
-#define OSAL_MQ_ATTR__OFLAG__CLOEXEC          0x00000010u
-#define OSAL_MQ_ATTR__OFLAG__EXCL             0x00000020u
+#define OSAL_MQ_ATTR__OFLAG__RDONLY           0x00000001u   //!< \brief Message queue attribute flag read-only
+#define OSAL_MQ_ATTR__OFLAG__WRONLY           0x00000002u   //!< \brief Message queue attribute flag write-only
+#define OSAL_MQ_ATTR__OFLAG__RDWR             0x00000004u   //!< \brief Message queue attribute flag read-write
+#define OSAL_MQ_ATTR__OFLAG__CREAT            0x00000008u   //!< \brief Message queue attribute flag create
+#define OSAL_MQ_ATTR__OFLAG__CLOEXEC          0x00000010u   //!< \brief Message queue attribute flag close execute
+#define OSAL_MQ_ATTR__OFLAG__EXCL             0x00000020u   //!< \brief Message queue attribute flag exclusive
 
 typedef struct osal_mq_attr {
-    osal_uint32_t   oflags;
-    osal_mode_t     mode;
-    osal_size_t     max_messages;
-    osal_size_t     max_message_size;
-} osal_mq_attr_t;
+    osal_uint32_t   oflags;                 //!< \brief Message queue open flags.
+    osal_mode_t     mode;                   //!< \brief Message queue mode.
+    osal_size_t     max_messages;           //!< \brief Message queue maximum number of messages.
+    osal_size_t     max_message_size;       //!< \brief Message queue maximum message size.
+} osal_mq_attr_t;                           //!< \brief Message queue attribute type.
 
 #ifdef __cplusplus
 extern "C" {
@@ -75,12 +75,13 @@ extern "C" {
 //! \brief Initialize a mq.
 /*!
  * \param[in]   mq      Pointer to osal mq structure. Content is OS dependent.
+ * \param[in]   name    Pointer containing message queue name.
  * \param[in]   attr    Pointer to initial mq attributes. Can be NULL then
  *                      the defaults of the underlying mq will be used.
  *
  * \retval OSAL_OK                          On success.
  * \retval OSAL_ERR_PERMISSION_DENIED       Tried to open an existing queue without sufficient persmission.
- * \retval OSAL_ERR_PERMISSION_DENIED       Tried to create an already existing message queue.
+ *                                          Tried to create an already existing message queue.
  * \retval OSAL_ERR_INVALID_PARAM           Name is not in correct format or it is too long.
  * \retval OSAL_ERR_SYSTEM_LIMIT_REACHED    Limit of open files has been reached.
  * \retval OSAL_ERR_NOT_FOUND               Tried to open a non-existing message queue.

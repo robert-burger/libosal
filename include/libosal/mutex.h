@@ -73,7 +73,7 @@
 #define OSAL_MUTEX_ATTR__PRIOCEILING__MASK      0xFFFF0000u     //!< \brief Priority ceiling mask.
 #define OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT     16u             //!< \brief Priority ceiling value.
 
-typedef osal_uint32_t osal_mutex_attr_t;
+typedef osal_uint32_t osal_mutex_attr_t;                        //!< \brief Mutex attribute type.
 
 #ifdef __cplusplus
 extern "C" {

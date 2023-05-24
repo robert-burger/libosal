@@ -50,7 +50,7 @@ typedef struct osal_trace {
     osal_binary_semaphore_t sync_sem;   //!< sync when buffer is full.
     osal_uint64_t *time_in_ns[2];       //!< time double buffer.
     osal_uint64_t *tmp;                 //!< calculation buffer.
-} osal_trace_t;
+} osal_trace_t;                         //!< Trace structure.
 
 #ifdef __cplusplus
 extern "C" {
@@ -86,6 +86,7 @@ void osal_trace_point(osal_trace_t *trace);
 //! \brief Sync to trace when buffer is full.
 /*!
  * \param[in]   trace   Pointer to trace struct.
+ * \param[in]   timeout Timeout.
  *
  * \retval OSAL_OK          success
  * \retval OSAL_ERR_TIMEOUT timeout occured

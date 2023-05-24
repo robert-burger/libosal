@@ -61,7 +61,7 @@
 
 #define OSAL_SEMAPHORE_ATTR__PROCESS_SHARED         0x00000020u     //!< \brief Create a process shared semaphore.
 
-typedef osal_uint32_t osal_semaphore_attr_t;
+typedef osal_uint32_t osal_semaphore_attr_t;        //!< \brief Semaphore attribute type.
 
 #ifdef __cplusplus
 extern "C" {

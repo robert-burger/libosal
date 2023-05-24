@@ -42,7 +42,7 @@
  * @{
  */
 
-#define LIBOSAL_IO_SHM_MAX_MSG_SIZE 512
+#define LIBOSAL_IO_SHM_MAX_MSG_SIZE 512     //!< \brief Maximum message size.
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,7 +66,9 @@ osal_retval_t osal_puts(const osal_char_t *msg);
 
 //! \brief Set up printing to shm instead of stdout
 /*!
- * \param[in]   shm_name    Name of logging shared memory.
+ * \param[in]   shm_name        Name of logging shared memory.
+ * \param[in]   max_msgs        Maximum number of messages.
+ * \param[in]   max_msg_size    Maximum message size.
  *
  * \return OSAL_OK on success, otherwise OSAL_ERR_*
  */

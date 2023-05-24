@@ -70,13 +70,13 @@
 
 #define OSAL_CONDVAR_ATTR__PROTOCOL__MASK         0x00000300u   //!< \brief Protocol mask.
 #define OSAL_CONDVAR_ATTR__PROTOCOL__NONE         0x00000000u   //!< \brief None (default) protocol.
-#define OSAL_CONDVAR_ATTR__PROTOCOL__INHERIT      0x00000100u   //!< \brief 
-#define OSAL_CONDVAR_ATTR__PROTOCOL__PROTECT      0x00000200u
+#define OSAL_CONDVAR_ATTR__PROTOCOL__INHERIT      0x00000100u   //!< \brief Inherit protocol.
+#define OSAL_CONDVAR_ATTR__PROTOCOL__PROTECT      0x00000200u   //!< \brief Protect protocol.
 
-#define OSAL_CONDVAR_ATTR__PRIOCEILING__MASK      0xFFFF0000u
-#define OSAL_CONDVAR_ATTR__PRIOCEILING__SHIFT     16u
+#define OSAL_CONDVAR_ATTR__PRIOCEILING__MASK      0xFFFF0000u   //!< \brief Mask for priority ceiling protocol.
+#define OSAL_CONDVAR_ATTR__PRIOCEILING__SHIFT     16u           //!< \brief Priority ceiling value shift.
 
-typedef osal_uint32_t osal_condvar_attr_t;
+typedef osal_uint32_t osal_condvar_attr_t;                      //!< \brief Condition variable attribute type.
 
 #ifdef __cplusplus
 extern "C" {
@@ -101,6 +101,10 @@ osal_retval_t osal_condvar_init(osal_condvar_t *cv, const osal_condvar_attr_t *a
 
 //! \brief wait on a condvar.
 /*!
+ * This function waits on a condition variable until any other tasks call \ref osal_condvar_signal
+ * or \ref osal_condvar_wait. The mutex \p mtx has to be locked before calling 
+ * \ref osal_condvar_wait and is unlocked during wait.
+ *
  * \param[in]   cv     Pointer to osal condvar structure. Content is OS dependent.
  * \param[in]   mtx    Pointer to osal mutex structure. Content is OS dependent.
  *
@@ -110,9 +114,13 @@ osal_retval_t osal_condvar_wait(osal_condvar_t *cv, osal_mutex_t *mtx);
 
 //! \brief timed wait on a condvar.
 /*!
+ * This function waits on a condition variable until any other tasks call \ref osal_condvar_signal
+ * or \ref osal_condvar_wait or it is running into the timeout. The mutex \p mtx has to be 
+ * locked before calling \ref osal_condvar_wait and is unlocked during wait.
+ *
  * \param[in]   cv      Pointer to osal condvar structure. Content is OS dependent.
  * \param[in]   mtx     Pointer to osal mutex structure. Content is OS dependent.
- * \param[in]   to      Timeout
+ * \param[in]   timeout Timeout
  *
  * \retval OSAL_OK                      On success.
  * \retval OSAL_ERR_TIMEOUT             Timeout expired waiting on condition.
@@ -123,6 +131,8 @@ osal_retval_t osal_condvar_timedwait(osal_condvar_t *cv, osal_mutex_t *mtx, cons
 
 //! \brief Signals one waiter on a condvar.
 /*!
+ * This function signals one waiting task to resume it's work.
+ *
  * \param[in]   cv     Pointer to osal condvar structure. Content is OS dependent.
  *
  * \retval OSAL_OK                  On success.
@@ -132,6 +142,8 @@ osal_retval_t osal_condvar_signal(osal_condvar_t *cv);
 
 //! \brief Broadcast (Wakes) all waiters on a condvar.
 /*!
+ * This functions signals all waiting tasks to resume their work.
+ *
  * \param[in]   cv     Pointer to osal condvar structure. Content is OS dependent.
  *
  * \retval OSAL_OK                  On success.
@@ -141,6 +153,8 @@ osal_retval_t osal_condvar_broadcast(osal_condvar_t *cv);
 
 //! \brief Destroys on a condvar.
 /*!
+ * This function destroy the condition variable structure.
+ *
  * \param[in]   cv     Pointer to osal condvar structure. Content is OS dependent.
  *
  * \retval OSAL_OK                      On success.
