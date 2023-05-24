@@ -356,15 +356,15 @@ Functions</h2></td></tr>
 <p>Change the affinity of the specified thread. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <b> hdl is NULL, set affinity for calling thread. </b></td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">prio</td><td><b> The thread affinity as member of osal_task_sched_priority_t</b></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <code>hdl</code> is NULL, set affinity for calling thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">prio</td><td>The thread affinity as member of osal_task_sched_priority_t</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td><b> Invalid input parameter. </b></td></tr>
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
   </table>
   </dd>
 </dl>
@@ -433,17 +433,17 @@ Functions</h2></td></tr>
 <p>Get the current policy of the specified thread. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <b> hdl is NULL, get policy for calling thread. </b></td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">policy</td><td><b> The thread's current policy</b></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <code>hdl</code> is NULL, get policy for calling thread. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">policy</td><td>The thread's current policy</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td><b> Other errors. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td><b> Insufficient permission to get policy. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td><b> Invalid input parameter. </b></td></tr>
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Other errors. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Insufficient permission to get policy. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
   </table>
   </dd>
 </dl>
@@ -479,17 +479,17 @@ Functions</h2></td></tr>
 <p>Get the current priority of the specified thread. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <b> hdl is NULL, get priority for calling thread. </b></td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">prio</td><td><b> The thread's current prio</b></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <code>hdl</code> is NULL, get priority for calling thread. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">prio</td><td>The thread's current prio</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td><b> Other errors. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td><b> Insufficient permission to get priority. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td><b> Invalid input parameter. </b></td></tr>
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Other errors. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Insufficient permission to get priority. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
   </table>
   </dd>
 </dl>
@@ -696,14 +696,14 @@ Functions</h2></td></tr>
 <p>Change the affinity of the specified thread. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <b> hdl is NULL, set affinity for calling thread. </b></td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">prio</td><td><b> The thread affinity as member of osal_task_sched_priority_t</b></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <code>hdl</code> is NULL, set affinity for calling thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">prio</td><td>The thread affinity as member of osal_task_sched_priority_t</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
   </table>
   </dd>
 </dl>
@@ -739,17 +739,17 @@ Functions</h2></td></tr>
 <p>Change the policy of the specified thread. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <b> hdl is NULL, set policy for calling thread. </b></td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">policy</td><td><b> The thread prio as member of osal_task_sched_policy_t</b></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <code>hdl</code> is NULL, set policy for calling thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">policy</td><td>The thread prio as member of osal_task_sched_policy_t</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td><b> Other errors. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td><b> Insufficient permission to set policy. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td><b> Invalid input parameter. </b></td></tr>
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Other errors. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Insufficient permission to set policy. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
   </table>
   </dd>
 </dl>
@@ -785,17 +785,17 @@ Functions</h2></td></tr>
 <p>Change the priority of the specified thread. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <b> hdl is NULL, set priority for calling thread. </b></td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">prio</td><td><b> The thread prio as member of osal_task_sched_priority_t</b></td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">hdl</td><td>Pointer to osal task structure. Content is OS dependent. If <code>hdl</code> is NULL, set priority for calling thread. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">prio</td><td>The thread prio as member of osal_task_sched_priority_t</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">OSAL_OK</td><td><b> On success. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td><b> Other errors. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td><b> Insufficient permission to set priority. </b></td></tr>
-    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td><b> Invalid input parameter. </b></td></tr>
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Other errors. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Insufficient permission to set priority. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid input parameter. </td></tr>
   </table>
   </dd>
 </dl>
