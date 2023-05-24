@@ -17,8 +17,6 @@ DOCS              = "$(GH_PAGES_DIR_NAME)/$(BRANCH_DIR_NAME)"
 
 gh-pages:
 	rm -rf "$(GH_PAGES_DIR_NAME)"
-	git config user.name "Robert Burger"
-	git config user.email "robert.burger@dlr.de"
 	git clone `git config --get remote.origin.url` --branch gh-pages --depth 1 gh-pages
 	install -d $(BUILDDIR)
 	rm -rf "$(BUILDDIR)/html"
@@ -28,6 +26,8 @@ gh-pages:
 	mv "$(BUILDDIR)/html" $(DOCS)
 	cd "$(GH_PAGES_DIR_NAME)" && python3 ../doc/create_directory_listing.py
 	# add updated branch listing
+	git config user.name "Robert Burger"
+	git config user.email "robert.burger@dlr.de"
 	git -C $(GH_PAGES_DIR_NAME) add index.html
 	git -C $(GH_PAGES_DIR_NAME) add "$(BRANCH_DIR_NAME)/*"
 	-git -C $(GH_PAGES_DIR_NAME) commit -m 'Automatic update of GH pages'
