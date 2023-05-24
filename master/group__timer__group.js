@@ -5,6 +5,7 @@ var group__timer__group =
       [ "sec", "structosal__timer.html#ad2919ba129c9ad6ca698c8a50886e735", null ]
     ] ],
     [ "NSEC_PER_SEC", "group__timer__group.html#ga0501e82515b2bdf36453c4cc80f5e0cc", null ],
+    [ "osal_microsleep", "group__timer__group.html#ga3a3c909a6c90485efc26c3bff48b15f7", null ],
     [ "osal_timer_add", "group__timer__group.html#ga43c6c2187bf4b6e3947a477856b75c28", null ],
     [ "osal_timer_add_nsec", "group__timer__group.html#gaf65ffe95ead2441513907ff428eda52f", null ],
     [ "osal_timer_cmp", "group__timer__group.html#gafb55339e98b8cbffe80142c473867cad", null ],

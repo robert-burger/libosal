@@ -12,6 +12,7 @@ var group__mutex__group =
     [ "OSAL_MUTEX_ATTR__TYPE__MASK", "group__mutex__group.html#gac23aa38241def830209013ab9bcaac51", null ],
     [ "OSAL_MUTEX_ATTR__TYPE__NORMAL", "group__mutex__group.html#gae925edc2533c60af2041214ce9a9b2ba", null ],
     [ "OSAL_MUTEX_ATTR__TYPE__RECURSIVE", "group__mutex__group.html#gab1804da7394a1f35d0778784e9ff50ee", null ],
+    [ "osal_mutex_attr_t", "group__mutex__group.html#gab6ad886ed0f5367646dde4346869c508", null ],
     [ "osal_mutex_destroy", "group__mutex__group.html#ga4151e36f6a513e7dea8e56ad3a0b39f2", null ],
     [ "osal_mutex_init", "group__mutex__group.html#gaa064b2c54248aaa09c98657dc4f7774f", null ],
     [ "osal_mutex_lock", "group__mutex__group.html#ga8d29936979540e17206f3d10b1ab1644", null ],

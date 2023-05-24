@@ -12,6 +12,7 @@ var group__spinlock__group =
     [ "OSAL_SPINLOCK_ATTR__TYPE__MASK", "group__spinlock__group.html#gae9a47f0ca7406476deb000526303be18", null ],
     [ "OSAL_SPINLOCK_ATTR__TYPE__NORMAL", "group__spinlock__group.html#ga055f6b77eba8d70aa4e9a04861ef9423", null ],
     [ "OSAL_SPINLOCK_ATTR__TYPE__RECURSIVE", "group__spinlock__group.html#gaa888d185d143f7d65155b572e2bc6f7b", null ],
+    [ "osal_spinlock_attr_t", "group__spinlock__group.html#gab703a81efac767b75ea0d4c6bf1e4903", null ],
     [ "osal_spinlock_destroy", "group__spinlock__group.html#ga89fdcee26e6d201fc3bc606d6dfb1ca5", null ],
     [ "osal_spinlock_init", "group__spinlock__group.html#gaa35741580b19758cf6293ecc47a18cec", null ],
     [ "osal_spinlock_lock", "group__spinlock__group.html#gae3756a4b8740742465d6bcd0057f8e1b", null ],

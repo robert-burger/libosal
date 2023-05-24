@@ -358,7 +358,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>timed wait on a condvar. </p>
-<p>This function waits on a condition variable until any other tasks call <a class="el" href="group__condvar__group.html#ga77473f00675b4c13c983bfb03c4d0442">osal_condvar_signal</a> or <a class="el" href="group__condvar__group.html#ga14a11c6ed48f96645b8045fcf7ac117f">osal_condvar_wait</a> or it is running into the timeout. The mutex <code>mtx</code> has to be locked before calling \ret osal_condvar_wait and is unlocked during wait.</p>
+<p>This function waits on a condition variable until any other tasks call <a class="el" href="group__condvar__group.html#ga77473f00675b4c13c983bfb03c4d0442">osal_condvar_signal</a> or <a class="el" href="group__condvar__group.html#ga14a11c6ed48f96645b8045fcf7ac117f">osal_condvar_wait</a> or it is running into the timeout. The mutex <code>mtx</code> has to be locked before calling <a class="el" href="group__condvar__group.html#ga14a11c6ed48f96645b8045fcf7ac117f">osal_condvar_wait</a> and is unlocked during wait.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">cv</td><td>Pointer to osal condvar structure. Content is OS dependent. </td></tr>
