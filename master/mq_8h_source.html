@@ -125,19 +125,19 @@ $(document).ready(function(){initNavTree('mq_8h_source.html',''); initResizable(
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;libosal/pikeos/mq.h&gt;</span></div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__RDONLY           0x00000001u</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__WRONLY           0x00000002u</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__RDWR             0x00000004u</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__CREAT            0x00000008u</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__CLOEXEC          0x00000010u</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__EXCL             0x00000020u</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="group__mq__group.html#ga35d5cbe6dc35e01bbfd0267a2a9f4aa7">   57</a></span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__RDONLY           0x00000001u   </span></div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="group__mq__group.html#gaa73aa83fa8b611171af51c4f73e050ae">   58</a></span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__WRONLY           0x00000002u   </span></div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="group__mq__group.html#ga5771ae359bcd43045be623c7547082c6">   59</a></span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__RDWR             0x00000004u   </span></div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="group__mq__group.html#ga4b9f191dfc4bd0c7d66fdbd0165cc205">   60</a></span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__CREAT            0x00000008u   </span></div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="group__mq__group.html#ga93ec884ac27526af140a4ec5096dffa9">   61</a></span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__CLOEXEC          0x00000010u   </span></div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="group__mq__group.html#ga6d4fa674cb48f64497ab79c7e8178672">   62</a></span>&#160;<span class="preprocessor">#define OSAL_MQ_ATTR__OFLAG__EXCL             0x00000020u   </span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor"></span> </div>
 <div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="structosal__mq__attr.html">   64</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">struct </span><a class="code" href="structosal__mq__attr.html">osal_mq_attr</a> {</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="types_8h.html#adb03454d49d7059e84963c71b296410b" title="32-bit unsigned type.">osal_uint32_t</a>   oflags;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="types_8h.html#a451328deceb98ad1ca24194c4d556dc9" title="mode type.">osal_mode_t</a>     mode;</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <a class="code" href="types_8h.html#a93f01492c0d0bfab59fb0bc3de1066ad" title="size type.">osal_size_t</a>     max_messages;</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <a class="code" href="types_8h.html#a93f01492c0d0bfab59fb0bc3de1066ad" title="size type.">osal_size_t</a>     max_message_size;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;} <a class="code" href="structosal__mq__attr.html">osal_mq_attr_t</a>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="group__mq__group.html#ga26fc903ee98101d655bb9db526d3ec3b">   69</a></span>&#160;} <a class="code" href="group__mq__group.html#ga26fc903ee98101d655bb9db526d3ec3b" title="Message queue attribute type.">osal_mq_attr_t</a>;                           </div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>

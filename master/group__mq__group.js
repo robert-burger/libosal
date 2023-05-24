@@ -6,6 +6,13 @@ var group__mq__group =
       [ "mode", "structosal__mq__attr.html#a5c4695519af65b7d72c57df45d72b2a3", null ],
       [ "oflags", "structosal__mq__attr.html#a974e81f307e8a574d2c1365ef9d6f445", null ]
     ] ],
+    [ "OSAL_MQ_ATTR__OFLAG__CLOEXEC", "group__mq__group.html#ga93ec884ac27526af140a4ec5096dffa9", null ],
+    [ "OSAL_MQ_ATTR__OFLAG__CREAT", "group__mq__group.html#ga4b9f191dfc4bd0c7d66fdbd0165cc205", null ],
+    [ "OSAL_MQ_ATTR__OFLAG__EXCL", "group__mq__group.html#ga6d4fa674cb48f64497ab79c7e8178672", null ],
+    [ "OSAL_MQ_ATTR__OFLAG__RDONLY", "group__mq__group.html#ga35d5cbe6dc35e01bbfd0267a2a9f4aa7", null ],
+    [ "OSAL_MQ_ATTR__OFLAG__RDWR", "group__mq__group.html#ga5771ae359bcd43045be623c7547082c6", null ],
+    [ "OSAL_MQ_ATTR__OFLAG__WRONLY", "group__mq__group.html#gaa73aa83fa8b611171af51c4f73e050ae", null ],
+    [ "osal_mq_attr_t", "group__mq__group.html#ga26fc903ee98101d655bb9db526d3ec3b", null ],
     [ "osal_mq_close", "group__mq__group.html#ga43185ca393ec5c26be92b706377f7a7a", null ],
     [ "osal_mq_open", "group__mq__group.html#ga5611fa908c16bf86c844855a8dc8010f", null ],
     [ "osal_mq_receive", "group__mq__group.html#ga68ee75c5014d6d72e872c6b16970dbfb", null ],
