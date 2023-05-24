@@ -167,7 +167,7 @@ osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr);
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
  *                      If <b> hdl is NULL, set policy for calling thread.
- * \param[in]   prio    The thread prio as member of osal_task_sched_policy_t
+ * \param[in]   policy  The thread prio as member of osal_task_sched_policy_t
  *
  * \retval OSAL_OK                          On success.
  * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
@@ -181,7 +181,7 @@ osal_retval_t osal_task_set_policy(osal_task_t *hdl,
 /*!
  * \param[in]   hdl     Pointer to osal task structure. Content is OS dependent.
  *                      If <b> hdl is NULL, get policy for calling thread.
- * \param[out]  prio    The thread's current policy
+ * \param[out]  policy  The thread's current policy
  *
  * \retval OSAL_OK                          On success.
  * \retval OSAL_ERR_OPERATION_FAILED        Other errors.
