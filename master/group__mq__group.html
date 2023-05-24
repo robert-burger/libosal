@@ -219,6 +219,7 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">mq</td><td>Pointer to osal mq structure. Content is OS dependent. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>Pointer containing message queue name. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">attr</td><td>Pointer to initial mq attributes. Can be NULL then the defaults of the underlying mq will be used.</td></tr>
   </table>
   </dd>
@@ -226,8 +227,7 @@ Functions</h2></td></tr>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
-    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Tried to open an existing queue without sufficient persmission. </td></tr>
-    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Tried to create an already existing message queue. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_PERMISSION_DENIED</td><td>Tried to open an existing queue without sufficient persmission. Tried to create an already existing message queue. </td></tr>
     <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Name is not in correct format or it is too long. </td></tr>
     <tr><td class="paramname">OSAL_ERR_SYSTEM_LIMIT_REACHED</td><td>Limit of open files has been reached. </td></tr>
     <tr><td class="paramname">OSAL_ERR_NOT_FOUND</td><td>Tried to open a non-existing message queue. </td></tr>
