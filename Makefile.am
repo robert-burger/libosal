@@ -1,4 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
+pkgconfigdir=$(libdir)/pkgconfig
 
 #include $(top_srcdir)/aminclude.am
 
