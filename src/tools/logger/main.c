@@ -53,7 +53,7 @@ extern int main(int argc, char **argv) {
         (void)osal_timer_init(&to, 10000000);
         osal_retval_t ret = osal_io_shm_get_message(msg, &to);
         if (ret == OSAL_OK) {
-            printf(msg);
+            printf("%s\n", msg);
         }
     }
 
