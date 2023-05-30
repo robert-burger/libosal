@@ -10,6 +10,6 @@ SUBDIRS += src/tools/logger
 endif
 endif
 
-#pkgconfig_DATA = libethercat.pc
+pkgconfig_DATA = libosal.pc
 
 
