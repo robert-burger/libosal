@@ -96,7 +96,10 @@ osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osa
             shm->size = buf.st_size;
         } else {
             shm->size = size;
-            (void)ftruncate(shm->fd, shm->size);
+            local_retval = ftruncate(shm->fd, shm->size);
+            if (local_retval != 0) {
+                ret = OSAL_ERR_OPERATION_FAILED;
+            }
         }
     } else {
         switch (errno) {
