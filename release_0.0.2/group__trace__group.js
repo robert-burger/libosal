@@ -8,6 +8,7 @@ var group__trace__group =
       [ "time_in_ns", "structosal__trace.html#ab884c794411863453b9b7d034534c243", null ],
       [ "tmp", "structosal__trace.html#a5eb31a7263e1a16cb3d30bd3597a4e5c", null ]
     ] ],
+    [ "osal_trace_t", "group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9", null ],
     [ "osal_trace_alloc", "group__trace__group.html#ga9418702c357107178b0bb37af5839294", null ],
     [ "osal_trace_analyze", "group__trace__group.html#gaf5cad1cb680aced2d806e4c69764615d", null ],
     [ "osal_trace_free", "group__trace__group.html#ga760ecf37eb09c384e444b5ad4f369b18", null ],

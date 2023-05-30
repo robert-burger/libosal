@@ -1,10 +1,6 @@
 var searchData=
 [
-  ['task_2eh_134',['task.h',['../task_8h.html',1,'']]],
-  ['tasks_135',['Tasks',['../group__task__group.html',1,'']]],
-  ['timer_2eh_136',['timer.h',['../timer_8h.html',1,'']]],
-  ['timer_137',['Timer',['../group__timer__group.html',1,'']]],
-  ['trace_2eh_138',['trace.h',['../trace_8h.html',1,'']]],
-  ['trace_139',['Trace',['../group__trace__group.html',1,'']]],
-  ['types_2eh_140',['types.h',['../types_8h.html',1,'']]]
+  ['policy_219',['policy',['../structosal__task__attr.html#aa7b039b8933db1b2d1f604c901935883',1,'osal_task_attr']]],
+  ['pos_220',['pos',['../structosal__trace.html#a031b9b3a561cac4f6ee074ad775462c8',1,'osal_trace']]],
+  ['priority_221',['priority',['../structosal__task__attr.html#a6418e03870b1f0df8224e68beee9dec3',1,'osal_task_attr']]]
 ];

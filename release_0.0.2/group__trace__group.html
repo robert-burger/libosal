@@ -100,24 +100,25 @@ Data Structures</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:gac00e0cf743c2782dfa95e3db400705b9"><td class="memItemLeft" align="right" valign="top"><a id="gac00e0cf743c2782dfa95e3db400705b9"></a>
-typedef struct <a class="el" href="structosal__trace.html">osal_trace</a>&#160;</td><td class="memItemRight" valign="bottom"><b>osal_trace_t</b></td></tr>
+typedef struct <a class="el" href="structosal__trace.html">osal_trace</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a></td></tr>
+<tr class="memdesc:gac00e0cf743c2782dfa95e3db400705b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trace structure. <br /></td></tr>
 <tr class="separator:gac00e0cf743c2782dfa95e3db400705b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga9418702c357107178b0bb37af5839294"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#ga9418702c357107178b0bb37af5839294">osal_trace_alloc</a> (<a class="el" href="structosal__trace.html">osal_trace_t</a> **trace, osal_uint32_t cnt)</td></tr>
+<tr class="memitem:ga9418702c357107178b0bb37af5839294"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#ga9418702c357107178b0bb37af5839294">osal_trace_alloc</a> (<a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a> **trace, <a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a> cnt)</td></tr>
 <tr class="memdesc:ga9418702c357107178b0bb37af5839294"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate trace struct.  <a href="group__trace__group.html#ga9418702c357107178b0bb37af5839294">More...</a><br /></td></tr>
 <tr class="separator:ga9418702c357107178b0bb37af5839294"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga760ecf37eb09c384e444b5ad4f369b18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#ga760ecf37eb09c384e444b5ad4f369b18">osal_trace_free</a> (<a class="el" href="structosal__trace.html">osal_trace_t</a> *trace)</td></tr>
+<tr class="memitem:ga760ecf37eb09c384e444b5ad4f369b18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#ga760ecf37eb09c384e444b5ad4f369b18">osal_trace_free</a> (<a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a> *trace)</td></tr>
 <tr class="memdesc:ga760ecf37eb09c384e444b5ad4f369b18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free trace struct.  <a href="group__trace__group.html#ga760ecf37eb09c384e444b5ad4f369b18">More...</a><br /></td></tr>
 <tr class="separator:ga760ecf37eb09c384e444b5ad4f369b18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaaa53476df21ab43a137e3e76342ccdbb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#gaaa53476df21ab43a137e3e76342ccdbb">osal_trace_point</a> (<a class="el" href="structosal__trace.html">osal_trace_t</a> *trace)</td></tr>
+<tr class="memitem:gaaa53476df21ab43a137e3e76342ccdbb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#gaaa53476df21ab43a137e3e76342ccdbb">osal_trace_point</a> (<a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a> *trace)</td></tr>
 <tr class="memdesc:gaaa53476df21ab43a137e3e76342ccdbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trace time.  <a href="group__trace__group.html#gaaa53476df21ab43a137e3e76342ccdbb">More...</a><br /></td></tr>
 <tr class="separator:gaaa53476df21ab43a137e3e76342ccdbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaafecd388efaef8bfc4d97901e7424967"><td class="memItemLeft" align="right" valign="top">osal_retval_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#gaafecd388efaef8bfc4d97901e7424967">osal_trace_timedwait</a> (<a class="el" href="structosal__trace.html">osal_trace_t</a> *trace, <a class="el" href="group__timer__group.html#ga3d0f8513d18b084abbf94ba91656e99e">osal_timer_t</a> *timeout)</td></tr>
+<tr class="memitem:gaafecd388efaef8bfc4d97901e7424967"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#gaafecd388efaef8bfc4d97901e7424967">osal_trace_timedwait</a> (<a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a> *trace, <a class="el" href="group__timer__group.html#ga3d0f8513d18b084abbf94ba91656e99e">osal_timer_t</a> *timeout)</td></tr>
 <tr class="memdesc:gaafecd388efaef8bfc4d97901e7424967"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sync to trace when buffer is full.  <a href="group__trace__group.html#gaafecd388efaef8bfc4d97901e7424967">More...</a><br /></td></tr>
 <tr class="separator:gaafecd388efaef8bfc4d97901e7424967"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf5cad1cb680aced2d806e4c69764615d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#gaf5cad1cb680aced2d806e4c69764615d">osal_trace_analyze</a> (<a class="el" href="structosal__trace.html">osal_trace_t</a> *trace, osal_uint64_t *avg, osal_uint64_t *avg_jit, osal_uint64_t *max_jit)</td></tr>
+<tr class="memitem:gaf5cad1cb680aced2d806e4c69764615d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__trace__group.html#gaf5cad1cb680aced2d806e4c69764615d">osal_trace_analyze</a> (<a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a> *trace, <a class="el" href="types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f">osal_uint64_t</a> *avg, <a class="el" href="types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f">osal_uint64_t</a> *avg_jit, <a class="el" href="types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f">osal_uint64_t</a> *max_jit)</td></tr>
 <tr class="memdesc:gaf5cad1cb680aced2d806e4c69764615d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Analyze trace and return average and jitters.  <a href="group__trace__group.html#gaf5cad1cb680aced2d806e4c69764615d">More...</a><br /></td></tr>
 <tr class="separator:gaf5cad1cb680aced2d806e4c69764615d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -131,15 +132,15 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">osal_retval_t osal_trace_alloc </td>
+          <td class="memname"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a> osal_trace_alloc </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structosal__trace.html">osal_trace_t</a> **&#160;</td>
+          <td class="paramtype"><a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a> **&#160;</td>
           <td class="paramname"><em>trace</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">osal_uint32_t&#160;</td>
+          <td class="paramtype"><a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a>&#160;</td>
           <td class="paramname"><em>cnt</em>&#160;</td>
         </tr>
         <tr>
@@ -177,25 +178,25 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void osal_trace_analyze </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structosal__trace.html">osal_trace_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a> *&#160;</td>
           <td class="paramname"><em>trace</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">osal_uint64_t *&#160;</td>
+          <td class="paramtype"><a class="el" href="types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f">osal_uint64_t</a> *&#160;</td>
           <td class="paramname"><em>avg</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">osal_uint64_t *&#160;</td>
+          <td class="paramtype"><a class="el" href="types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f">osal_uint64_t</a> *&#160;</td>
           <td class="paramname"><em>avg_jit</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">osal_uint64_t *&#160;</td>
+          <td class="paramtype"><a class="el" href="types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f">osal_uint64_t</a> *&#160;</td>
           <td class="paramname"><em>max_jit</em>&#160;</td>
         </tr>
         <tr>
@@ -229,7 +230,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void osal_trace_free </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structosal__trace.html">osal_trace_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a> *&#160;</td>
           <td class="paramname"><em>trace</em></td><td>)</td>
           <td></td>
         </tr>
@@ -256,7 +257,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">void osal_trace_point </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structosal__trace.html">osal_trace_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a> *&#160;</td>
           <td class="paramname"><em>trace</em></td><td>)</td>
           <td></td>
         </tr>
@@ -281,9 +282,9 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">osal_retval_t osal_trace_timedwait </td>
+          <td class="memname"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a> osal_trace_timedwait </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structosal__trace.html">osal_trace_t</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9">osal_trace_t</a> *&#160;</td>
           <td class="paramname"><em>trace</em>, </td>
         </tr>
         <tr>
@@ -303,7 +304,8 @@ Functions</h2></td></tr>
 <p>Sync to trace when buffer is full. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">trace</td><td>Pointer to trace struct.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">trace</td><td>Pointer to trace struct. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">timeout</td><td>Timeout.</td></tr>
   </table>
   </dd>
 </dl>

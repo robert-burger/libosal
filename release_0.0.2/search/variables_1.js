@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sec_229',['sec',['../structosal__timer.html#ad2919ba129c9ad6ca698c8a50886e735',1,'osal_timer']]]
+  ['cnt_330',['cnt',['../structosal__trace.html#a6abe983374b2434064d46c1fcebb5e12',1,'osal_trace']]]
 ];

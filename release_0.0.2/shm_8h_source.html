@@ -124,48 +124,48 @@ $(document).ready(function(){initNavTree('shm_8h_source.html',''); initResizable
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#include &lt;libosal/pikeos/shm.h&gt;</span></div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__MASK             0x0000003Fu</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__RDONLY           0x00000001u</span></div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__RDWR             0x00000002u</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__CREAT            0x00000004u</span></div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__EXCL             0x00000008u</span></div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__TRUNC            0x00000010u</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__MAP              0x00000020u</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__MODE__MASK             0xFFFF0000u</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__MODE__SHIFT            16u</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">typedef</span> osal_uint32_t osal_shm_attr_t;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">typedef</span> osal_uint32_t osal_shm_map_attr_t;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="group__shm__group.html#gafcddb13fc7f76351bec9bdd63b44c887">   83</a></span>&#160;osal_retval_t <a class="code" href="group__shm__group.html#gafcddb13fc7f76351bec9bdd63b44c887" title="Initialize a shm.">osal_shm_open</a>(osal_shm_t *shm, <span class="keyword">const</span> osal_char_t *name,  <span class="keyword">const</span> osal_shm_attr_t *attr, <span class="keyword">const</span> osal_size_t size);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__PROT_EXEC          0x00000001u</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__PROT_READ          0x00000002u</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__PROT_WRITE         0x00000004u</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__PROT_NONE          0x00000008u</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__SHARED             0x00000100u</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__PRIVATE            0x00000200u</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga505e3a6ae95c51e27d954b1b75d06fa1">  101</a></span>&#160;osal_retval_t <a class="code" href="group__shm__group.html#ga505e3a6ae95c51e27d954b1b75d06fa1" title="Map a shm.">osal_shm_map</a>(osal_shm_t *shm, <span class="keyword">const</span> osal_shm_map_attr_t *attr, osal_void_t **ptr);</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="group__shm__group.html#gaa63ffd1d17cdeb60c6431bb1c3a52e6f">  109</a></span>&#160;osal_retval_t <a class="code" href="group__shm__group.html#gaa63ffd1d17cdeb60c6431bb1c3a52e6f" title="Closes an open shm.">osal_shm_close</a>(osal_shm_t *shm);</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;};</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LIBOSAL_SHM__H */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga6c00164a1343663da102fe98a38f0d9d">   56</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__MASK             0x0000003Fu       </span></div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga2c62a92ae102318d24d1b2d974642cc2">   57</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__RDONLY           0x00000001u       </span></div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga77c6d15f40dffd469d42450cdcb2cb8a">   58</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__RDWR             0x00000002u       </span></div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga8310a67b53c2495900741951f7400419">   59</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__CREAT            0x00000004u       </span></div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga9ff144e745a5bf0805c64ebb62fcb9b9">   60</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__EXCL             0x00000008u       </span></div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="group__shm__group.html#gaca07206af218e0626c6c8ad9754b107c">   61</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__TRUNC            0x00000010u       </span></div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="group__shm__group.html#gaa1004e9d39acc92bd268df1dec41d427">   62</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__FLAG__MAP              0x00000020u       </span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor"></span> </div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga94e2e8c8502d6bc7286d6119957953ff">   64</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__MODE__MASK             0xFFFF0000u       </span></div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga8017462504442b59ea7b84843fa1c325">   65</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_ATTR__MODE__SHIFT            16u               </span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor"></span> </div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="group__shm__group.html#gadace4a697756025f847b4bbcd175d82c">   67</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__PROT_EXEC          0x00000001u       </span></div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga7d5b2ea8d466c0f6674b7e0d2afc60d9">   68</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__PROT_READ          0x00000002u       </span></div>
+<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="group__shm__group.html#gade287921b023ef16bceaec4d3e3de190">   69</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__PROT_WRITE         0x00000004u       </span></div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga400c3ed7552a06b1a18fbf523e883c4b">   70</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__PROT_NONE          0x00000008u       </span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor"></span> </div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="group__shm__group.html#gad0b6533cee89a4eb13efad095e59aa80">   72</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__SHARED             0x00000100u       </span></div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="group__shm__group.html#gadc2b13b13c9bb5c47ba0ab1898bd777e">   73</a></span>&#160;<span class="preprocessor">#define OSAL_SHM_MAP_ATTR__PRIVATE            0x00000200u       </span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor"></span> </div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="group__shm__group.html#gacea8e91919289a68c22d52bdae65c6f6">   75</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="types_8h.html#adb03454d49d7059e84963c71b296410b" title="32-bit unsigned type.">osal_uint32_t</a> <a class="code" href="group__shm__group.html#gacea8e91919289a68c22d52bdae65c6f6" title="Shared memory attribute type.">osal_shm_attr_t</a>;                          </div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="group__shm__group.html#gaca022c536dbfe6581cf4b2f53746eb7a">   76</a></span>&#160;<span class="keyword">typedef</span> <a class="code" href="types_8h.html#adb03454d49d7059e84963c71b296410b" title="32-bit unsigned type.">osal_uint32_t</a> <a class="code" href="group__shm__group.html#gaca022c536dbfe6581cf4b2f53746eb7a" title="Shared memory map attribute type.">osal_shm_map_attr_t</a>;                      </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="group__shm__group.html#gafcddb13fc7f76351bec9bdd63b44c887">   92</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__shm__group.html#gafcddb13fc7f76351bec9bdd63b44c887" title="Initialize a shm.">osal_shm_open</a>(osal_shm_t *shm, <span class="keyword">const</span> <a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> *name,  <span class="keyword">const</span> <a class="code" href="group__shm__group.html#gacea8e91919289a68c22d52bdae65c6f6" title="Shared memory attribute type.">osal_shm_attr_t</a> *attr, <span class="keyword">const</span> <a class="code" href="types_8h.html#a93f01492c0d0bfab59fb0bc3de1066ad" title="size type.">osal_size_t</a> size);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="group__shm__group.html#ga505e3a6ae95c51e27d954b1b75d06fa1">  102</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__shm__group.html#ga505e3a6ae95c51e27d954b1b75d06fa1" title="Map a shm.">osal_shm_map</a>(osal_shm_t *shm, <span class="keyword">const</span> <a class="code" href="group__shm__group.html#gaca022c536dbfe6581cf4b2f53746eb7a" title="Shared memory map attribute type.">osal_shm_map_attr_t</a> *attr, <a class="code" href="types_8h.html#a8d459522ba11f9898f2c8a8a0b478c86" title="void type.">osal_void_t</a> **ptr);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="group__shm__group.html#gaa63ffd1d17cdeb60c6431bb1c3a52e6f">  110</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__shm__group.html#gaa63ffd1d17cdeb60c6431bb1c3a52e6f" title="Closes an open shm.">osal_shm_close</a>(osal_shm_t *shm);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;};</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LIBOSAL_SHM__H */</span><span class="preprocessor"></span></div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

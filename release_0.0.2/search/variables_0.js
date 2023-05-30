@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['nsec_228',['nsec',['../structosal__timer.html#ae69e70f586db6b9fe0ae34b3c5dcf827',1,'osal_timer']]]
+  ['act_5fbuf_328',['act_buf',['../structosal__trace.html#a5a6911866a6a00be4b1c6f079e0ddd47',1,'osal_trace']]],
+  ['affinity_329',['affinity',['../structosal__task__attr.html#a38caa9137d397114124b366392dd520a',1,'osal_task_attr']]]
 ];
