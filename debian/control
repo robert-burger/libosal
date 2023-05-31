@@ -4,9 +4,9 @@ Maintainer: Robert Burger <robert.burger@dlr.de>
 Build-Depends: debhelper-compat (= 13), autotools-dev
 Standards-Version: 4.5.1
 Section: libs
-Homepage: <insert the upstream URL, if relevant>
-#Vcs-Browser: https://salsa.debian.org/debian/libosal
-#Vcs-Git: https://salsa.debian.org/debian/libosal.git
+Homepage: https://rmc-github.robotic.dlr.de/pages/common/libosal/master/index.html
+Vcs-Browser: https://rmc-github.robotic.dlr.de/common/libosal
+Vcs-Git: https://rmc-github.robotic.dlr.de/common/libosal.git
 Rules-Requires-Root: no
 
 Package: libosal-dev
@@ -14,12 +14,12 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Depends: libosal (= ${binary:Version}), ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Write os-independent code for easy portability between different systems and architectures.
+ libosal is an operating system abstraction layer Library. It's purpose is to write os-independent code for easy portability between different systems and architectures. It contains of 'binary semaphores', 'condition variables', 'io', 'message queues', 'mutex', 'semaphores', 'shared memory', 'spinlocks', 'tasks', 'timers' and 'traces'.
 
 Package: libosal
 Architecture: any
 Multi-Arch: same
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: Write os-independent code for easy portability between different systems and architectures.
+ libosal is an operating system abstraction layer Library. It's purpose is to write os-independent code for easy portability between different systems and architectures. It contains of 'binary semaphores', 'condition variables', 'io', 'message queues', 'mutex', 'semaphores', 'shared memory', 'spinlocks', 'tasks', 'timers' and 'traces'.
