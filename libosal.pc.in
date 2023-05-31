@@ -8,4 +8,4 @@ Description: Operating System Abstraction Layer
 URL: https://rmc-github.robotic.dlr.de/common/libosal.git
 Version: @VERSION@
 Cflags: -I@includedir@
-Libs: -L${libdir} -lethercat
+Libs: -L${libdir} -losal
