@@ -1,13 +1,13 @@
 ACLOCAL_AMFLAGS = -I m4
 
-bin_PROGRAMS = logger
-logger_SOURCES = main.c 
-logger_CFLAGS = -I$(top_srcdir)/include
-logger_LDADD = $(top_builddir)/src/.libs/libosal.la 
-logger_LDFLAGS =
+bin_PROGRAMS = lec_logger
+lec_logger_SOURCES = main.c 
+lec_logger_CFLAGS = -I$(top_srcdir)/include
+lec_logger_LDADD = $(top_builddir)/src/.libs/libosal.la 
+lec_logger_LDFLAGS =
 
 if BUILD_PIKEOS
-logger_LDADD += $(PIKEOS_LIBS)
-logger_LDFLAGS += $(PIKEOS_LDFLAGS)
+lec_logger_LDADD += $(PIKEOS_LIBS)
+lec_logger_LDFLAGS += $(PIKEOS_LDFLAGS)
 endif
 
