@@ -111,6 +111,7 @@ osal_retval_t osal_shm_open(osal_shm_t *shm, const osal_char_t *name,  const osa
             case P4_E_MISMATCH:     // if name is an existing directory.
             case P4_E_EXIST:        // if VM_O_CREAT and VM_O_EXCL was used and name is an existing file.
             case P4_E_IO:           // if the storage device containing the file reports a failure.
+            default:
                 ret = OSAL_ERR_OPERATION_FAILED;
                 break;
             case P4_E_TIMEOUT:      // if VM_O_NONBLOCK was used, the driver needs to block, and the driver supports
