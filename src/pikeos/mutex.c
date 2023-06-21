@@ -44,7 +44,10 @@
 osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) {
     assert(mtx != NULL);
 
+#if (LIBOSAL_HAVE_P4EXT_THREADS_H == 1) && (LIBOSAL_HAVE_P4_MUTEX_INIT_EXT == 1)
     P4_prio_t ceil_prio = 0u;
+#endif
+
     P4_uint32_t flags = 0u;
     if (attr != NULL) {
         if ((*attr & OSAL_MUTEX_ATTR__PROCESS_SHARED) != 0u) {
@@ -59,6 +62,8 @@ osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) 
             flags |= P4_MUTEX_RECURSIVE;
         }
 
+#if (LIBOSAL_HAVE_P4EXT_THREADS_H == 1) && (LIBOSAL_HAVE_P4_MUTEX_INIT_EXT == 1)
+#warning USING P4_MUTEXT_INIT_EXT
         if ((*attr & OSAL_MUTEX_ATTR__PROTOCOL__MASK) == OSAL_MUTEX_ATTR__PROTOCOL__INHERIT) {
             flags |= P4_MUTEX_PRIO_INHERIT;
         }
@@ -67,15 +72,20 @@ osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) 
             flags |= P4_MUTEX_PRIO_CEILING;
             ceil_prio = (*attr & OSAL_MUTEX_ATTR__PRIOCEILING__MASK) >> OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT;
         }
+#endif
     }
 
     osal_retval_t ret = OSAL_OK;
 
+#if (LIBOSAL_HAVE_P4EXT_THREADS_H == 1) && (LIBOSAL_HAVE_P4_MUTEX_INIT_EXT == 1)
     if (ceil_prio == 0u) {
         p4_mutex_init(&mtx->pikeos_mtx, flags);
     } else {
         p4_mutex_init_ext(&mtx->pikeos_mtx, flags, ceil_prio);
     }
+#else
+    p4_mutex_init(&mtx->pikeos_mtx, flags);
+#endif
 
     return ret;
 }

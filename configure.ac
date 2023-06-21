@@ -109,6 +109,41 @@ AC_CHECK_HEADERS([mqueue.h], HAVE_MQUEUE_H=true, HAVE_MQUEUE_H=false)
 dnl check for sys/prctl for setting thread name on Linux
 AC_CHECK_HEADERS([sys/prctl.h], [], [], [AC_INCLUDES_DEFAULT])
 
+# Checks for header files.
+AC_CHECK_HEADERS([p4ext_threads.h])
+
+# Check support for -mrdseed
+AS_IF([test "$ac_cv_header_p4ext_threads_h" = "yes"], [
+  AC_DEFINE([HAVE_P4_MUTEX_INIT_EXT], [], [Check if pikeos support p4_mutext_init_ext.])
+
+  CFLAGS_save=$CFLAGS
+  CFLAGS="$CFLAGS -Werror"
+  XXX_PROGRAM="
+#include <p4ext_threads.h>
+int main(void) {
+    P4_mutex_t pikeos_mtx;
+    P4_uint32_t flags = 0u;
+    P4_prio_t ceil_prio = 0u;
+    p4_mutex_init_ext(&pikeos_mtx, flags, ceil_prio);
+    return 0;
+}
+"
+  AC_MSG_CHECKING([whether pikeos support for p4_mutex_init_ext])
+  AC_COMPILE_IFELSE(
+    [AC_LANG_SOURCE([$XXX_PROGRAM])],
+    [
+     AC_MSG_RESULT([yes])
+     AC_DEFINE([HAVE_P4_MUTEX_INIT_EXT], [1])
+    ],
+    [
+     AC_MSG_RESULT([no])
+     AC_DEFINE([HAVE_P4_MUTEX_INIT_EXT], [0])
+    ]
+  )
+
+  CFLAGS=$CFLAGS_save
+])
+
 AM_CONDITIONAL([HAVE_SYS_MMAN_H], [ test x$HAVE_SYS_MMAN_H = xtrue])
 AM_CONDITIONAL([HAVE_MQUEUE_H], [ test x$HAVE_MQUEUE_H = xtrue])
 
