@@ -189,7 +189,7 @@ void osal_trace_analyze(osal_trace_t *trace, osal_uint64_t *avg, osal_uint64_t *
     for (unsigned i = 0; i < (trace->cnt - 1u); ++i) {
         osal_int64_t dev = (osal_int64_t)(*avg) - trace->tmp[i];
         if (dev < 0) { dev *= -1; }
-        if (dev > (*max_jit)) { (*max_jit) = dev; }
+        if ((osal_uint64_t)dev > (*max_jit)) { (*max_jit) = dev; }
 
         (*avg_jit) += (dev * dev);
     }
