@@ -136,6 +136,8 @@ osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_shm_map_attr_t *attr, osa
     assert(ptr != NULL);
     osal_retval_t ret = OSAL_OK;
 
+    (void)attr;
+
     /* Allocate virtual memory to map the shared memory. Enforce an PAGE alignment */
     *ptr = (struct comm_str *)p4ext_vmem_alloc_aligned(shm->size, (P4_phys_addr_t)P4_PAGESIZE);
     if (*ptr == NULL) {
@@ -185,6 +187,8 @@ osal_retval_t osal_shm_map(osal_shm_t *shm, const osal_shm_map_attr_t *attr, osa
 osal_retval_t osal_shm_close(osal_shm_t *shm) {
     assert(shm != NULL);
     osal_retval_t ret = OSAL_OK;
+
+    (void)shm;
 
     return ret;
 }
