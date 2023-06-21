@@ -63,7 +63,6 @@ osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) 
         }
 
 #if (LIBOSAL_HAVE_P4EXT_THREADS_H == 1) && (LIBOSAL_HAVE_P4_MUTEX_INIT_EXT == 1)
-#warning USING P4_MUTEXT_INIT_EXT
         if ((*attr & OSAL_MUTEX_ATTR__PROTOCOL__MASK) == OSAL_MUTEX_ATTR__PROTOCOL__INHERIT) {
             flags |= P4_MUTEX_PRIO_INHERIT;
         }
