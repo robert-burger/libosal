@@ -1,4 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
+pkgconfigdir=$(libdir)/pkgconfig
 
 #include $(top_srcdir)/aminclude.am
 
@@ -10,6 +11,6 @@ SUBDIRS += src/tools/logger
 endif
 endif
 
-#pkgconfig_DATA = libethercat.pc
+pkgconfig_DATA = libosal.pc
 
 

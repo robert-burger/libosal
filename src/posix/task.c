@@ -315,8 +315,6 @@ osal_retval_t osal_task_get_task_attr(osal_task_t *hdl, osal_task_attr_t *attr) 
  */
 osal_retval_t osal_task_set_policy(osal_task_t *hdl, osal_task_sched_policy_t policy)
 {
-    assert(hdl != NULL);
-
     osal_retval_t ret = OSAL_OK;
     int local_ret;
 
