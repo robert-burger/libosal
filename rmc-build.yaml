@@ -2,6 +2,8 @@ context: conan
 configurations:
 - imports:
   - linux_defaults
+- pikeos4.2-armv7hf-gcc5
+- pikeos4.2-armv7hf-gcc5.5
 - pikeos5.1-armv8hf-gcc7
 - osl154-x86_64
 - win64-x86_64-mingw
