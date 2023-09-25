@@ -36,6 +36,7 @@ includewin32_HEADERS =
 libosal_la_SOURCES	= io.c osal.c trace.c
 
 ADD_LIBS = @MATH_LIBS@
+ADD_CFLAGS = 
 
 if BUILD_POSIX
 includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/binary_semaphore.h \
@@ -66,6 +67,7 @@ libosal_la_SOURCES += posix/shm.c
 endif
 
 ADD_LIBS += @PTHREAD_LIBS@ @RT_LIBS@
+ADD_CFLAGS += -Wno-unused-const-variable
 endif
 
 if BUILD_VXWORKS
@@ -86,6 +88,7 @@ includepikeos_HEADERS   += $(top_srcdir)/include/libosal/pikeos/binary_semaphore
 				  		   $(top_srcdir)/include/libosal/pikeos/semaphore.h \
 				  		   $(top_srcdir)/include/libosal/pikeos/task.h \
 				  		   $(top_srcdir)/include/libosal/pikeos/spinlock.h \
+				  		   $(top_srcdir)/include/libosal/pikeos/io.h \
 				  		   $(top_srcdir)/include/libosal/pikeos/shm.h 
 
 libosal_la_SOURCES += pikeos/binary_semaphore.c
@@ -109,7 +112,7 @@ libosal_la_SOURCES += win32/semaphore.c
 
 endif
 
-libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror -Wno-unused-const-variable -I$(top_srcdir)/include
+libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror $(ADD_CFLAGS) -I$(top_srcdir)/include
 libosal_la_LDFLAGS	= -Wall -Werror $(AM_LDFLAGS) $(ADD_LIBS)
 libosal_la_LIBS     = -lm $(ADD_LIBS)
 

@@ -35,6 +35,8 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 typedef uint32_t    osal_bool_t;        //!< \brief boolean type
 
@@ -62,6 +64,9 @@ typedef int32_t    osal_int32_t;        //!< \brief 32-bit signed type.
 typedef int64_t    osal_int64_t;        //!< \brief 64-bit signed type.
 
 typedef uint64_t   osal_mode_t;         //!< \brief mode type.
+
+typedef FILE       osal_file_t;
+typedef va_list    osal_va_list_t;
 
 #endif /* LIBOSAL_TYPES__H */
 

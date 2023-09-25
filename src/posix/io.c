@@ -49,3 +49,8 @@ osal_retval_t osal_puts(const osal_char_t *msg) {
     puts((const char *)msg);
     return OSAL_OK;
 }
+
+
+osal_int32_t osal_vfprintf(osal_file_t *stream, const osal_char_t *format, osal_va_list_t ap) {
+    return vfprintf((FILE *)stream, (char *)format, ap);
+}

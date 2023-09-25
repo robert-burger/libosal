@@ -36,6 +36,14 @@
 #include <libosal/types.h>
 #include <libosal/timer.h>
 
+#ifdef LIBOSAL_BUILD_PIKEOS
+#include <libosal/pikeos/io.h>
+#else
+#define LIBOSAL_IO_STDIN    stdin
+#define LIBOSAL_IO_STDOUT   stdout
+#define LIBOSAL_IO_STDERR   stderr
+#endif
+
 /** \defgroup io_group IO
  * IO functions.
  *
@@ -55,6 +63,9 @@ extern "C" {
  * \return OK or ERROR_CODE.
  */
 osal_retval_t osal_printf(const osal_char_t *fmt, ...)  __attribute__ ((format (printf, 1, 2)));
+
+
+osal_int32_t osal_vfprintf(osal_file_t *stream, const osal_char_t *format, osal_va_list_t ap);
 
 //! \brief Write message to stdout
 /*!

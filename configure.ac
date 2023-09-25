@@ -41,6 +41,7 @@ case $target_os in
     pikeos*)
         BUILD_PIKEOS=true
         AC_DEFINE([BUILD_PIKEOS], [true], [Use PikeOS build])
+        CFLAGS="$CFLAGS -Wno-suggest-attribute=format -Wno-error=suggest-attribute=format"
         ;;
 esac
 

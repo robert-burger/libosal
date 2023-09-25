@@ -72,3 +72,18 @@ osal_retval_t osal_puts(const osal_char_t *msg) {
     return ret;
 }
 
+osal_int32_t osal_vfprintf(osal_file_t *stream, const osal_char_t *format, osal_va_list_t ap) {
+#if __GNUC__ == 5
+    (void)stream;
+
+    // there's no vfprintf on pikeos-4.2
+    osal_int32_t ret = 0;
+    /*static*/ char v_tmp_buf[256];
+    ret = vsnprintf(&v_tmp_buf[0], 256, format, ap);
+    (void)osal_puts(v_tmp_buf);
+
+    return ret;
+#else 
+    return vfprintf(stream, format, ap);
+#endif
+}
