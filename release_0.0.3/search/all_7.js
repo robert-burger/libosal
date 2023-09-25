@@ -93,7 +93,7 @@ var searchData=
   ['osal_5foff_5ft_110',['osal_off_t',['../types_8h.html#ac8477a1ad015afbf8880da86aae32d89',1,'types.h']]],
   ['osal_5fok_111',['OSAL_OK',['../osal_8h.html#a1a648e2f921a9a71f130dc15e63c7a00',1,'osal.h']]],
   ['osal_5fprintf_112',['osal_printf',['../group__io__group.html#ga6040fbf5efe29dbb9223a192e410dd36',1,'io.h']]],
-  ['osal_5fputs_113',['osal_puts',['../group__io__group.html#ga8e465c8945ea37ec46cfce853c523e04',1,'io.h']]],
+  ['osal_5fputs_113',['osal_puts',['../group__io__group.html#gab74136ac6bcd8907d0110371b46ead24',1,'io.h']]],
   ['osal_5fretval_5ft_114',['osal_retval_t',['../types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7',1,'types.h']]],
   ['osal_5fsched_5fpolicy_5ffifo_115',['OSAL_SCHED_POLICY_FIFO',['../group__task__group.html#ga2423c4869f8e2858c1c6b886bbe9457e',1,'task.h']]],
   ['osal_5fsched_5fpolicy_5fother_116',['OSAL_SCHED_POLICY_OTHER',['../group__task__group.html#ga8beaee938312d5d97b4388980d1e37c0',1,'task.h']]],

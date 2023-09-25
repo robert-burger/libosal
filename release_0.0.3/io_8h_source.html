@@ -113,42 +113,31 @@ $(document).ready(function(){initNavTree('io_8h_source.html',''); initResizable(
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="types_8h.html" title="OSAL types header.">libosal/types.h</a>&gt;</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="timer_8h.html" title="OSAL timer header.">libosal/timer.h</a>&gt;</span></div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#ifdef LIBOSAL_BUILD_PIKEOS</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &lt;libosal/pikeos/io.h&gt;</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#define LIBOSAL_IO_STDIN    stdin</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#define LIBOSAL_IO_STDOUT   stdout</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#define LIBOSAL_IO_STDERR   stderr</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="group__io__group.html#gafe3ba3627c77b79feb60a6f3805a6941">   53</a></span>&#160;<span class="preprocessor">#define LIBOSAL_IO_SHM_MAX_MSG_SIZE 512     </span></div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor"></span> </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="group__io__group.html#gafe3ba3627c77b79feb60a6f3805a6941">   45</a></span>&#160;<span class="preprocessor">#define LIBOSAL_IO_SHM_MAX_MSG_SIZE 512     </span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor"></span> </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="group__io__group.html#ga6040fbf5efe29dbb9223a192e410dd36">   57</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__io__group.html#ga6040fbf5efe29dbb9223a192e410dd36" title="Get the current state of a created thread.">osal_printf</a>(<span class="keyword">const</span> <a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> *fmt, ...)  __attribute__ ((format (printf, 1, 2)));</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="group__io__group.html#ga6040fbf5efe29dbb9223a192e410dd36">   65</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__io__group.html#ga6040fbf5efe29dbb9223a192e410dd36" title="Get the current state of a created thread.">osal_printf</a>(<span class="keyword">const</span> <a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> *fmt, ...)  __attribute__ ((format (printf, 1, 2)));</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="group__io__group.html#gab74136ac6bcd8907d0110371b46ead24">   65</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__io__group.html#gab74136ac6bcd8907d0110371b46ead24" title="Write message to stdout.">osal_puts</a>(const <a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> *msg);</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<a class="code" href="types_8h.html#aaea9b2b21b352559ab3343e596513059" title="32-bit signed type.">osal_int32_t</a> osal_vfprintf(osal_file_t *stream, const <a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> *format, osal_va_list_t ap);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="group__io__group.html#ga8e465c8945ea37ec46cfce853c523e04">   76</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__io__group.html#ga8e465c8945ea37ec46cfce853c523e04" title="Write message to stdout.">osal_puts</a>(const <a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> *msg);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="group__io__group.html#ga9f74ea6d108f64eb92c8078b00ef3cc4">   86</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__io__group.html#ga9f74ea6d108f64eb92c8078b00ef3cc4" title="Set up printing to shm instead of stdout.">osal_io_shm_setup</a>(const <a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> *shm_name, const <a class="code" href="types_8h.html#a93f01492c0d0bfab59fb0bc3de1066ad" title="size type.">osal_size_t</a> max_msgs, const <a class="code" href="types_8h.html#a93f01492c0d0bfab59fb0bc3de1066ad" title="size type.">osal_size_t</a> max_msg_size);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="group__io__group.html#ga9c67c3c3568c88c0c775ce48ff603a8b">   95</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__io__group.html#ga9c67c3c3568c88c0c775ce48ff603a8b" title="Get next message printed to shm.">osal_io_shm_get_message</a>(<a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> msg[<a class="code" href="group__io__group.html#gafe3ba3627c77b79feb60a6f3805a6941" title="Maximum message size.">LIBOSAL_IO_SHM_MAX_MSG_SIZE</a>],</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        const <a class="code" href="structosal__timer.html" title="timer structure">osal_timer_t</a> *to);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;};</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LIBOSAL_MUTEX__H */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="group__io__group.html#ga9f74ea6d108f64eb92c8078b00ef3cc4">   75</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__io__group.html#ga9f74ea6d108f64eb92c8078b00ef3cc4" title="Set up printing to shm instead of stdout.">osal_io_shm_setup</a>(const <a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> *shm_name, const <a class="code" href="types_8h.html#a93f01492c0d0bfab59fb0bc3de1066ad" title="size type.">osal_size_t</a> max_msgs, const <a class="code" href="types_8h.html#a93f01492c0d0bfab59fb0bc3de1066ad" title="size type.">osal_size_t</a> max_msg_size);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="group__io__group.html#ga9c67c3c3568c88c0c775ce48ff603a8b">   84</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__io__group.html#ga9c67c3c3568c88c0c775ce48ff603a8b" title="Get next message printed to shm.">osal_io_shm_get_message</a>(<a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> msg[<a class="code" href="group__io__group.html#gafe3ba3627c77b79feb60a6f3805a6941" title="Maximum message size.">LIBOSAL_IO_SHM_MAX_MSG_SIZE</a>],</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        const <a class="code" href="structosal__timer.html" title="timer structure">osal_timer_t</a> *to);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;};</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LIBOSAL_MUTEX__H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

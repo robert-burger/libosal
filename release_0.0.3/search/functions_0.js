@@ -28,7 +28,7 @@ var searchData=
   ['osal_5fmutex_5ftrylock_283',['osal_mutex_trylock',['../group__mutex__group.html#ga5b8f1e04e0ae7ab311c42e62446ce834',1,'mutex.h']]],
   ['osal_5fmutex_5funlock_284',['osal_mutex_unlock',['../group__mutex__group.html#ga79b9cfb72f1fa5a88de7558257b3195b',1,'mutex.h']]],
   ['osal_5fprintf_285',['osal_printf',['../group__io__group.html#ga6040fbf5efe29dbb9223a192e410dd36',1,'io.h']]],
-  ['osal_5fputs_286',['osal_puts',['../group__io__group.html#ga8e465c8945ea37ec46cfce853c523e04',1,'io.h']]],
+  ['osal_5fputs_286',['osal_puts',['../group__io__group.html#gab74136ac6bcd8907d0110371b46ead24',1,'io.h']]],
   ['osal_5fsemaphore_5fdestroy_287',['osal_semaphore_destroy',['../group__semaphore__group.html#gaee088dd772d432396bac8c364a2fdd84',1,'semaphore.h']]],
   ['osal_5fsemaphore_5finit_288',['osal_semaphore_init',['../group__semaphore__group.html#ga6bec14ff626c199dfcc6580aac63f1ad',1,'semaphore.h']]],
   ['osal_5fsemaphore_5fpost_289',['osal_semaphore_post',['../group__semaphore__group.html#ga677aaac4869da2f16c61c2dbdf87f1ce',1,'semaphore.h']]],
