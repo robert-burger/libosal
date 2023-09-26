@@ -160,6 +160,27 @@ void osal_trace_time(osal_trace_t *trace, osal_uint64_t time) {
     }
 }
 
+//! \brief Return last time stored in trace.
+/*!
+ * \param[in]   trace   Pointer to trace struct.
+ * 
+ * \return last store trace time in [ns].
+ */
+osal_uint64_t osal_trace_get_last_time(osal_trace_t *trace) {
+    assert(trace != NULL);
+
+    osal_uint64_t last_time = 0u;
+    osal_uint32_t last_buf = trace->act_buf == 0 ? 1 : 0;
+
+    if (trace->pos == 0) {
+        last_time = trace->time_in_ns[last_buf][trace->cnt - 1];
+    } else {
+        last_time = trace->time_in_ns[last_buf][trace->pos - 1];
+    }
+
+    return last_time;
+}
+
 //! \brief Sync to trace when buffer is full.
 /*!
  * \param[in]   trace   Pointer to trace struct.
