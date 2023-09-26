@@ -83,6 +83,15 @@ void osal_trace_free(osal_trace_t *trace);
  */
 void osal_trace_point(osal_trace_t *trace);
 
+//! \brief Trace time.
+/*!
+ * \param[in]   trace   Pointer to trace struct.
+ * \param[in]   time    Time to store in trace.
+ *
+ * \return N/A
+ */
+void osal_trace_time(osal_trace_t *trace, osal_uint64_t time);
+
 //! \brief Sync to trace when buffer is full.
 /*!
  * \param[in]   trace   Pointer to trace struct.

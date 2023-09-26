@@ -136,7 +136,20 @@ void osal_trace_free(osal_trace_t *trace) {
 void osal_trace_point(osal_trace_t *trace) {
     assert(trace != NULL);
 
-    trace->time_in_ns[trace->act_buf][trace->pos] = osal_timer_gettime_nsec();
+    osal_trace_time(trace, osal_timer_gettime_nsec());
+}
+
+//! \brief Trace time.
+/*!
+ * \param[in]   trace   Pointer to trace struct.
+ * \param[in]   time    Time to store in trace.
+ *
+ * \return N/A
+ */
+void osal_trace_time(osal_trace_t *trace, osal_uint64_t time) {
+    assert(trace != NULL);
+
+    trace->time_in_ns[trace->act_buf][trace->pos] = time;
 
     trace->pos++;
     if (trace->pos >= trace->cnt) {
