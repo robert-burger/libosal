@@ -173,7 +173,7 @@ osal_uint64_t osal_trace_get_last_time(osal_trace_t *trace) {
     osal_uint32_t last_buf = trace->act_buf == 0 ? 1 : 0;
 
     if (trace->pos == 0) {
-        last_time = trace->time_in_ns[last_buf][trace->pos - 1];
+        last_time = trace->time_in_ns[last_buf][trace->cnt - 1];
     } else {
         last_time = trace->time_in_ns[last_buf][trace->pos - 1];
     }
