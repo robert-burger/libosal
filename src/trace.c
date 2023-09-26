@@ -230,3 +230,41 @@ void osal_trace_analyze(osal_trace_t *trace, osal_uint64_t *avg, osal_uint64_t *
 
     (*avg_jit) = sqrt((*avg_jit) / trace->cnt);
 }
+
+//! \brief Analyze trace with relative timestamps and return average and jitters.
+/*!
+ * \param[in]   trace   Pointer to trace struct.
+ * \param[out]  avg     Return average time interval.
+ * \param[out]  avg_jit Return average jitter (std-dev).
+ * \param[out]  max_jit Return maximum jitter.
+ *
+ * \return N/A
+ */
+void osal_trace_analyze_rel(osal_trace_t *trace, osal_uint64_t *avg, osal_uint64_t *avg_jit, osal_uint64_t *max_jit) {
+    assert(trace != NULL);
+    assert(avg != NULL);
+    assert(avg_jit != NULL);
+    assert(max_jit != NULL);
+
+    (*avg)     = 0u;
+    (*avg_jit) = 0u;
+    (*max_jit) = 0u;
+
+    int act_buffer = trace->act_buf == 1 ? 0 : 1;
+
+    for (unsigned i = 0; i < trace->cnt; ++i) {
+        (*avg) += trace->time_in_ns[act_buffer][i];
+    }
+
+    (*avg) /= trace->cnt;
+
+    for (unsigned i = 0; i < trace->cnt; ++i) {
+        osal_int64_t dev = (osal_int64_t)(*avg) - trace->tmp[i];
+        if (dev < 0) { dev *= -1; }
+        if ((osal_uint64_t)dev > (*max_jit)) { (*max_jit) = dev; }
+
+        (*avg_jit) += (dev * dev);
+    }
+
+    (*avg_jit) = sqrt((*avg_jit) / trace->cnt);
+}

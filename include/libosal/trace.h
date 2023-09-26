@@ -121,6 +121,17 @@ osal_retval_t osal_trace_timedwait(osal_trace_t *trace, osal_timer_t *timeout);
  */
 void osal_trace_analyze(osal_trace_t *trace, osal_uint64_t *avg, osal_uint64_t *avg_jit, osal_uint64_t *max_jit);
 
+//! \brief Analyze trace with relative timestamps and return average and jitters.
+/*!
+ * \param[in]   trace   Pointer to trace struct.
+ * \param[out]  avg     Return average time interval.
+ * \param[out]  avg_jit Return average jitter (std-dev).
+ * \param[out]  max_jit Return maximum jitter.
+ *
+ * \return N/A
+ */
+void osal_trace_analyze_rel(osal_trace_t *trace, osal_uint64_t *avg, osal_uint64_t *avg_jit, osal_uint64_t *max_jit);
+
 #ifdef __cplusplus
 };
 #endif
