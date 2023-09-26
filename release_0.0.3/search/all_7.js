@@ -192,11 +192,12 @@ var searchData=
   ['osal_5ftrace_5ffree_209',['osal_trace_free',['../group__trace__group.html#ga760ecf37eb09c384e444b5ad4f369b18',1,'trace.h']]],
   ['osal_5ftrace_5fpoint_210',['osal_trace_point',['../group__trace__group.html#gaaa53476df21ab43a137e3e76342ccdbb',1,'trace.h']]],
   ['osal_5ftrace_5ft_211',['osal_trace_t',['../group__trace__group.html#gac00e0cf743c2782dfa95e3db400705b9',1,'trace.h']]],
-  ['osal_5ftrace_5ftimedwait_212',['osal_trace_timedwait',['../group__trace__group.html#gaafecd388efaef8bfc4d97901e7424967',1,'trace.h']]],
-  ['osal_5ftrue_213',['OSAL_TRUE',['../types_8h.html#aada61dc6c807cba85d8f76698740f69d',1,'types.h']]],
-  ['osal_5fuint16_5ft_214',['osal_uint16_t',['../types_8h.html#a44c9049ef8ba36b430d756f1e4b57f0b',1,'types.h']]],
-  ['osal_5fuint32_5ft_215',['osal_uint32_t',['../types_8h.html#adb03454d49d7059e84963c71b296410b',1,'types.h']]],
-  ['osal_5fuint64_5ft_216',['osal_uint64_t',['../types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f',1,'types.h']]],
-  ['osal_5fuint8_5ft_217',['osal_uint8_t',['../types_8h.html#a7c6d5d7abacf328ad394685cd57cf3ef',1,'types.h']]],
-  ['osal_5fvoid_5ft_218',['osal_void_t',['../types_8h.html#a8d459522ba11f9898f2c8a8a0b478c86',1,'types.h']]]
+  ['osal_5ftrace_5ftime_212',['osal_trace_time',['../group__trace__group.html#gae43a22245667ea154d1f8a9ed0bd86be',1,'trace.h']]],
+  ['osal_5ftrace_5ftimedwait_213',['osal_trace_timedwait',['../group__trace__group.html#gaafecd388efaef8bfc4d97901e7424967',1,'trace.h']]],
+  ['osal_5ftrue_214',['OSAL_TRUE',['../types_8h.html#aada61dc6c807cba85d8f76698740f69d',1,'types.h']]],
+  ['osal_5fuint16_5ft_215',['osal_uint16_t',['../types_8h.html#a44c9049ef8ba36b430d756f1e4b57f0b',1,'types.h']]],
+  ['osal_5fuint32_5ft_216',['osal_uint32_t',['../types_8h.html#adb03454d49d7059e84963c71b296410b',1,'types.h']]],
+  ['osal_5fuint64_5ft_217',['osal_uint64_t',['../types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f',1,'types.h']]],
+  ['osal_5fuint8_5ft_218',['osal_uint8_t',['../types_8h.html#a7c6d5d7abacf328ad394685cd57cf3ef',1,'types.h']]],
+  ['osal_5fvoid_5ft_219',['osal_void_t',['../types_8h.html#a8d459522ba11f9898f2c8a8a0b478c86',1,'types.h']]]
 ];
