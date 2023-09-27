@@ -6,6 +6,7 @@ var timer_8h =
     [ "osal_timer_add_nsec", "group__timer__group.html#gaf65ffe95ead2441513907ff428eda52f", null ],
     [ "osal_timer_cmp", "group__timer__group.html#gafb55339e98b8cbffe80142c473867cad", null ],
     [ "osal_timer_t", "group__timer__group.html#ga3d0f8513d18b084abbf94ba91656e99e", null ],
+    [ "osal_busy_wait_until_nsec", "group__timer__group.html#gabff86360fcd09cd095e450205c854992", null ],
     [ "osal_sleep", "group__timer__group.html#ga3b6db6b4a3671660c4cc1100a0fde39b", null ],
     [ "osal_sleep_until", "group__timer__group.html#ga265516b28a8fd99dbc32d8e9296ca5c8", null ],
     [ "osal_sleep_until_nsec", "group__timer__group.html#gae1e16eed0d82f67aa1b0990341e7047a", null ],

@@ -137,6 +137,9 @@ Functions</h2></td></tr>
 <tr class="memitem:gae1e16eed0d82f67aa1b0990341e7047a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__timer__group.html#gae1e16eed0d82f67aa1b0990341e7047a">osal_sleep_until_nsec</a> (<a class="el" href="types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f">osal_uint64_t</a> nsec)</td></tr>
 <tr class="memdesc:gae1e16eed0d82f67aa1b0990341e7047a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sleep until current time equals nsec value expired.  <a href="group__timer__group.html#gae1e16eed0d82f67aa1b0990341e7047a">More...</a><br /></td></tr>
 <tr class="separator:gae1e16eed0d82f67aa1b0990341e7047a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabff86360fcd09cd095e450205c854992"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__timer__group.html#gabff86360fcd09cd095e450205c854992">osal_busy_wait_until_nsec</a> (<a class="el" href="types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f">osal_uint64_t</a> nsec)</td></tr>
+<tr class="memdesc:gabff86360fcd09cd095e450205c854992"><td class="mdescLeft">&#160;</td><td class="mdescRight">Busy-wait until current time equals nsec value.  <a href="group__timer__group.html#gabff86360fcd09cd095e450205c854992">More...</a><br /></td></tr>
+<tr class="separator:gabff86360fcd09cd095e450205c854992"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga789c6157f1d9939f569e2cc34dd8f5e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__timer__group.html#ga789c6157f1d9939f569e2cc34dd8f5e8">osal_timer_gettime</a> (<a class="el" href="group__timer__group.html#ga3d0f8513d18b084abbf94ba91656e99e">osal_timer_t</a> *timer)</td></tr>
 <tr class="memdesc:ga789c6157f1d9939f569e2cc34dd8f5e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets filled timer struct with current time.  <a href="group__timer__group.html#ga789c6157f1d9939f569e2cc34dd8f5e8">More...</a><br /></td></tr>
 <tr class="separator:ga789c6157f1d9939f569e2cc34dd8f5e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -283,6 +286,41 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="gabff86360fcd09cd095e450205c854992"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabff86360fcd09cd095e450205c854992">&#9670;&nbsp;</a></span>osal_busy_wait_until_nsec()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a> osal_busy_wait_until_nsec </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="types_8h.html#a2a7c1537f9e425c6d97f60f376387d6f">osal_uint64_t</a>&#160;</td>
+          <td class="paramname"><em>nsec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Busy-wait until current time equals nsec value. </p>
+<p>This function busy-waits for a delay in nanoseconds. It may fail in some cases and return an error value.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">nsec</td><td>Absolute time in [ns].</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="retval"><dt>Return values</dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">OSAL_OK</td><td>On success. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_INVALID_PARAM</td><td>Invalid timer value or in the past. </td></tr>
+    <tr><td class="paramname">OSAL_ERR_OPERATION_FAILED</td><td>Any other error. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ga3b6db6b4a3671660c4cc1100a0fde39b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga3b6db6b4a3671660c4cc1100a0fde39b">&#9670;&nbsp;</a></span>osal_sleep()</h2>
 
