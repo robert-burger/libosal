@@ -79,9 +79,9 @@ void osal_trace_free(osal_trace_t *trace);
 /*!
  * \param[in]   trace   Pointer to trace struct.
  *
- * \return N/A
+ * \return stored trace time in [ns].
  */
-void osal_trace_point(osal_trace_t *trace);
+osal_uint64_t osal_trace_point(osal_trace_t *trace);
 
 //! \brief Trace time.
 /*!

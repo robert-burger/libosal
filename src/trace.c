@@ -131,12 +131,17 @@ void osal_trace_free(osal_trace_t *trace) {
 /*!
  * \param[in]   trace   Pointer to trace struct.
  *
- * \return N/A
+ * \return stored trace time in [ns].
  */
-void osal_trace_point(osal_trace_t *trace) {
+osal_uint64_t osal_trace_point(osal_trace_t *trace) {
+    osal_uint64_t ret_time;
+
     assert(trace != NULL);
 
-    osal_trace_time(trace, osal_timer_gettime_nsec());
+    ret_time = osal_timer_gettime_nsec();
+    osal_trace_time(trace, ret_time);
+
+    return ret_time;
 }
 
 //! \brief Trace time.
