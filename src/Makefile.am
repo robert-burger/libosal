@@ -33,7 +33,7 @@ includepikeos_HEADERS =
 includevxworks_HEADERS =
 includewin32_HEADERS =
 
-libosal_la_SOURCES	= io.c osal.c trace.c
+libosal_la_SOURCES	= io.c osal.c trace.c timer.c
 
 ADD_LIBS = @MATH_LIBS@
 ADD_CFLAGS = 

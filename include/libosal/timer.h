@@ -127,6 +127,19 @@ osal_retval_t osal_sleep_until(osal_timer_t *timer);
  */
 osal_retval_t osal_sleep_until_nsec(osal_uint64_t nsec);
 
+//! Busy-wait until current time equals nsec value
+/*!
+ * This function busy-waits for a delay in nanoseconds. It may fail in some
+ * cases and return an error value.
+ *
+ * \param[in]   nsec   Absolute time in [ns].
+ *
+ * \retval OSAL_OK      On success.
+ * \retval OSAL_ERR_INVALID_PARAM       Invalid timer value or in the past.
+ * \retval OSAL_ERR_OPERATION_FAILED    Any other error.
+ */
+osal_retval_t osal_busy_wait_until_nsec(osal_uint64_t nsec);
+
 //! Gets filled timer struct with current time.
 /*!
  * This function fills given \p timer structure with current time.
