@@ -224,7 +224,7 @@ void osal_trace_analyze(osal_trace_t *trace, osal_uint64_t *avg, osal_uint64_t *
         (*avg) += trace->tmp[i];
     }
 
-    (*avg) /= trace->cnt;
+    (*avg) /= (trace->cnt - 1u);
 
     for (unsigned i = 0; i < (trace->cnt - 1u); ++i) {
         osal_int64_t dev = (osal_int64_t)(*avg) - trace->tmp[i];
