@@ -113,46 +113,69 @@ $(document).ready(function(){initNavTree('socket_8h_source.html',''); initResiza
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="types_8h.html" title="OSAL types header.">libosal/types.h</a>&gt;</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">typedef</span> <a class="code" href="types_8h.html#adb03454d49d7059e84963c71b296410b" title="32-bit unsigned type.">osal_uint32_t</a>   osal_socket_type_t;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#define OSAL_SOCKET_TYPE_UDP    ((osal_uint32_t)0x00000001u)      </span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#ifdef LIBOSAL_BUILD_POSIX</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;libosal/posix/socket.h&gt;</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#ifdef LIBOSAL_BUILD_VXWORKS</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;libosal/vxworks/socket.h&gt;</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#ifdef LIBOSAL_BUILD_PIKEOS</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#include &lt;libosal/pikeos/socket.h&gt;</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#ifdef LIBOSAL_BUILD_WIN32</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">#include &lt;libosal/win32/socket.h&gt;</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="group__task__group.html#gabd75e973c710ce16b1fa5939fd1f1a05">   80</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#gabd75e973c710ce16b1fa5939fd1f1a05" title="Create a socket.">osal_socket_create</a>(osal_socket_t *hdl, osal_socket_type_t type);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="group__task__group.html#ga20ebb822e1c880b869f4597086cb7317">   92</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#ga20ebb822e1c880b869f4597086cb7317" title="Read data from a socket.">osal_socket_read</a>(osal_socket_t *hdl, <a class="code" href="types_8h.html#a7c6d5d7abacf328ad394685cd57cf3ef" title="8-bit unsigned type.">osal_uint8_t</a> *data, <a class="code" href="types_8h.html#adb03454d49d7059e84963c71b296410b" title="32-bit unsigned type.">osal_uint32_t</a> size,</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keyword">const</span> <a class="code" href="types_8h.html#af65195c190a848deb34969177b5a40f2" title="boolean type">osal_bool_t</a> is_blocking);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">typedef</span> <a class="code" href="types_8h.html#adb03454d49d7059e84963c71b296410b" title="32-bit unsigned type.">osal_uint32_t</a>   osal_socket_family_t;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">typedef</span> <a class="code" href="types_8h.html#a44c9049ef8ba36b430d756f1e4b57f0b" title="16-bit unsigned type.">osal_uint16_t</a>   osal_socket_port_t;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#define OSAL_SOCKET_FAMILY_INET     ((osal_uint32_t)0x00000001u)</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#define OSAL_SOCKET_FAMILY_INET6    ((osal_uint32_t)0x00000002u)</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#define OSAL_SOCKET_TYPE_UDP        ((osal_uint32_t)0x00000001u)      </span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#define OSAL_SOCKET_TYPE_TCP        ((osal_uint32_t)0x00000002u)      </span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#ifdef LIBOSAL_BUILD_POSIX</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &lt;libosal/posix/socket.h&gt;</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#ifdef LIBOSAL_BUILD_VXWORKS</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#include &lt;libosal/vxworks/socket.h&gt;</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#ifdef LIBOSAL_BUILD_PIKEOS</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#include &lt;libosal/pikeos/socket.h&gt;</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#ifdef LIBOSAL_BUILD_WIN32</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#include &lt;libosal/win32/socket.h&gt;</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="group__task__group.html#gabd75e973c710ce16b1fa5939fd1f1a05">   84</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#gabd75e973c710ce16b1fa5939fd1f1a05" title="Create a socket.">osal_socket_create</a>(osal_socket_t *hdl, osal_socket_type_t type);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="group__task__group.html#gaa0c6c0835da998f4da22ba903614035f">   93</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#gaa0c6c0835da998f4da22ba903614035f" title="Bind socket to local address/port.">osal_socket_bind</a>(osal_socket_t *hdl);</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="group__task__group.html#ga1db6dff8abb2a470063b6dca1e74e7a6">  104</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#ga1db6dff8abb2a470063b6dca1e74e7a6" title="Write data to a socket.">osal_socket_write</a>(osal_socket_t *hdl, <a class="code" href="types_8h.html#a7c6d5d7abacf328ad394685cd57cf3ef" title="8-bit unsigned type.">osal_uint8_t</a> *data, <a class="code" href="types_8h.html#adb03454d49d7059e84963c71b296410b" title="32-bit unsigned type.">osal_uint32_t</a> size);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;};</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="group__task__group.html#ga5525b23dc05b022509c306f0bf916622">  105</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#ga5525b23dc05b022509c306f0bf916622" title="Set local Host wrt. the socket family.">osal_socket_set_local</a>(osal_socket_t *hdl, osal_socket_family_t family, </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        <a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> *address, osal_socket_port_t port);</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LIBOSAL_SOCKET__H */</span><span class="preprocessor"></span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="group__task__group.html#ga82c126e875a4d4766f5e9a232bf7a5f3">  118</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#ga82c126e875a4d4766f5e9a232bf7a5f3" title="Set remote Host wrt. the socket family.">osal_socket_set_remote</a>(osal_socket_t *hdl, osal_socket_family_t family, </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <a class="code" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8" title="char (8-bit signed) type.">osal_char_t</a> *address, osal_socket_port_t port);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="group__task__group.html#ga58b3c4e9ff5828b09c356da680bac292">  129</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#ga58b3c4e9ff5828b09c356da680bac292" title="Listen on socket and accept incoming connections.">osal_socket_listen_n_accept</a>(osal_socket_t *hdl, osal_socket_t *new_hdl);</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="group__task__group.html#gae20df81af886f16f7b7ec2436fffee9b">  139</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#gae20df81af886f16f7b7ec2436fffee9b" title="Connect to remote socket.">osal_socket_connect</a>(osal_socket_t *hdl);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
+<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="group__task__group.html#ga20ebb822e1c880b869f4597086cb7317">  151</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#ga20ebb822e1c880b869f4597086cb7317" title="Read data from a socket.">osal_socket_read</a>(osal_socket_t *hdl, <a class="code" href="types_8h.html#a7c6d5d7abacf328ad394685cd57cf3ef" title="8-bit unsigned type.">osal_uint8_t</a> *data, <a class="code" href="types_8h.html#adb03454d49d7059e84963c71b296410b" title="32-bit unsigned type.">osal_uint32_t</a> size,</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        <span class="keyword">const</span> <a class="code" href="types_8h.html#af65195c190a848deb34969177b5a40f2" title="boolean type">osal_bool_t</a> is_blocking);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="group__task__group.html#ga1db6dff8abb2a470063b6dca1e74e7a6">  163</a></span>&#160;<a class="code" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7" title="return value type.">osal_retval_t</a> <a class="code" href="group__task__group.html#ga1db6dff8abb2a470063b6dca1e74e7a6" title="Write data to a socket.">osal_socket_write</a>(osal_socket_t *hdl, <a class="code" href="types_8h.html#a7c6d5d7abacf328ad394685cd57cf3ef" title="8-bit unsigned type.">osal_uint8_t</a> *data, <a class="code" href="types_8h.html#adb03454d49d7059e84963c71b296410b" title="32-bit unsigned type.">osal_uint32_t</a> size);</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;};</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="preprocessor">#endif </span><span class="comment">/* LIBOSAL_SOCKET__H */</span><span class="preprocessor"></span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

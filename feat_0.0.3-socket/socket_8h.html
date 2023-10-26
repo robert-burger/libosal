@@ -101,21 +101,51 @@ $(document).ready(function(){initNavTree('socket_8h.html',''); initResizable(); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:a4229a207fe33c5e370443ae019ba62a5"><td class="memItemLeft" align="right" valign="top"><a id="a4229a207fe33c5e370443ae019ba62a5"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>OSAL_SOCKET_FAMILY_INET</b>&#160;&#160;&#160;((<a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a>)0x00000001u)</td></tr>
+<tr class="separator:a4229a207fe33c5e370443ae019ba62a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8863cf61985bc2f21c780077a5698cd3"><td class="memItemLeft" align="right" valign="top"><a id="a8863cf61985bc2f21c780077a5698cd3"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>OSAL_SOCKET_FAMILY_INET6</b>&#160;&#160;&#160;((<a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a>)0x00000002u)</td></tr>
+<tr class="separator:a8863cf61985bc2f21c780077a5698cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fbc8ed46d769acf03383e7c6914850d"><td class="memItemLeft" align="right" valign="top"><a id="a4fbc8ed46d769acf03383e7c6914850d"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>OSAL_SOCKET_TYPE_UDP</b>&#160;&#160;&#160;((<a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a>)0x00000001u)      /** UDP socket */</td></tr>
 <tr class="separator:a4fbc8ed46d769acf03383e7c6914850d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab323f5a7b4b80f201e2ecd06793a08b0"><td class="memItemLeft" align="right" valign="top"><a id="ab323f5a7b4b80f201e2ecd06793a08b0"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>OSAL_SOCKET_TYPE_TCP</b>&#160;&#160;&#160;((<a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a>)0x00000002u)      /** TCP socket */</td></tr>
+<tr class="separator:ab323f5a7b4b80f201e2ecd06793a08b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ad0c58922b8cde40c6147b27b05835b9b"><td class="memItemLeft" align="right" valign="top"><a id="ad0c58922b8cde40c6147b27b05835b9b"></a>
 typedef <a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>osal_socket_type_t</b></td></tr>
 <tr class="separator:ad0c58922b8cde40c6147b27b05835b9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad83059bb4ee6fc320a7ebdb66d46c37b"><td class="memItemLeft" align="right" valign="top"><a id="ad83059bb4ee6fc320a7ebdb66d46c37b"></a>
+typedef <a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>osal_socket_family_t</b></td></tr>
+<tr class="separator:ad83059bb4ee6fc320a7ebdb66d46c37b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0d652f8f36594e27436af1e4f9b359c"><td class="memItemLeft" align="right" valign="top"><a id="ad0d652f8f36594e27436af1e4f9b359c"></a>
+typedef <a class="el" href="types_8h.html#a44c9049ef8ba36b430d756f1e4b57f0b">osal_uint16_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>osal_socket_port_t</b></td></tr>
+<tr class="separator:ad0d652f8f36594e27436af1e4f9b359c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:gabd75e973c710ce16b1fa5939fd1f1a05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#gabd75e973c710ce16b1fa5939fd1f1a05">osal_socket_create</a> (osal_socket_t *hdl, osal_socket_type_t type)</td></tr>
 <tr class="memdesc:gabd75e973c710ce16b1fa5939fd1f1a05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a socket.  <a href="group__task__group.html#gabd75e973c710ce16b1fa5939fd1f1a05">More...</a><br /></td></tr>
 <tr class="separator:gabd75e973c710ce16b1fa5939fd1f1a05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa0c6c0835da998f4da22ba903614035f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#gaa0c6c0835da998f4da22ba903614035f">osal_socket_bind</a> (osal_socket_t *hdl)</td></tr>
+<tr class="memdesc:gaa0c6c0835da998f4da22ba903614035f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bind socket to local address/port.  <a href="group__task__group.html#gaa0c6c0835da998f4da22ba903614035f">More...</a><br /></td></tr>
+<tr class="separator:gaa0c6c0835da998f4da22ba903614035f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5525b23dc05b022509c306f0bf916622"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga5525b23dc05b022509c306f0bf916622">osal_socket_set_local</a> (osal_socket_t *hdl, osal_socket_family_t family, <a class="el" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8">osal_char_t</a> *address, osal_socket_port_t port)</td></tr>
+<tr class="memdesc:ga5525b23dc05b022509c306f0bf916622"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set local Host wrt. the socket family.  <a href="group__task__group.html#ga5525b23dc05b022509c306f0bf916622">More...</a><br /></td></tr>
+<tr class="separator:ga5525b23dc05b022509c306f0bf916622"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga82c126e875a4d4766f5e9a232bf7a5f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga82c126e875a4d4766f5e9a232bf7a5f3">osal_socket_set_remote</a> (osal_socket_t *hdl, osal_socket_family_t family, <a class="el" href="types_8h.html#a3b9ec942ccaff97954a4213a3fcf18a8">osal_char_t</a> *address, osal_socket_port_t port)</td></tr>
+<tr class="memdesc:ga82c126e875a4d4766f5e9a232bf7a5f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set remote Host wrt. the socket family.  <a href="group__task__group.html#ga82c126e875a4d4766f5e9a232bf7a5f3">More...</a><br /></td></tr>
+<tr class="separator:ga82c126e875a4d4766f5e9a232bf7a5f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga58b3c4e9ff5828b09c356da680bac292"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga58b3c4e9ff5828b09c356da680bac292">osal_socket_listen_n_accept</a> (osal_socket_t *hdl, osal_socket_t *new_hdl)</td></tr>
+<tr class="memdesc:ga58b3c4e9ff5828b09c356da680bac292"><td class="mdescLeft">&#160;</td><td class="mdescRight">Listen on socket and accept incoming connections.  <a href="group__task__group.html#ga58b3c4e9ff5828b09c356da680bac292">More...</a><br /></td></tr>
+<tr class="separator:ga58b3c4e9ff5828b09c356da680bac292"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae20df81af886f16f7b7ec2436fffee9b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#gae20df81af886f16f7b7ec2436fffee9b">osal_socket_connect</a> (osal_socket_t *hdl)</td></tr>
+<tr class="memdesc:gae20df81af886f16f7b7ec2436fffee9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Connect to remote socket.  <a href="group__task__group.html#gae20df81af886f16f7b7ec2436fffee9b">More...</a><br /></td></tr>
+<tr class="separator:gae20df81af886f16f7b7ec2436fffee9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga20ebb822e1c880b869f4597086cb7317"><td class="memItemLeft" align="right" valign="top"><a class="el" href="types_8h.html#a4fff91bb12abb279ad6afc7159a31ab7">osal_retval_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__task__group.html#ga20ebb822e1c880b869f4597086cb7317">osal_socket_read</a> (osal_socket_t *hdl, <a class="el" href="types_8h.html#a7c6d5d7abacf328ad394685cd57cf3ef">osal_uint8_t</a> *data, <a class="el" href="types_8h.html#adb03454d49d7059e84963c71b296410b">osal_uint32_t</a> size, const <a class="el" href="types_8h.html#af65195c190a848deb34969177b5a40f2">osal_bool_t</a> is_blocking)</td></tr>
 <tr class="memdesc:ga20ebb822e1c880b869f4597086cb7317"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read data from a socket.  <a href="group__task__group.html#ga20ebb822e1c880b869f4597086cb7317">More...</a><br /></td></tr>
 <tr class="separator:ga20ebb822e1c880b869f4597086cb7317"><td class="memSeparator" colspan="2">&#160;</td></tr>
