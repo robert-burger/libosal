@@ -46,7 +46,7 @@
 osal_retval_t osal_puts(const osal_char_t *msg) {
     assert(msg != NULL);
 
-    puts((const char *)msg);
+    fputs((const char *)msg, stdout);
     return OSAL_OK;
 }
 
