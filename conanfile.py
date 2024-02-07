@@ -1,4 +1,5 @@
-from conans import ConanFile, AutoToolsBuildEnvironment
+from conan import ConanFile
+from conan.tools.gnu import Autotools, AutotoolsToolchain
 import re
 
 class MainProject(ConanFile):
@@ -6,26 +7,21 @@ class MainProject(ConanFile):
     license = "GPLv3"
     author = "Robert Burger <robert.burger@dlr.de>"
     url = f"https://rmc-github.robotic.dlr.de/common/{name}"
-    description = "This library provides an Operating System Abstraction Layer (OSAL) for other programs so they do not need to take care about the underlying implementation"
+    description = """"This library provides an Operating System Abstraction Layer 
+                      (OSAL) for other programs so they do not need to take care 
+                      about the underlying implementation"""
     settings = "os", "compiler", "build_type", "arch"
-    exports_sources = "src/*", "include/*", "README.md", "project.properties", "libosal.pc.in", "Makefile.am", "m4/*", "configure.ac", "LICENSE", "aminclude.am", "acinclude.m4", "tools/*", "doxygen.cfg", "config.sub"
+    exports_sources = ["*", "!.gitignore", "!bindings"]
     options = {"shared": [True, False]}
     default_options = {"shared": True}
-
     generators = "pkg_config"
-
-    #def source(self):
-    #    filedata = None
-    #    filename = "project.properties"
-    #    with open(filename, 'r') as f:
-    #        filedata = f.read()
-    #    with open(filename, 'w') as f:
-    #        f.write(re.sub("VERSION *=.*[^\n]", f"VERSION = {self.version}", filedata))
+    
+    def generate(self):
+        tc = AutotoolsToolchain(self)
+        tc.generate()
 
     def build(self):
-        print("os %s, compiler %s, build_type %s, arch %s" % (self.settings.os, self.settings.compiler, self.settings.build_type, self.settings.arch))
-        self.run("autoreconf -i")
-        autotools = AutoToolsBuildEnvironment(self)
+        autotools = Autotools(self)
         autotools.libs=[]
         autotools.include_paths=[]
         autotools.library_paths=[]
@@ -46,11 +42,12 @@ class MainProject(ConanFile):
             args.append("--disable-shared")
             args.append("--enable-static")
 
-        autotools.configure(configure_dir=".", args=args)
+        autotools.autoreconf()
+        autotools.configure(args=args)
         autotools.make()
 
     def package(self):
-        autotools = AutoToolsBuildEnvironment(self)
+        autotools = Autotools(self)
         autotools.install()
 
     def package_info(self):
