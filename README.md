@@ -1,5 +1,7 @@
 # libosal
 
+libosal is an operating system abstraction layer Library. It's purpose is to write os-independent code for easy portability between different systems and architectures. 
+
 ## Usage 
 
 See INTRODUCTION.md or gh-pages for reference.
