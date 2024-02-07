@@ -2,7 +2,7 @@
 
 libosal is an operating system abstraction layer Library. It's purpose is to write os-independent code for easy portability between different systems and architectures. 
 
-This software was developed and made available to the public by the Institue of [Robotics and Mechatronics of the German Aerospace Center (DLR)](https://www.dlr.de/rm).
+This software was developed and made available to the public by the [Institute of Robotics and Mechatronics of the German Aerospace Center (DLR)](https://www.dlr.de/rm).
 
 ## Usage 
 
