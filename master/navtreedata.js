@@ -48,6 +48,10 @@ var NAVTREE =
         [ "Debug tracing example", "index.html#autotoc_md15", null ]
       ] ]
     ] ],
+    [ "libosal", "md_README.html", [
+      [ "Usage", "md_README.html#autotoc_md17", null ],
+      [ "Build from source", "md_README.html#autotoc_md18", null ]
+    ] ],
     [ "Modules", "modules.html", "modules" ],
     [ "Data Structures", "annotated.html", [
       [ "Data Structures", "annotated.html", "annotated_dup" ],
