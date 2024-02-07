@@ -4,7 +4,7 @@ libosal is an operating system abstraction layer Library. It's purpose is to wri
 
 ## Usage 
 
-See INTRODUCTION.md or gh-pages for reference.
+See [introduction](INTRODUCTION.md) or gh-pages for reference.
 
 ## Build from source
 
