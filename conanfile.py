@@ -14,7 +14,6 @@ class MainProject(ConanFile):
     exports_sources = ["*", "!.gitignore", "!bindings"]
     options = {"shared": [True, False]}
     default_options = {"shared": True}
-    generators = "pkg_config"
     
     def generate(self):
         tc = AutotoolsToolchain(self)
