@@ -18,6 +18,7 @@ class MainProject(ConanFile):
     
     def generate(self):
         tc = AutotoolsToolchain(self)
+        tc.autoreconf_args = [ "--install", ]
         tc.generate()
 
     def build(self):
