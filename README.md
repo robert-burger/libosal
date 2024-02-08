@@ -13,7 +13,7 @@ See [introduction](INTRODUCTION.md) or gh-pages for reference.
 `libosal` uses autotools as build system. To build from source execute something like:
 
 ```
-git clone https://github.com/robert-wm/libosal.git
+git clone https://github.com/robert-burger/libosal.git
 cd libosal
 autoreconf -is
 ./configure
