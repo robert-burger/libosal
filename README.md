@@ -22,3 +22,14 @@ sudo make install
 ```
 
 This will build and install a static as well as a dynamic library. For use in other project you can you the generated pkg-config file to retreave cflags and linker flags.
+
+## Build with CMake
+```bash
+mkdir build
+cd build
+# You can choose MINGW32, POSIX, WIN32, PIKEOS, or VXWORKS. No cross compile currently supported with CMake
+cmake .. -DBUILD_FOR_PLATFORM="POSIX"
+cmake --build .
+# You can define a specific install path with e.g. cmake --install .  --prefix test
+cmake --install . 
+```
