@@ -14,7 +14,7 @@ include(CMakePackageConfigHelpers)
 option(BUILD_FOR_PLATFORM "Set to WIN32, MINGW32, PIKEOS, POSIX, or VXWORKS" "")
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 
-if(${BUILD_FOR_PLATFORM} STREQUAL "POSIX")
+if(BUILD_FOR_PLATFORM STREQUAL "POSIX")
     set(LIBOSAL_BUILD_POSIX 1)
     set(EXCLUDE_PIKEOS "pikeos")
     set(EXCLUDE_POSIX "vxworks")
@@ -31,7 +31,7 @@ if(${BUILD_FOR_PLATFORM} STREQUAL "POSIX")
         src/posix/task.c
         src/posix/timer.c
     )
-elseif(${BUILD_FOR_PLATFORM} STREQUAL "MINGW32")
+elseif(BUILD_FOR_PLATFORM STREQUAL "MINGW32")
     set(LIBOSAL_BUILD_MINGW32 1)
     set(LIBOSAL_BUILD_POSIX 1)
     set(EXCLUDE_PIKEOS "pikeos")
@@ -49,7 +49,7 @@ elseif(${BUILD_FOR_PLATFORM} STREQUAL "MINGW32")
         src/posix/task.c
         src/posix/timer.c
     )
-elseif(${BUILD_FOR_PLATFORM} STREQUAL "WIN32")
+elseif(BUILD_FOR_PLATFORM STREQUAL "WIN32")
     set(LIBOSAL_BUILD_WIN32 1)
     set(EXCLUDE_PIKEOS "pikeos")
     set(EXCLUDE_POSIX "posix")
@@ -59,7 +59,7 @@ elseif(${BUILD_FOR_PLATFORM} STREQUAL "WIN32")
         src/win32/mutex.c
         src/win32/semaphore.c
     )
-elseif(${BUILD_FOR_PLATFORM} STREQUAL "PIKEOS")
+elseif(BUILD_FOR_PLATFORM STREQUAL "PIKEOS")
     set(LIBOSAL_BUILD_PIKEOS 1)
     set(EXCLUDE_POSIX "posix")
     set(EXCLUDE_VXWORKS "vxworks")
@@ -74,7 +74,7 @@ elseif(${BUILD_FOR_PLATFORM} STREQUAL "PIKEOS")
         src/pikeos/task.c
         src/pikeos/timer.c
     )
-elseif(${BUILD_FOR_PLATFORM} STREQUAL "VXWORKS")
+elseif(BUILD_FOR_PLATFORM STREQUAL "VXWORKS")
     set(LIBOSAL_BUILD_VXWORKS 1)
     set(EXCLUDE_PIKEOS "pikeos")
     set(EXCLUDE_POSIX "posix")
@@ -139,7 +139,10 @@ set(SRC_OSAL
     ${SRC_OSAL_WIN32}
     )
 
+if(NOT BUILD_FOR_PLATFORM STREQUAL "WIN32")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -z noexecstack")
+endif()
+
 add_library(osal ${SRC_OSAL})
 
 target_include_directories(osal 
