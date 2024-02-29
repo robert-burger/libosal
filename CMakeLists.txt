@@ -139,7 +139,10 @@ set(SRC_OSAL
     ${SRC_OSAL_WIN32}
     )
 
+if(NOT BUILD_FOR_PLATFORM STREQUAL "WIN32")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -z noexecstack")
+endif()
+
 add_library(osal ${SRC_OSAL})
 
 target_include_directories(osal 
