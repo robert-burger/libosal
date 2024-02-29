@@ -30,12 +30,15 @@ jobs:
           - os: windows-latest
             c_compiler: cl
             cpp_compiler: cl
+            build_for_platform: WIN32
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
+            build_for_platform: POSIX
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
+            build_for_platform: POSIX
         exclude:
           - os: windows-latest
             c_compiler: gcc
@@ -62,6 +65,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_FOR_PLATFORM=${{ matrix.build_for_platform }}
         -S ${{ github.workspace }}
 
     - name: Build
