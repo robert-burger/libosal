@@ -2,7 +2,9 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([libosal], [0.0.3], [Robert Burger <robert.burger@dlr.de>])
+AC_INIT([libosal], 
+        m4_esyscmd_s([cat project.properties | grep VERSION    | cut -d'=' -f2 | xargs printf "%s"]), 
+        [Robert Burger <robert.burger@dlr.de>])
 
 AC_CANONICAL_TARGET
 

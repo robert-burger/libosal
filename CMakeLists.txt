@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
-project(libosal VERSION 0.0.3)
+file(READ "project.properties" PROJECT_PROPERTIES)
+string(REGEX MATCH "VERSION = ([0-9]*.[0-9]*.[0-9]*)" _ ${PROJECT_PROPERTIES})
+set(PROJECT_VERSION ${CMAKE_MATCH_1})
+project(libosal VERSION ${PROJECT_VERSION})
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_C_STANDARD 11)
