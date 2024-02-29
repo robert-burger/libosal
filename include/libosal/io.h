@@ -63,7 +63,7 @@ extern "C" {
  * \return OK or ERROR_CODE.
  */
 #ifdef LIBOSAL_BUILD_WIN32
-osal_retval_t osal_printf(_Printf_format_string_(const osal_char_t *fmt), ...);
+osal_retval_t osal_printf(const osal_char_t *fmt, ...);
 #else
 osal_retval_t osal_printf(const osal_char_t *fmt, ...)  __attribute__ ((format (printf, 1, 2)));
 #endif
