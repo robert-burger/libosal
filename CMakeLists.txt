@@ -144,7 +144,9 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -z noexecstack")
 endif()
 
 add_library(osal ${SRC_OSAL})
+if(BUILD_FOR_PLATFORM STREQUAL "POSIX")
 target_link_libraries(osal m)
+endif()
 target_include_directories(osal 
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
