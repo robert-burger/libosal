@@ -2,9 +2,10 @@
 
 ## Timer
 
-* uses flag / environment variable / scheduler API query to
+* uses Linux scheduler API query to
   determine whether it is running in real-time mode
-* gets test margin from environment 
+* sets test margins (tolerance)
+* possiblky gets parameters from environment ?
 
 
 ### osal_timer_init() / osal_timer_expired()
