@@ -6,6 +6,7 @@ pkgconfigdir=$(libdir)/pkgconfig
 SUBDIRS=src
 
 if BUILD_POSIX
+SUBDIRS += tests
 if !BUILD_MINGW32
 SUBDIRS += src/tools/logger 
 endif
