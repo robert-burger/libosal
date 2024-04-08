@@ -20,7 +20,7 @@ libgtest_la_LDFLAGS = -pthread
 
 check_PROGRAMS = main
 
-main_SOURCES = main.cc
+main_SOURCES = main.cc test_timer.cc
 
 main_LDADD = libgtest.la ../../src/libosal.la
 
