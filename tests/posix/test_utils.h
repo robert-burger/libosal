@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <vector>
 
-#ifndef TEST_UTILS_H
-#define TEST_UTILS_H
+#ifndef LIBOSAL_POSIX_TEST_UTILS_H
+#define LIBOSAL_POSIX_TEST_UTILS_H
 
 /* helper function used to randomize wait times */
 

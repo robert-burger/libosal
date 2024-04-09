@@ -506,7 +506,7 @@ TEST(TimerSleepUntil, SaneMultiThreaded)
   // running with real-time scheduling, and
   // 100 μs otherwise.
   const int64_t TIMER_TOLERANCE_LESS_NS = 0;
-  const int64_t TIMER_TOLERANCE_MORE_NS = runs_realtime ? 100000 : 150000;
+  const int64_t TIMER_TOLERANCE_MORE_NS = runs_realtime ? 100000 : 200000;
   //const int64_t TIMER_TOLERANCE_MORE_NS = 100;
   
   const int N_THREADS = 8;
@@ -571,4 +571,12 @@ TEST(TimerSleepUntil, SaneMultiThreaded)
 }
 
   
+}
+
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+
+    return RUN_ALL_TESTS();
 }

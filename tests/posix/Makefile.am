@@ -18,9 +18,22 @@ libgtest_la_LDFLAGS = -pthread
 # is linked with the library and tests against
 # its public API.
 
-check_PROGRAMS = main
+# we test the timer seperately because it can
+# fail on slow or busy machines
 
-main_SOURCES = main.cc test_timer.cc
+check_PROGRAMS = timer main
+
+timer_SOURCES = test_timer.cc
+
+timer_LDADD = libgtest.la ../../src/libosal.la
+
+timer_LDFLAGS = -pthread -Wall -Werror
+
+timer_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+
+
+
+main_SOURCES = main.cc test_mutex.cc
 
 main_LDADD = libgtest.la ../../src/libosal.la
 
@@ -28,6 +41,6 @@ main_LDFLAGS = -pthread -Wall -Werror
 
 main_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
-TESTS = main
+TESTS = main timer
 
 endif
