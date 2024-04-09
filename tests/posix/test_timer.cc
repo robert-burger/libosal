@@ -1,4 +1,5 @@
 #include <time.h>
+#include <stdlib.h>
 #include <vector>
 #include <pthread.h>
 #include "gtest/gtest.h"
@@ -33,7 +34,7 @@ using std::vector;
     time.
 
     We test both single-threaded and with multiple threads.
-    Got multi-threaded tests, we use an assprtment of
+    For multi-threaded tests, we use an assortment of
     wait times, which we pseudo-randomly shuffle between
     threads.
   */
