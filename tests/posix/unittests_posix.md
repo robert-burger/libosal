@@ -5,7 +5,7 @@
 * uses Linux scheduler API query to
   determine whether it is running in real-time mode
 * sets test margins (tolerance)
-* possiblky gets parameters from environment ?
+* possibly gets parameters from environment ?
 
 
 ### osal_timer_init() / osal_timer_expired()
