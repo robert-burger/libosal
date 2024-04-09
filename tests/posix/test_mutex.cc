@@ -11,7 +11,7 @@ using std::vector;
   //using testutils::wait_nanoseconds;
   //using testutils::shuffle_vector;
 
-TEST(MutexSane, SingleThreaded)
+TEST(MutexSane, SingleThreadedNoRelease)
 {
   osal_mutex_t my_mutex;
   osal_mutex_init(&my_mutex, nullptr);
@@ -24,6 +24,24 @@ TEST(MutexSane, SingleThreaded)
   }
   
   osal_mutex_unlock(&my_mutex);
+  
+  EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
+				    "is totally wrong");
+}
+  
+TEST(MutexSane, SingleThreaded)
+{
+  osal_mutex_t my_mutex;
+  osal_mutex_init(&my_mutex, nullptr);
+  const int loopcount = 100;
+  int counter = 0;
+
+  for(int i = 0; i < loopcount; i++){
+    osal_mutex_lock(&my_mutex);
+    counter += 1;
+    osal_mutex_unlock(&my_mutex);
+  }
+  
   
   EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
 				    "is totally wrong");

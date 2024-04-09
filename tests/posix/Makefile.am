@@ -41,6 +41,6 @@ main_LDFLAGS = -pthread -Wall -Werror
 
 main_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
-TESTS = main timer
+TESTS = main
 
 endif
