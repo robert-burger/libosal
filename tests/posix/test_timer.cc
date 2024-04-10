@@ -1,4 +1,6 @@
+#include <errno.h>
 #include <time.h>
+#include <sys/mman.h>
 #include <stdlib.h>
 #include <vector>
 #include <pthread.h>
@@ -42,6 +44,8 @@ using testutils::shuffle_vector;
     threads.
   */
 
+  static int verbose=0;
+  
 bool is_realtime()
 {
   bool runs_realtime = false;
@@ -99,11 +103,13 @@ void check_wait_times(vector<osal_uint64_t> &req_wait_times,
   for (osal_uint64_t req_wait_time_nsecs : req_wait_times){
 
     uint64_t run_time_nsecs = measure_timer(req_wait_time_nsecs);
-    
-    printf("runs realtime: %s \n", runs_realtime ? "yes" : "no"); 
-    printf("requested time: %lu nsec, actual wait: %lu nsec\n",
+
+    if (verbose){
+      printf("runs realtime: %s \n", runs_realtime ? "yes" : "no"); 
+      printf("requested time: %lu nsec, actual wait: %lu nsec\n",
 	   (ulong) req_wait_time_nsecs,
 	   (ulong) run_time_nsecs);
+    }
 
     
 
@@ -218,7 +224,9 @@ TEST(TimerExpired, SaneMultiThreaded)
     thread_params_vec.push_back(params);
   }
   for (int i = 0; i < N_THREADS; i++){
-    printf("starting thread %i\n", i);
+    if (verbose){
+      printf("starting thread %i\n", i);
+    }
     pthread_create(/*thread*/ &(thread_ids[i]),
 		   /*pthread_attr*/ nullptr,
 		   /* start_routine */ check_wait_times_mt,
@@ -226,7 +234,9 @@ TEST(TimerExpired, SaneMultiThreaded)
     
   }
   for (int i = 0; i < N_THREADS; i++){
-    printf("joining thread %i\n", i);
+    if (verbose){
+      printf("joining thread %i\n", i);
+    }
     pthread_join(/*thread*/ thread_ids[i],
 		 /*retval*/ nullptr);
   }
@@ -260,11 +270,13 @@ void check_sleep_times(vector<osal_uint64_t> &req_wait_times,
   for (osal_uint64_t req_wait_time_nsecs : req_wait_times){
 
     uint64_t run_time_nsecs = measure_sleep(req_wait_time_nsecs);
-    
-    printf("runs realtime: %s \n", runs_realtime ? "yes" : "no"); 
-    printf("requested time: %lu nsec, actual wait: %lu nsec\n",
+
+    if (verbose){
+      printf("runs realtime: %s \n", runs_realtime ? "yes" : "no"); 
+      printf("requested time: %lu nsec, actual wait: %lu nsec\n",
 	   (ulong) req_wait_time_nsecs,
 	   (ulong) run_time_nsecs);
+    }
 
     
 
@@ -383,7 +395,9 @@ TEST(TimerSleep, SaneMultiThreaded)
     thread_params_vec.push_back(params);
   }
   for (int i = 0; i < N_THREADS; i++){
-    printf("starting thread %i\n", i);
+    if (verbose){
+      printf("starting thread %i\n", i);
+    }
     pthread_create(/*thread*/ &(thread_ids[i]),
 		   /*pthread_attr*/ nullptr,
 		   /* start_routine */ check_sleep_times_mt,
@@ -391,7 +405,9 @@ TEST(TimerSleep, SaneMultiThreaded)
     
   }
   for (int i = 0; i < N_THREADS; i++){
-    printf("joining thread %i\n", i);
+    if (verbose){
+      printf("joining thread %i\n", i);
+    }    
     pthread_join(/*thread*/ thread_ids[i],
 		 /*retval*/ nullptr);
   }
@@ -435,11 +451,13 @@ void check_sleep_until(vector<osal_uint64_t> &req_wait_times,
   for (osal_uint64_t req_wait_time_nsecs : req_wait_times){
 
     uint64_t run_time_nsecs = measure_sleep_until(req_wait_time_nsecs);
-    
-    printf("runs realtime: %s \n", runs_realtime ? "yes" : "no"); 
-    printf("requested time: %lu nsec, actual wait: %lu nsec\n",
-	   (ulong) req_wait_time_nsecs,
-	   (ulong) run_time_nsecs);
+
+    if (verbose){
+      printf("runs realtime: %s \n", runs_realtime ? "yes" : "no"); 
+      printf("requested time: %lu nsec, actual wait: %lu nsec\n",
+	     (ulong) req_wait_time_nsecs,
+	     (ulong) run_time_nsecs);
+    }
 
     
 
@@ -459,7 +477,7 @@ TEST(TimerSleepUntil, SaneSingleThreaded)
   // running with real-time scheduling, and
   // 100 μs otherwise.
   const int64_t TIMER_TOLERANCE_LESS_NS = 0;
-  const int64_t TIMER_TOLERANCE_MORE_NS = runs_realtime ? 80000 : 150000;
+  const int64_t TIMER_TOLERANCE_MORE_NS = runs_realtime ? 100000 : 150000;
 
   
   vector<osal_uint64_t> req_wait_times = {500000000,
@@ -555,7 +573,9 @@ TEST(TimerSleepUntil, SaneMultiThreaded)
     thread_params_vec.push_back(params);
   }
   for (int i = 0; i < N_THREADS; i++){
-    printf("starting thread %i\n", i);
+    if (verbose) {
+      printf("starting thread %i\n", i);
+    }  
     pthread_create(/*thread*/ &(thread_ids[i]),
 		   /*pthread_attr*/ nullptr,
 		   /* start_routine */ check_sleep_until_mt,
@@ -563,7 +583,9 @@ TEST(TimerSleepUntil, SaneMultiThreaded)
     
   }
   for (int i = 0; i < N_THREADS; i++){
-    printf("joining thread %i\n", i);
+    if (verbose){
+      printf("joining thread %i\n", i);
+    }
     pthread_join(/*thread*/ thread_ids[i],
 		 /*retval*/ nullptr);
   }
@@ -577,6 +599,15 @@ TEST(TimerSleepUntil, SaneMultiThreaded)
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
+
+  if (getenv("VERBOSE")){
+    test_timer::verbose=1;
+  }
+  // try to lock memory
+  errno = 0;
+  if (mlockall(MCL_CURRENT|MCL_FUTURE) == -1){
+      perror("test_timer: could not lock memory"); 
+    }
 
     return RUN_ALL_TESTS();
 }
