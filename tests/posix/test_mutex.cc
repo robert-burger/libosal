@@ -101,10 +101,10 @@ namespace test_mutex {
   return nullptr;
 }
   
-TEST(MutexMultithreading, Randomized)
+TEST(MutexMultithreading, Parallel)
 {
-  const ulong N_THREADS = 8;
-  const uint LOOPCOUNT = 10000;
+  const ulong N_THREADS = 100;
+  const uint LOOPCOUNT = 100000;
 
   
   pthread_t thread_ids[N_THREADS];
