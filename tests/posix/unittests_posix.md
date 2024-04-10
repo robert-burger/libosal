@@ -52,7 +52,7 @@
 - the same, but with a short random waiting period
 
 
-## Semaphore osal_semaphore_wait()/osal_semephore_post()
+## Semaphore osal_semaphore_wait()/osal_semaphore_post()
 
 ### binary semaphore
 

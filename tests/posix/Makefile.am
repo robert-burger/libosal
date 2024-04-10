@@ -21,7 +21,7 @@ libgtest_la_LDFLAGS = -pthread
 # we test the timer seperately because it can
 # fail on slow or busy machines
 
-check_PROGRAMS = timer main
+check_PROGRAMS = timer mutex
 
 timer_SOURCES = test_timer.cc
 
@@ -33,14 +33,14 @@ timer_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$
 
 
 
-main_SOURCES = main.cc test_mutex.cc
+mutex_SOURCES = test_mutex.cc
 
-main_LDADD = libgtest.la ../../src/libosal.la
+mutex_LDADD = libgtest.la ../../src/libosal.la
 
-main_LDFLAGS = -pthread -Wall -Werror
+mutex_LDFLAGS = -pthread -Wall -Werror
 
-main_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+mutex_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
-TESTS = main
+TESTS = mutex
 
 endif
