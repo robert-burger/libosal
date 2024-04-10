@@ -58,15 +58,24 @@
 
 - test with atomic counters und time stamps
 
-- variant 1: two processes, one emits the post() n times and registers the time,
-  the second waits n times and registers the time
+- variant 1: two processes, one generates and save a random value,
+  registers the time, emits the post(), the second waits,
+  registrs the time, and stores the "sent" value
 		
 - result compare that all time stamps are
-  registered, and in RT mode, the difference is below a threshold
+  registered
+  
+- in th first case, the comparison requires that the send time is
+  always before the receive time.
+
+- and in RT mode, the difference must be below a threshold
 
 - in variant 2, before waiting, the waiter waits some random
-  amount of time, registers also before it starts to wait again,
-  and the comparison requires that the send time is
+  amount of time, registers start-wait time before it starts to wait 
+  for the semaphore,
+  
+  
+- in the second case, the comparison requires that the send time is
   either <= the start-wait time, or closely 
   before the receive time.
 
