@@ -59,33 +59,35 @@ namespace test_mutex {
   typedef struct {
     int thread_id;
     uint loopcount;
+    uint max_wait_time_nsec;
     unsigned long *p_counter;
     osal_mutex_t *p_count_mutex;
   } thread_param_t;
   
   void* test_random(void *p_params)
   {
-    const uint MAX_WAIT_TIME_NSEC = 500;
-
     thread_param_t params = *((thread_param_t*) p_params);
     
     const int thread_id = params.thread_id;
+    const uint max_wait_time = params.max_wait_time_nsec;
     
-    
-    srand(thread_id);
+
+    if (max_wait_time > 0) {
+      srand(thread_id);
+    }
     for(uint i = 0; i < params.loopcount; i++){
 
       // randomly wait
-      if (rand() % 2) {
-	wait_nanoseconds(rand() % MAX_WAIT_TIME_NSEC);
+      if ((max_wait_time > 0) && (rand() % 2)) {
+	wait_nanoseconds(rand() % max_wait_time);
       }
       
       osal_mutex_lock(params.p_count_mutex);
 
       unsigned long old_value = *(params.p_counter);
       //randomly wait
-      if (rand() % 2){
-	wait_nanoseconds(rand() % MAX_WAIT_TIME_NSEC);
+      if ((max_wait_time > 0) && (rand() % 2)){
+	wait_nanoseconds(rand() % max_wait_time);
       }
 
       // increment shared counter
@@ -99,12 +101,11 @@ namespace test_mutex {
   return nullptr;
 }
   
-
-
-TEST(MutexMultithreading, RandomizedWait)
+TEST(MutexMultithreading, Randomized)
 {
   const ulong N_THREADS = 8;
   const uint LOOPCOUNT = 10000;
+
   
   pthread_t thread_ids[N_THREADS];
   thread_param_t thread_params[N_THREADS];
@@ -120,6 +121,58 @@ TEST(MutexMultithreading, RandomizedWait)
     thread_params[i].p_count_mutex = &count_mutex;
     thread_params[i].p_counter = &counter;
     thread_params[i].loopcount = LOOPCOUNT;
+    thread_params[i].max_wait_time_nsec = 0;
+
+    if (verbose){
+      printf("starting thread %lu\n", i);
+    }
+    pthread_create(/*thread*/ &(thread_ids[i]),
+		   /*pthread_attr*/ nullptr,
+		   /* start_routine */ test_random,
+		   /* arg */ (void*) &(thread_params[i]));
+    
+  }
+  for (ulong i = 0; i < N_THREADS; i++){
+    if (verbose) {
+      printf("joining thread %lu\n", i);
+    }
+    pthread_join(/*thread*/ thread_ids[i],
+		 /*retval*/ nullptr);
+  }
+  if (verbose) {
+    printf("expected counts: %lu, actual counter: %lu \n",
+	   N_THREADS * LOOPCOUNT,
+	   counter);
+  }
+  
+  EXPECT_EQ(counter, N_THREADS * LOOPCOUNT)
+    << "multi-threaded counter test failed";
+  	
+}
+
+
+TEST(MutexMultithreading, RandomizedPlusWait)
+{
+  const ulong N_THREADS = 8;
+  const uint LOOPCOUNT = 10000;
+  const uint MAX_WAIT_TIME_NSEC = 500;
+
+  
+  pthread_t thread_ids[N_THREADS];
+  thread_param_t thread_params[N_THREADS];
+  osal_mutex_t count_mutex;
+  unsigned long counter = 0;
+
+  bool verbose = (getenv("VERBOSE") != nullptr);
+
+  osal_mutex_init(&count_mutex, nullptr);
+
+  for (ulong i = 0; i < N_THREADS; i++){
+    thread_params[i].thread_id = i;
+    thread_params[i].p_count_mutex = &count_mutex;
+    thread_params[i].p_counter = &counter;
+    thread_params[i].loopcount = LOOPCOUNT;
+    thread_params[i].max_wait_time_nsec = MAX_WAIT_TIME_NSEC;
 
     if (verbose){
       printf("starting thread %lu\n", i);

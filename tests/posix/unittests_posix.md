@@ -45,7 +45,7 @@
 
 ### multi-threaded
 
-- 20 threads
+- 10 threads
 - all in parallel acquire / increment / release counter (same number
   of increments as decrements), compare result after join
 
