@@ -2,127 +2,152 @@
 #include <pthread.h>
 #include "gtest/gtest.h"
 
-//#include "libosal/timer.h"
 #include "libosal/osal.h"
 #include "test_utils.h"
 
-namespace test_timer {
-using std::vector;
-  //using testutils::wait_nanoseconds;
-  //using testutils::shuffle_vector;
-
-TEST(MutexSane, SingleThreadedNoRelease)
-{
-  osal_mutex_t my_mutex;
-  osal_mutex_init(&my_mutex, nullptr);
-  osal_mutex_lock(&my_mutex);
-  const int loopcount = 100;
-  int counter = 0;
-
-  for(int i = 0; i < loopcount; i++){
-    counter += 1;
-  }
+namespace test_mutex {
   
-  osal_mutex_unlock(&my_mutex);
-  
-  EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
-				    "is totally wrong");
-}
-  
-TEST(MutexSane, SingleThreaded)
-{
-  osal_mutex_t my_mutex;
-  osal_mutex_init(&my_mutex, nullptr);
-  const int loopcount = 100;
-  int counter = 0;
+  using testutils::wait_nanoseconds;
 
-  for(int i = 0; i < loopcount; i++){
+  TEST(MutexSane, SingleThreadedNoRelease)
+  {
+    osal_mutex_t my_mutex;
+    osal_mutex_init(&my_mutex, nullptr);
     osal_mutex_lock(&my_mutex);
-    counter += 1;
+    const int loopcount = 100;
+    int counter = 0;
+    
+    for(int i = 0; i < loopcount; i++){
+      counter += 1;
+    }
+    
     osal_mutex_unlock(&my_mutex);
+    
+    EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
+				      "is totally wrong");
   }
   
-  
-  EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
+  TEST(MutexSane, SingleThreadedWithRelease)
+  {
+    osal_mutex_t my_mutex;
+    osal_mutex_init(&my_mutex, nullptr);
+    const int loopcount = 100;
+    int counter = 0;
+    
+    for(int i = 0; i < loopcount; i++){
+      osal_mutex_lock(&my_mutex);
+      counter += 1;
+      osal_mutex_unlock(&my_mutex);
+    }
+    
+    EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
 				    "is totally wrong");
+  }
+
+  /* the following test runs N threads, each of which hold a common
+     mutex, and each of which use a common counter.
+
+     Each thread loops, and in each iteration, will pause a random
+     time (in order to increase chance of concurrent access), get the
+     mutex, pause a bit more, increase the coutner, and return the
+     mutex.
+
+     The rationale of the test is that if the mutex would not
+     protect shared data properly, we would have some missing
+     counts due to race conditions.
+  */
+  typedef struct {
+    int thread_id;
+    uint loopcount;
+    unsigned long *p_counter;
+    osal_mutex_t *p_count_mutex;
+  } thread_param_t;
+  
+  void* test_random(void *p_params)
+  {
+    const uint MAX_WAIT_TIME_NSEC = 500;
+
+    thread_param_t params = *((thread_param_t*) p_params);
+    
+    const int thread_id = params.thread_id;
+    
+    
+    srand(thread_id);
+    for(uint i = 0; i < params.loopcount; i++){
+
+      // randomly wait
+      if (rand() % 2) {
+	wait_nanoseconds(rand() % MAX_WAIT_TIME_NSEC);
+      }
+      
+      osal_mutex_lock(params.p_count_mutex);
+
+      unsigned long old_value = *(params.p_counter);
+      //randomly wait
+      if (rand() % 2){
+	wait_nanoseconds(rand() % MAX_WAIT_TIME_NSEC);
+      }
+
+      // increment shared counter
+      *(params.p_counter) = old_value + 1;
+
+      //return lock
+      osal_mutex_unlock(params.p_count_mutex);
+    }
+  
+  
+  return nullptr;
 }
   
 
-#if 0
 
-TEST(TimerSleepUntil, SaneMultiThreaded)
+TEST(MutexMultithreading, RandomizedWait)
 {
-  const bool runs_realtime = is_realtime();
-
-  // we allow no negative time tifference,
-  // but a positive time difference of 10 μs when
-  // running with real-time scheduling, and
-  // 100 μs otherwise.
-  const int64_t TIMER_TOLERANCE_LESS_NS = 0;
-  const int64_t TIMER_TOLERANCE_MORE_NS = runs_realtime ? 100000 : 150000;
-  //const int64_t TIMER_TOLERANCE_MORE_NS = 100;
+  const ulong N_THREADS = 8;
+  const uint LOOPCOUNT = 10000;
   
-  const int N_THREADS = 8;
   pthread_t thread_ids[N_THREADS];
-  
-  vector<osal_uint64_t> req_wait_times = {500000000,
-					  200000000,
-					  100000000,
-					  50000000,
-					  20000000,
-					  10000000,
-					  5000000,
-					  2000000,
-					  1000000,
-					  500000,
-					  200000,
-					  100000,
-					  50000,
-					  20000,
-					  10000,
-					  5000,
-					  2000,
-					  1000};
+  thread_param_t thread_params[N_THREADS];
+  osal_mutex_t count_mutex;
+  unsigned long counter = 0;
 
-  // because pthread_start passes only a single
-  // argument pointer, we store parameters in
-  // a struct.
-  vector<sleep_until_params_t> thread_params_vec;
-  
+  bool verbose = (getenv("VERBOSE") != nullptr);
 
-  // randomize wait times and parameters
-  // We do this ahead and keep each result
-  // as a copy because we need to keep the
-  // data constant while the threads
-  // are running.
-  for (int i = 0; i < N_THREADS; i++){
-    // create random-shuffled copy of wait times
-    const int seed_value = i;
-    vector<osal_uint64_t> shuffled_times = shuffle_vector(req_wait_times,
-							  seed_value);
-    // store parameters
-    const sleep_until_params_t params = {shuffled_times,
-					 runs_realtime,
-					 TIMER_TOLERANCE_LESS_NS,
-					 TIMER_TOLERANCE_MORE_NS};
-    thread_params_vec.push_back(params);
-  }
-  for (int i = 0; i < N_THREADS; i++){
-    printf("starting thread %i\n", i);
+  osal_mutex_init(&count_mutex, nullptr);
+
+  for (ulong i = 0; i < N_THREADS; i++){
+    thread_params[i].thread_id = i;
+    thread_params[i].p_count_mutex = &count_mutex;
+    thread_params[i].p_counter = &counter;
+    thread_params[i].loopcount = LOOPCOUNT;
+
+    if (verbose){
+      printf("starting thread %lu\n", i);
+    }
     pthread_create(/*thread*/ &(thread_ids[i]),
 		   /*pthread_attr*/ nullptr,
-		   /* start_routine */ check_sleep_until_mt,
-		   /* arg */ (void*) &(thread_params_vec[i]));
+		   /* start_routine */ test_random,
+		   /* arg */ (void*) &(thread_params[i]));
     
   }
-  for (int i = 0; i < N_THREADS; i++){
-    printf("joining thread %i\n", i);
+  // should complete in about 50 ms
+  for (ulong i = 0; i < N_THREADS; i++){
+    if (verbose) {
+      printf("joining thread %lu\n", i);
+    }
     pthread_join(/*thread*/ thread_ids[i],
 		 /*retval*/ nullptr);
   }
+  if (verbose) {
+    printf("expected counts: %lu, actual counter: %lu \n",
+	   N_THREADS * LOOPCOUNT,
+	   counter);
+  }
+  
+  EXPECT_EQ(counter, N_THREADS * LOOPCOUNT)
+    << "multi-threaded counter test failed";
   	
 }
 
-#endif
   
 }
