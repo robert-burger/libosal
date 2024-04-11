@@ -19,13 +19,13 @@ namespace test_semaphore {
   using testutils::is_realtime;
 
 
-  /* the following test runs two threads, a sender
+  /* the following two tests runs two threads, a sender
      and a receiver, each of which references a common
      semaphore, and each of which use a shared counter.
 
      Each thread loops. In each iteration, the receiver may pause a
      random time. The sender registers the time and posts to the
-     semaphore, and the reveiver waits to receive it, and upton
+     semaphore, and the reveiver waits to receive it, and upon
      receival registers that time.  Also, the sender writes a random
      number to shared memory and stores it in a private array, and the
      receiver stores the value in another array.
@@ -33,7 +33,8 @@ namespace test_semaphore {
      The rationale of the test is that if the semaphore would not
      ensure ordering, the receive times would be before post times.
      Further, the stored random numbers need to match, if the
-     tested semaphore in fact prevents race conditions.
+     tested semaphore in fact prevents race conditions
+     (it needs to order memory access to be consistent).
   */
   const uint LOOPCOUNT = 50000;
 
@@ -68,7 +69,7 @@ namespace test_semaphore {
   void* test_semaphore(void *p_params)
   {
     // max time for random wait
-    const int MAX_WAIT_TIME_NS = 1000;
+    const int MAX_WAIT_TIME_NS = 10000;
 
     
     assert(p_params != nullptr);
@@ -138,8 +139,10 @@ namespace test_semaphore {
 }
   
 
-
-    TEST(Semaphore, RandomizedWait)
+  // first case: receiver is already waiting,
+  // and will be blocked in wait() when post() happens.
+  
+  TEST(Semaphore, DirectWait)
     {
       const uint64_t MAX_LAG_REALTIME_NSEC = 50000;
       const uint64_t MAX_LAG_BATCH_NSEC = 100000;
@@ -171,11 +174,11 @@ namespace test_semaphore {
       // This is added to ensure that
       // no signals are lost when the senders post() call
       // was sent before the readers wait.
-      params.wait_before_read = false;
+      params.wait_before_read = true;
       params.was_read = false;    
 
-      osal_semaphore_attr_t attr = OSAL_SEMAPHORE_ATTR__PROCESS_SHARED;
-      orv = osal_semaphore_init(&params.sema, &attr, 0);
+      //osal_semaphore_attr_t attr = OSAL_SEMAPHORE_ATTR__PROCESS_SHARED;
+      orv = osal_semaphore_init(&params.sema, nullptr, 0);
       ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
 
       
@@ -281,7 +284,7 @@ namespace test_semaphore {
       // We require:
       // 1. receive times must never be before send times
       // 2. the time difference should not be too large
-      
+       
       for (ulong i=0; i < LOOPCOUNT; i++){
         timespec tp1 = send_times[i];
         timespec tp2 = params.read_times[i];
@@ -298,6 +301,197 @@ namespace test_semaphore {
       }
       
     }
+
+  // second case: receiver sleeps for a random time,
+  // and might not have to block when wait()
+  // is called. This requires that such a delay
+  // does not cause the event to be lost.
+  
+    TEST(Semaphore, RandomizedDelay)
+    {
+      const uint64_t MAX_LAG_REALTIME_NSEC = 50000;
+      const uint64_t MAX_LAG_BATCH_NSEC = 100000;
+
+      
+      pthread_t thread_id;
+      thread_param_t params; /* shared data protected by
+    			    semaphore and mutex */
+      struct timespec send_times[LOOPCOUNT];  
+      unsigned long send_values[LOOPCOUNT];
+      
+      // we initialize the received values, so that
+      // the variables are still initialized in case of a
+      // test failure.
+      memset(params.read_values, 0, sizeof(params.read_values));
+      memset(params.read_times, 0, sizeof(params.read_times));
+      memset(send_times, 0, sizeof(send_times));
+      memset(send_values, -1, sizeof(send_values));
+
+      osal_retval_t orv;
+      int rv = pthread_mutex_init(&params.wasread_mutex, nullptr);
+      ASSERT_EQ(rv, 0) << " could not create mutex";
+      rv = pthread_cond_init(&params.wasread_cond, nullptr);
+      ASSERT_EQ(rv, 0) << " could not create cond var";
+    
+      // flag whether the reader sleeps extra time
+      // before waiting for the semaphore.
+      //
+      // This is added to ensure that
+      // no signals are lost when the senders post() call
+      // was sent before the readers wait.
+      params.wait_before_read = true;
+      params.was_read = false;    
+
+      //osal_semaphore_attr_t attr = OSAL_SEMAPHORE_ATTR__PROCESS_SHARED;
+      orv = osal_semaphore_init(&params.sema, nullptr, 0);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
+
+      
+      srand(1);
+      rv = pthread_create(/*thread*/ &(thread_id),
+			  /*pthread_attr*/ nullptr,
+			  /* start_routine */ test_semaphore,
+			  /* arg */ (void*) &params);
+      ASSERT_EQ(rv, 0) << "pthread_create() failed";
+      
+    
+
+      for (uint i=0; i < LOOPCOUNT; i++){
+        // generate and send random value
+        unsigned long val = rand();
+        params.value  = val;
+        send_values[i] = val;
+        // store the time, to compare it later
+        rv = clock_gettime(CLOCK_MONOTONIC, &send_times[i]);
+	ASSERT_EQ(rv, 0) << "clock_gettime() failed";
+        // signal via semaphore to receiver
+	if (verbose) {
+  printf("[%u] sender: posting to semaphore\n", i);
+}
+        orv = osal_semaphore_post(&params.sema);
+	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+    
+        
+        // now, wait for the "read complete" signal.  Completion of
+	// the read is not ensured by the semaphore. Since we cannot
+	// yet rely on the semaphore tested here to work correctly, we
+	// use the shared pthreads mutex/ condition variable.
+	if (verbose) {
+	  printf("[%u] sender: locking cvar\n", i);
+	}
+        rv = pthread_mutex_lock(&params.wasread_mutex);
+	ASSERT_EQ(rv, 0) << "mutex lock failed";
+        while (!params.was_read) {
+          // we wait for the reader thread to respond,
+          // but error out when there is no response
+          // after MAX_WAIT_SEC seconds.
+	  if (verbose) {
+  printf("[%u] sender: cond false, waiting\n", i);
+}
+          const int MAX_WAIT_SEC = 5;
+          timespec wait_time = {};
+	  wait_time.tv_sec = time(nullptr) + MAX_WAIT_SEC;
+	  if (verbose) {
+	    printf("waiting maximally until %lu sec epoch\n",
+		   wait_time.tv_sec);
+	  }
+	  wait_time.tv_nsec = 0;      
+          rv = pthread_cond_timedwait(&params.wasread_cond,
+				      &params.wasread_mutex,
+				      &wait_time);
+          ASSERT_EQ(rv, 0) << "pthread_cond_[timed]wait() failed";
+        }
+        params.was_read=false;
+        rv = pthread_mutex_unlock(&params.wasread_mutex);
+	ASSERT_EQ(rv, 0) << "pthread_mutex_unlock() failed";
+
+	if (verbose) {
+	  printf("[%u] sender: proceeding\n", i);
+	}
+      }
+
+      rv = pthread_join(/*thread*/ thread_id,
+			/*retval*/ nullptr);
+      ASSERT_EQ(rv, 0) << "pthread_join() failed";
+
+    
+      rv = pthread_cond_destroy(&params.wasread_cond);
+      ASSERT_EQ(rv, 0) << "could not destroy cond var";
+      
+      rv = pthread_mutex_destroy(&params.wasread_mutex);
+      ASSERT_EQ(rv, 0) << "could not destroy mutex";
+      
+      
+      // Now, we have the send times in send_times[],
+      // and the read times in params.read_times[]
+      // Equally, we have the values that were
+      // written to the shared memory in send_values[],
+      // and the received values in parms.read_values[].
+    
+      // The values need to match, and the read time
+      // must never be smaller than the send time,
+      // otherwise the semaphore would be broken.
+    
+      for (ulong i=0; i < LOOPCOUNT; i++){
+	EXPECT_EQ(send_values[i], params.read_values[i])
+          << "sent and received values do not match";
+      }
+
+      int64_t max_lag = (is_realtime()?
+			 MAX_LAG_REALTIME_NSEC :
+			 MAX_LAG_BATCH_NSEC);
+	 
+
+      // We do a sanity check for the times -
+      // Again, this is not meant as a check of real-time
+      // performace, but just whether the implementation
+      // is sane.
+      // We require:
+      // 1. receive times must never be before send times
+      // 2. the time difference should not be too large
+       
+      for (ulong i=0; i < LOOPCOUNT; i++){
+        timespec tp1 = send_times[i];
+        timespec tp2 = params.startwait_times[i];
+        timespec tp3 = params.read_times[i];
+	//  cast here because the difference can be
+	// negative, and tv_sec is unsigned.
+	
+	// time between send and read - must be positive
+        int64_t time_diff31_nsecs = ((((int64_t)tp3.tv_sec)
+				      - ((int64_t)tp1.tv_sec)) * 1000000000
+				     + (tp3.tv_nsec - tp1.tv_nsec));
+
+	// time between start of wait and read - will be positive
+        int64_t time_diff32_nsecs = ((((int64_t)tp3.tv_sec)
+				      - ((int64_t)tp2.tv_sec)) * 1000000000
+				     + (tp3.tv_nsec - tp2.tv_nsec));
+
+	// time between send and start of wait - can be negative
+        int64_t time_diff21_nsecs = ((((int64_t)tp2.tv_sec)
+				      - ((int64_t)tp1.tv_sec)) * 1000000000
+				     + (tp2.tv_nsec - tp1.tv_nsec));
+
+	// reads before the matching send should not happen
+        EXPECT_GE(time_diff31_nsecs, 0)
+          << "the read time was ahead of the send time";
+
+	// we discern whether wait() started earlier or later than send()
+	if (time_diff21_nsecs < 0) {
+	  // wait started already before send, we look as before at
+	  // the difference between send and read time
+	  EXPECT_LT(time_diff31_nsecs, max_lag)
+          << "the time difference between wait() and send() was too large";
+	} else {
+	  // due to receiver sleeping, wait started after send, we
+	  // look at interval betweem wait and send
+	  EXPECT_LT(time_diff32_nsecs, max_lag)
+	    << "the time difference between wait() and start_wait() was too large";
+	}
+      }
+      
+    }
+  
 }
 
 
