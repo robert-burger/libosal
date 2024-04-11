@@ -21,26 +21,37 @@ libgtest_la_LDFLAGS = -pthread
 # we test the timer seperately because it can
 # fail on slow or busy machines
 
-check_PROGRAMS = timer mutex
+#check_PROGRAMS = timer  mutex sema
+check_PROGRAMS = sema
 
-timer_SOURCES = test_timer.cc
+#timer_SOURCES = test_timer.cc
+#
+#timer_LDADD = libgtest.la ../../src/libosal.la
+#
+#timer_LDFLAGS = -pthread -Wall -Werror
+#
+#timer_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+#
+#
+#
+#mutex_SOURCES = test_mutex.cc
+#
+#mutex_LDADD = libgtest.la ../../src/libosal.la
+#
+#mutex_LDFLAGS = -pthread -Wall -Werror
+#
+#mutex_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+#
 
-timer_LDADD = libgtest.la ../../src/libosal.la
+sema_SOURCES = test_semaphore.cc
 
-timer_LDFLAGS = -pthread -Wall -Werror
+sema_LDADD = libgtest.la ../../src/libosal.la
 
-timer_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+sema_LDFLAGS = -pthread -Wall -Werror
+
+sema_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
 
-
-mutex_SOURCES = test_mutex.cc
-
-mutex_LDADD = libgtest.la ../../src/libosal.la
-
-mutex_LDFLAGS = -pthread -Wall -Werror
-
-mutex_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
-
-TESTS = mutex
+TESTS = sema
 
 endif

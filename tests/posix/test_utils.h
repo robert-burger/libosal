@@ -11,6 +11,18 @@ namespace testutils {
 
 using std::vector;
 
+inline bool is_realtime()
+{
+  bool runs_realtime = false;
+#if __linux__
+  if (sched_getscheduler(0) == SCHED_FIFO) {
+    runs_realtime = true;
+  }
+#endif
+  return runs_realtime;
+}
+
+ 
 template<typename T>  vector<T> shuffle_vector(vector<T> ordered_numbers,
 				       int seed)
   {

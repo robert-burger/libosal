@@ -15,6 +15,7 @@ namespace test_timer {
 using std::vector;
 using testutils::wait_nanoseconds;
 using testutils::shuffle_vector;
+using testutils::is_realtime;
 
 
 
@@ -46,17 +47,6 @@ using testutils::shuffle_vector;
 
   static int verbose=0;
   
-bool is_realtime()
-{
-  bool runs_realtime = false;
-#if __linux__
-  if (sched_getscheduler(0) == SCHED_FIFO) {
-    runs_realtime = true;
-  }
-#endif
-  return runs_realtime;
-}
-
 
 /* the goal of the following test is NOT
    to check that strict latency requirements
