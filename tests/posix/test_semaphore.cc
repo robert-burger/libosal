@@ -91,6 +91,10 @@ namespace test_semaphore {
       // wait for semaphore
       printf("[%u] receiver: waiting for sema\n", i);
       orv = osal_semaphore_wait(&params->sema);
+      // note: this and the following are not assertions
+      // because it does not work.... seems that
+      // the ASSERT macros contain a return which does
+      // not work for calles functions, while EXPECT_* does.
       EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
       
       printf("[%u] receiver: got sema\n", i);
