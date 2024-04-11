@@ -54,7 +54,7 @@
 
 ## Semaphore osal_semaphore_wait()/osal_semaphore_post()
 
-### binary semaphore
+### semaphore
 
 - test with atomic counters und time stamps
 
@@ -96,6 +96,9 @@ similar as above, but
   the comparison, and the difference has to be
   below a threhold
 
+### semaphore_trywait()
+
+### semaphoore_timedwait()
 
 
 ## Condition variables

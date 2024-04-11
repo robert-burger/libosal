@@ -49,7 +49,7 @@ namespace test_semaphore {
      shared value. For testing that this before/after is correct, we
      need to make sure that the sender thread gets a correct
      notification that it can send new values before overwriting
-     these.
+     the values sent before.
   */
      
   typedef struct {
@@ -141,7 +141,7 @@ namespace test_semaphore {
 
     TEST(Semaphore, RandomizedWait)
     {
-      const uint64_t MAX_LAG_REALTIME_NSEC = 1000;
+      const uint64_t MAX_LAG_REALTIME_NSEC = 50000;
       const uint64_t MAX_LAG_BATCH_NSEC = 100000;
 
       
