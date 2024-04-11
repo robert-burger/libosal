@@ -35,7 +35,7 @@ namespace test_semaphore {
      Further, the stored random numbers need to match, if the
      tested semaphore in fact prevents race conditions.
   */
-  const uint LOOPCOUNT = 1;
+  const uint LOOPCOUNT = 50000;
 
   /* The struct here is shard data used for the test.  One could
      wonder why it has both a smaphore AND a mutex - isn't this a bit
@@ -89,15 +89,19 @@ namespace test_semaphore {
       clock_gettime(CLOCK_MONOTONIC, &params->startwait_times[i]);
 
       // wait for semaphore
-      printf("[%u] receiver: waiting for sema\n", i);
+      if (verbose) {
+	printf("[%u] receiver: waiting for sema\n", i);
+      }
       orv = osal_semaphore_wait(&params->sema);
       // note: this and the following are not assertions
       // because it does not work.... seems that
       // the ASSERT macros contain a return which does
       // not work for calles functions, while EXPECT_* does.
       EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
-      
-      printf("[%u] receiver: got sema\n", i);
+
+      if (verbose) {
+	printf("[%u] receiver: got sema\n", i);
+      }
       // store read time
       rv = clock_gettime(CLOCK_MONOTONIC, &params->read_times[i]);
       EXPECT_EQ(rv, 0);
@@ -110,16 +114,22 @@ namespace test_semaphore {
       // a pthread-locked condition variable for this,
       // since we do not want to rely on functions
       // which are tested.
-      printf("[%u] receiver: updating flag\n", i);
+      if (verbose) {
+	printf("[%u] receiver: updating flag\n", i);
+      }
       rv = pthread_mutex_lock(&params->wasread_mutex);
       EXPECT_EQ(rv, 0) << "could not lock mutex";
       params->was_read = true;
-      printf("[%u] receiver: flag was set\n", i);
+      if (verbose) {
+	printf("[%u] receiver: flag was set\n", i);
+      }
       rv = pthread_cond_signal(&params->wasread_cond);
       EXPECT_EQ(rv, 0) << "signaling condition failed";
       rv = pthread_mutex_unlock(&params->wasread_mutex);
       EXPECT_EQ(rv, 0) << "could not unlock mutex";
-      printf("[%u] receiver: update done\n", i);
+      if (verbose) {
+	printf("[%u] receiver: update done\n", i);
+      }
 
     }
   
@@ -177,7 +187,7 @@ namespace test_semaphore {
       ASSERT_EQ(rv, 0) << "pthread_create() failed";
       
     
-#if 1
+
       for (uint i=0; i < LOOPCOUNT; i++){
         // generate and send random value
         unsigned long val = rand();
@@ -187,7 +197,9 @@ namespace test_semaphore {
         rv = clock_gettime(CLOCK_MONOTONIC, &send_times[i]);
 	ASSERT_EQ(rv, 0) << "clock_gettime() failed";
         // signal via semaphore to receiver
-	printf("[%u] sender: posting to semaphore\n", i);
+	if (verbose) {
+  printf("[%u] sender: posting to semaphore\n", i);
+}
         orv = osal_semaphore_post(&params.sema);
 	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
     
@@ -196,37 +208,40 @@ namespace test_semaphore {
 	// the read is not ensured by the semaphore. Since we cannot
 	// yet rely on the semaphore tested here to work correctly, we
 	// use the shared pthreads mutex/ condition variable.
-	printf("[%u] sender: locking cvar\n", i);
+	if (verbose) {
+	  printf("[%u] sender: locking cvar\n", i);
+	}
         rv = pthread_mutex_lock(&params.wasread_mutex);
 	ASSERT_EQ(rv, 0) << "mutex lock failed";
         while (!params.was_read) {
           // we wait for the reader thread to respond,
           // but error out when there is no response
           // after MAX_WAIT_SEC seconds.
-	  printf("[%u] sender: cond false, waiting\n", i);
-#if 1
+	  if (verbose) {
+  printf("[%u] sender: cond false, waiting\n", i);
+}
           const int MAX_WAIT_SEC = 5;
           timespec wait_time = {};
 	  wait_time.tv_sec = time(nullptr) + MAX_WAIT_SEC;
-	  printf("waiting maximally until %lu sec epoch\n",
-		 wait_time.tv_sec);
+	  if (verbose) {
+	    printf("waiting maximally until %lu sec epoch\n",
+		   wait_time.tv_sec);
+	  }
 	  wait_time.tv_nsec = 0;      
           rv = pthread_cond_timedwait(&params.wasread_cond,
 				      &params.wasread_mutex,
 				      &wait_time);
-#else
-	  rv = pthread_cond_wait(&params.wasread_cond,
-				 &params.wasread_mutex);
-#endif
           ASSERT_EQ(rv, 0) << "pthread_cond_[timed]wait() failed";
         }
         params.was_read=false;
         rv = pthread_mutex_unlock(&params.wasread_mutex);
 	ASSERT_EQ(rv, 0) << "pthread_mutex_unlock() failed";
 
-	printf("[%u] sender: proceeding\n", i);
+	if (verbose) {
+	  printf("[%u] sender: proceeding\n", i);
+	}
       }
-#endif    
+
       rv = pthread_join(/*thread*/ thread_id,
 			/*retval*/ nullptr);
       ASSERT_EQ(rv, 0) << "pthread_join() failed";
