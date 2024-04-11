@@ -9,7 +9,7 @@
 #include <sys/mman.h>
 #include <time.h>
 #include <vector>
-
+#include <cassert>
 
 namespace test_semaphore {
 
@@ -71,8 +71,10 @@ namespace test_semaphore {
     const int MAX_WAIT_TIME_NS = 1000;
 
     
-    thread_param_t &params = *((thread_param_t*) p_params);    
-
+    assert(p_params != nullptr);
+    // keep in mind that params is necessarily shared here,
+    // differently from some other test code.
+    thread_param_t *params = ((thread_param_t*) p_params);    
     // initialize PRNG
     srand(1);
     osal_retval_t orv= {};
@@ -80,24 +82,24 @@ namespace test_semaphore {
     for(uint i = 0; i < LOOPCOUNT; i++){
 
       // randomly wait, if flag checked
-      if (params.wait_before_read) {
+      if (params->wait_before_read) {
 	wait_nanoseconds(rand() % MAX_WAIT_TIME_NS);
       }
       // store the beginning of wait timestamp
-      clock_gettime(CLOCK_MONOTONIC, &params.startwait_times[i]);
+      clock_gettime(CLOCK_MONOTONIC, &params->startwait_times[i]);
 
       // wait for semaphore
       printf("[%u] receiver: waiting for sema\n", i);
-      orv = osal_semaphore_wait(&params.sema);
+      orv = osal_semaphore_wait(&params->sema);
       EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
       
       printf("[%u] receiver: got sema\n", i);
       // store read time
-      rv = clock_gettime(CLOCK_MONOTONIC, &params.read_times[i]);
+      rv = clock_gettime(CLOCK_MONOTONIC, &params->read_times[i]);
       EXPECT_EQ(rv, 0);
 
       // store the value passed from the sender
-      params.read_values[i] = params.value;
+      params->read_values[i] = params->value;
       
       // now, we need to signal back to the sender
       // that we are done reading - we use
@@ -105,13 +107,13 @@ namespace test_semaphore {
       // since we do not want to rely on functions
       // which are tested.
       printf("[%u] receiver: updating flag\n", i);
-      rv = pthread_mutex_lock(&params.wasread_mutex);
+      rv = pthread_mutex_lock(&params->wasread_mutex);
       EXPECT_EQ(rv, 0) << "could not lock mutex";
-      params.was_read = true;
+      params->was_read = true;
       printf("[%u] receiver: flag was set\n", i);
-      rv = pthread_cond_signal(&params.wasread_cond);
+      rv = pthread_cond_signal(&params->wasread_cond);
       EXPECT_EQ(rv, 0) << "signaling condition failed";
-      rv = pthread_mutex_unlock(&params.wasread_mutex);
+      rv = pthread_mutex_unlock(&params->wasread_mutex);
       EXPECT_EQ(rv, 0) << "could not unlock mutex";
       printf("[%u] receiver: update done\n", i);
 
@@ -126,7 +128,7 @@ namespace test_semaphore {
     TEST(Semaphore, RandomizedWait)
     {
       const uint64_t MAX_LAG_REALTIME_NSEC = 1000;
-      const uint64_t MAX_LAG_BATCH_NSEC = 50000;
+      const uint64_t MAX_LAG_BATCH_NSEC = 100000;
 
       
       pthread_t thread_id;

@@ -39,5 +39,8 @@ cppcheck-addon-ctu-file-list
 build
 src/tools/logger/lec_logger
 test-driver
-mutex
+check_mutex
+check_sema
+check_timer
+
 

@@ -18,40 +18,43 @@ libgtest_la_LDFLAGS = -pthread
 # is linked with the library and tests against
 # its public API.
 
-# we test the timer seperately because it can
-# fail on slow or busy machines
+# we test the parts seperately because some, such as timer or
+# semaphore, can fail on slow or busy machines.
 
-#check_PROGRAMS = timer  mutex sema
-check_PROGRAMS = sema
+# The "check_" prefix here is somewhat clumsy
+# bit it is actually needed to prevent clashes with
+# google_test internal symbols!
 
-#timer_SOURCES = test_timer.cc
-#
-#timer_LDADD = libgtest.la ../../src/libosal.la
-#
-#timer_LDFLAGS = -pthread -Wall -Werror
-#
-#timer_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
-#
-#
-#
-#mutex_SOURCES = test_mutex.cc
-#
-#mutex_LDADD = libgtest.la ../../src/libosal.la
-#
-#mutex_LDFLAGS = -pthread -Wall -Werror
-#
-#mutex_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
-#
+check_PROGRAMS = check_sema check_timer check_mutex
 
-sema_SOURCES = test_semaphore.cc
+check_timer_SOURCES = test_timer.cc
 
-sema_LDADD = libgtest.la ../../src/libosal.la
+check_timer_LDADD = libgtest.la ../../src/libosal.la
 
-sema_LDFLAGS = -pthread -Wall -Werror
+check_timer_LDFLAGS = -pthread -Wall -Werror
 
-sema_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+check_timer_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
 
-TESTS = sema
+
+check_mutex_SOURCES = test_mutex.cc
+
+check_mutex_LDADD = libgtest.la ../../src/libosal.la
+
+check_mutex_LDFLAGS = -pthread -Wall -Werror
+
+check_mutex_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+
+
+check_sema_SOURCES = test_semaphore.cc
+
+check_sema_LDADD = libgtest.la ../../src/libosal.la
+
+check_sema_LDFLAGS = -pthread -Wall -Werror
+
+check_sema_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+
+
+TESTS = check_sema check_timer check_mutex
 
 endif

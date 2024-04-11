@@ -26,7 +26,7 @@ namespace test_mutex {
     EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
 				      "is totally wrong");
   }
-  
+   
   TEST(MutexSane, SingleThreadedWithRelease)
   {
     osal_mutex_t my_mutex;
