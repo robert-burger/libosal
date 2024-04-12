@@ -99,11 +99,14 @@ similar as above, but
       extra event number, and because it has to be
       shared, this requires additional linking.
 
+### semaphoore_timedwait()
+
+- variant 1 from above with a random long delay
+
 ### semaphore_trywait()
 
 - variant 1 from above with a random long delay
 
-### semaphoore_timedwait()
 
 
   ## Condition variables
