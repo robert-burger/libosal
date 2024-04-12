@@ -144,6 +144,7 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
 //! \brief Destroys a semaphore.
 /*!
  * \param[in]   sem     Pointer to osal semaphore structure. Content is OS dependent.
+ * \param[in]   to      time value with deadline in absolute time of system real time clock
  *
  * \retval OSAL_OK                      On success.
  * \retval OSAL_ERR_INVALID_PARAM       Invalid input parameter.
