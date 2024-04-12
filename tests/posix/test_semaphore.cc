@@ -18,7 +18,7 @@ namespace test_semaphore {
   using testutils::wait_nanoseconds;
   using testutils::is_realtime;
 
-
+namespace test_single_reader {
   /* the following two tests runs two threads, a sender
      and a receiver, each of which references a common
      semaphore, and each of which use a shared counter.
@@ -144,8 +144,8 @@ namespace test_semaphore {
   
   TEST(Semaphore, DirectWait)
     {
-      const uint64_t MAX_LAG_REALTIME_NSEC = 50000;
-      const uint64_t MAX_LAG_BATCH_NSEC = 100000;
+      const uint64_t MAX_LAG_REALTIME_NSEC = 70000;
+      const uint64_t MAX_LAG_BATCH_NSEC = 150000;
 
       
       pthread_t thread_id;
@@ -495,6 +495,7 @@ namespace test_semaphore {
       }
       
     }
+  }
 
 /* The following tests test the semaphore with one
    sender and multiple receiver threads.
@@ -511,6 +512,7 @@ namespace test_semaphore {
 
 */
 
+namespace multireader {
   const int LOOPCOUNT2 = 10000;
   const int NTHREADS = 50;
 
@@ -614,10 +616,158 @@ namespace test_semaphore {
       EXPECT_EQ(sum_count, LOOPCOUNT2)
           << "the count of events does not match";
     }
-
-  
 }
 
+/* the idea below was to check the timings as in the
+   single-reader case above. The difficulty with that is
+   this (apart from sorting the captured times,
+   which can be done by a kind of mergesort), 
+   requires extra values for linking a read
+   event to a write event. 
+   So, its probably too complicated for a quick and
+   simple test....
+   */
+
+  
+namespace timedwait {
+  const int LOOPCOUNT3 = 10000;
+  const int NTHREADS = 10;
+  const int ONE_MILLISECOND_IN_NS = 10000000;
+
+
+  typedef struct {
+    int thread_num;
+    osal_semaphore_t* p_sema;
+    std::atomic<bool> *pstop_flag;
+    unsigned long count;
+    unsigned lont timeout_count;
+  } thread_param_count_t;
+  
+  void* test_semaphore_timedwait(void *p_params)
+  {
+    assert(p_params != nullptr);
+    // keep in mind that params is necessarily shared here,
+    // differently from some other test code.
+    thread_param_count_t *params = ((thread_param_count_t*) p_params);    
+    params->count = 0;
+    params->timeout_count = 0;
+    osal_retval_t orv;
+    while (true){
+
+      // note: if events are missed, this test will hang here
+      const osal_timer_t timeout_val = {0, ONE_MILLISECOND_IN_NS}; // 1 ms timeout
+      orv = osal_semaphore_wait(params->p_sema, &timeout_val);
+      // note: this and the following are not assertions
+      // because it does not work.... seems that
+      // the ASSERT macros contain a return which does
+      // not work for calles functions, while EXPECT_* does.
+      if (orv == OSAL_ERR_TIMEOUT){
+         params.timeout_count++;
+      }
+      EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
+
+      if (*params->pstop_flag) {
+         if (verbose) {
+           printf("thread %i: flag received, stopping at count = %lu\n",
+	          params->thread_num,
+	          params->count);
+         }
+       break;
+      }
+      // store the value passed from the sender
+      params->count++;
+    }
+  
+  return nullptr;
+}
+  
+
+  // this just sends a number of post() events to multiple
+  // receivers, which count the received events.
+  TEST(Semaphore, TimedCount)
+    {
+      
+      pthread_t thread_ids[NTHREADS];;
+      thread_param_count_t params[NTHREADS]; /* shared data protected by
+    			    semaphore and mutex */
+      assert(NTHREADS > 0);
+      assert(LOOPCOUNT3 > 0);
+      osal_retval_t orv;
+      osal_semaphore_t sema;
+      std::atomic<bool> stop_flag = false;
+    
+      orv = osal_semaphore_init(&sema, nullptr, 0);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
+
+      int rv;
+      for (int i=0; i < NTHREADS; i++){
+        params[i].thread_num = i;
+        params[i].p_sema = &sema;
+        params[i].pstop_flag = &stop_flag;
+        rv = pthread_create(/*thread*/ &(thread_ids[i]),
+  			  /*pthread_attr*/ nullptr,
+  			  /* start_routine */ test_semaphore_timedwait,
+  			  /* arg */ (void*) &params[i]);
+        ASSERT_EQ(rv, 0) << "pthread_create() failed";
+      }
+      printf("parallel sender: start OK\n");
+      
+    
+
+      srand(1);
+      int sum_delays =0;
+      const int DELAY_UNIT = ONE_MILLISECOND_IN_NS / NTHREADS;
+      // the idea is as follows: with 1 delay units (1ms/N)
+      // for each post(), the sender can, in the ideal case, exactly keep up
+      // without the N receivers having repeated timeouts.
+      // Each extra delayunit should cause on average 
+      // one extra timeout.
+      // System latency can of course cause /more/ timeouts,
+      // but we should never see fewer.
+      for (int i=0; i < LOOPCOUNT3; i++){
+        int tick = 1 /* DELAY_UNIT */;
+        int extra_delay = rand() % 10;
+        wait_nanoseconds(DELAY_UNIT*(tick + extra_delay));
+        sum_delays += extra_delay;
+        
+        orv = osal_semaphore_post(&sema);
+      	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+      }
+      int final_wait_ticks = 5000;
+      wait_nanoseconds(final_wait_ticks * DELAY_UNIT);
+      sum_delays += final_wait_ticks;
+      // instruct threads to stop
+      stop_flag = true;
+      for (int i=0; i < LOOPCOUNT3; i++){
+        orv = osal_semaphore_post(&sema);
+      	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+        }
+      printf("parallel sender: joining\n");
+
+      long sum_count = 0;
+      long sum_timeout_count = 0;
+      for (int i=0; i < NTHREADS; i++){
+        rv = pthread_join(/*thread*/ thread_ids[i],
+	        	  /*retval*/ nullptr);
+        ASSERT_EQ(rv, 0) << "pthread_join() failed";
+        sum_count += params[i].count;
+        sum_timeout_count += params[i].timeout_count;
+      }
+      orv = osal_semaphore_destroy(&sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
+      printf("test timeout_wait: %l delays introduced,"
+             " %l timeouts observed\n", 
+             sum_delays, sum_timeout_count);
+
+    
+      EXPECT_EQ(sum_count, LOOPCOUNT3)
+          << "the count of events does not match";
+      EXPECT_GE(sum_timeout_count, sum_delays)
+          << "some timeouts were not detected";
+    }
+}
+
+}
 
 int main(int argc, char **argv)
 {

@@ -597,7 +597,7 @@ int main(int argc, char **argv)
   errno = 0;
   if (mlockall(MCL_CURRENT|MCL_FUTURE) == -1){
       perror("test_timer: could not lock memory"); 
-    }
+      }
 
     return RUN_ALL_TESTS();
 }

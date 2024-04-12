@@ -84,24 +84,24 @@
 
 similar as above, but 
 
-- more than one waiter and sender, respectively
+- more than one waiter, respectively
 
-- variant 1: just count how many events were received
+- variant 1: just count how many events were received ✓
 
 - variant 2: sending and receiving times are registered
-
-- Variant 3: the sender thread holds a mutex to introduce a random delay,
-  which the receivers waits for, and posts a small random number of
-  events at once. And the time registered by the senders 
-  is the time after releasing the mutex
   
-- sending and waiting times are merge-sorted before
-  the comparison, and the difference has to be
-  below a threhold
+- For variant 2, sending and waiting times can be
+  merge-sorted before the comparison, and the difference 
+  has to be below a threshold
+
+  ==> This was put back because comparing times needs
+      some link between receiver and sender, like an
+      extra event number, and because it has to be
+      shared, this requires additional linking.
 
 ### semaphore_trywait()
 
-- uses variant 1 from above with a random long delay
+- variant 1 from above with a random long delay
 
 ### semaphoore_timedwait()
 
