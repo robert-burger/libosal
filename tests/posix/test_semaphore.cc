@@ -630,9 +630,9 @@ namespace multireader {
 
   
 namespace timedwait {
-  const int LOOPCOUNT3 = 10000;
+  const int LOOPCOUNT3 = 1000;
   const int NTHREADS = 10;
-  const int ONE_MILLISECOND_IN_NS = 10000000;
+  const int TIMEOUT_PERIOD_NSEC = 1000000;
 
 
   typedef struct {
@@ -640,7 +640,7 @@ namespace timedwait {
     osal_semaphore_t* p_sema;
     std::atomic<bool> *pstop_flag;
     unsigned long count;
-    unsigned lont timeout_count;
+    unsigned long timeout_count;
   } thread_param_count_t;
   
   void* test_semaphore_timedwait(void *p_params)
@@ -652,20 +652,28 @@ namespace timedwait {
     params->count = 0;
     params->timeout_count = 0;
     osal_retval_t orv;
+    osal_timer_t deadline_osal = {}; // this is an absolute time!!
+    struct timespec deadline_posix = {};
     while (true){
 
-      // note: if events are missed, this test will hang here
-      const osal_timer_t timeout_val = {0, ONE_MILLISECOND_IN_NS}; // 1 ms timeout
-      orv = osal_semaphore_wait(params->p_sema, &timeout_val);
+      int rv = clock_gettime(CLOCK_REALTIME, &deadline_posix);
+      EXPECT_EQ(rv, 0) << "could not read realtime clock";
+
+      deadline_osal.nsec = deadline_posix.tv_sec; 
+      deadline_osal.nsec = deadline_posix.tv_nsec + TIMEOUT_PERIOD_NSEC; 
+      // normalize input
+      while (deadline_osal.nsec > 1000000000){
+        deadline_osal.nsec -= 10000000000;
+        deadline_osal.sec += 1;
+      }
+      // note: if stop events are missed, this test will hang here
+      // this can happen if there is an error with the semaphore
+      // implementation.
+      orv = osal_semaphore_timedwait(params->p_sema, &deadline_osal);
       // note: this and the following are not assertions
       // because it does not work.... seems that
       // the ASSERT macros contain a return which does
       // not work for calles functions, while EXPECT_* does.
-      if (orv == OSAL_ERR_TIMEOUT){
-         params.timeout_count++;
-      }
-      EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
-
       if (*params->pstop_flag) {
          if (verbose) {
            printf("thread %i: flag received, stopping at count = %lu\n",
@@ -674,8 +682,15 @@ namespace timedwait {
          }
        break;
       }
-      // store the value passed from the sender
-      params->count++;
+
+      if (orv == OSAL_ERR_TIMEOUT){
+         params->timeout_count++;
+      } else {
+        EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
+
+        // store the value passed from the sender
+        params->count++;
+      }
     }
   
   return nullptr;
@@ -715,8 +730,8 @@ namespace timedwait {
     
 
       srand(1);
-      int sum_delays =0;
-      const int DELAY_UNIT = ONE_MILLISECOND_IN_NS / NTHREADS;
+      long sum_delays =0;
+      const int DELAY_UNIT = TIMEOUT_PERIOD_NSEC / NTHREADS;
       // the idea is as follows: with 1 delay units (1ms/N)
       // for each post(), the sender can, in the ideal case, exactly keep up
       // without the N receivers having repeated timeouts.
@@ -733,7 +748,7 @@ namespace timedwait {
         orv = osal_semaphore_post(&sema);
       	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
       }
-      int final_wait_ticks = 5000;
+      int final_wait_ticks = 100;
       wait_nanoseconds(final_wait_ticks * DELAY_UNIT);
       sum_delays += final_wait_ticks;
       // instruct threads to stop
@@ -755,8 +770,8 @@ namespace timedwait {
       }
       orv = osal_semaphore_destroy(&sema);
       ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
-      printf("test timeout_wait: %l delays introduced,"
-             " %l timeouts observed\n", 
+      printf("test timeout_wait: %li delays introduced,"
+             " %li timeouts observed\n", 
              sum_delays, sum_timeout_count);
 
     
