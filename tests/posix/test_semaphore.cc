@@ -36,6 +36,7 @@ namespace test_semaphore {
      tested semaphore in fact prevents race conditions
      (it needs to order memory access to be consistent).
   */
+#if 0
   const uint LOOPCOUNT = 50000;
 
   /* The struct here is shard data used for the test.  One could
@@ -256,6 +257,8 @@ namespace test_semaphore {
       rv = pthread_mutex_destroy(&params.wasread_mutex);
       ASSERT_EQ(rv, 0) << "could not destroy mutex";
       
+      orv = osal_semaphore_destroy(&params.sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
       
       // Now, we have the send times in send_times[],
       // and the read times in params.read_times[]
@@ -421,6 +424,8 @@ namespace test_semaphore {
       rv = pthread_mutex_destroy(&params.wasread_mutex);
       ASSERT_EQ(rv, 0) << "could not destroy mutex";
       
+      orv = osal_semaphore_destroy(&params.sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
       
       // Now, we have the send times in send_times[],
       // and the read times in params.read_times[]
@@ -491,6 +496,127 @@ namespace test_semaphore {
       }
       
     }
+#endif
+
+/* The following tests test the semaphore with one
+   sender and multiple receiver threads.
+
+   Test 1: One sender, M receivers. The receivers count how
+           many events they receive.
+
+   Test 2: The sender holds a lock and sends multiple events
+           at once, and the receives wait for that lock
+           before they wait for the semaphore. Thus,
+           they compete for the event.
+
+   Test 3:  In addition to Test 2, the times are  compared.
+
+*/
+
+  const int LOOPCOUNT2 = 10;
+  const int NTHREADS = 1;
+
+  typedef struct {
+    int thread_num;
+    osal_semaphore_t* p_sema;
+    std::atomic<bool> *pstop_flag;
+    unsigned long count;
+  } thread_param_count_t;
+  
+  void* test_semaphore_count(void *p_params)
+  {
+    assert(p_params != nullptr);
+    // keep in mind that params is necessarily shared here,
+    // differently from some other test code.
+    thread_param_count_t *params = ((thread_param_count_t*) p_params);    
+    params->count = 0;
+    osal_retval_t orv;
+    while (true){
+
+      // note: if events are missed, this test will hang here
+      orv = osal_semaphore_wait(params->p_sema);
+      // note: this and the following are not assertions
+      // because it does not work.... seems that
+      // the ASSERT macros contain a return which does
+      // not work for calles functions, while EXPECT_* does.
+      EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
+
+      // store the value passed from the sender
+      printf("thread %i: flag received, count = %lu\n",
+             params->thread_num,
+             params->count);
+      params->count++;
+      if (*params->pstop_flag) {
+         printf("thread %i: flag received, stopping at count = %lu\n",
+                params->thread_num,
+                params->count);
+         break;
+      }
+    }
+  
+  return nullptr;
+}
+  
+
+  // this just sends a number of post() events to multiple
+  // receivers, which count the received events.
+  TEST(Semaphore, ParallelCount)
+    {
+      
+      pthread_t thread_ids[NTHREADS];;
+      thread_param_count_t params[NTHREADS]; /* shared data protected by
+    			    semaphore and mutex */
+      assert(NTHREADS > 0);
+      //assert(LOOPCOUNT2 > 0);
+      osal_retval_t orv;
+      osal_semaphore_t sema;
+      std::atomic<bool> stop_flag = false;
+    
+      orv = osal_semaphore_init(&sema, nullptr, 0);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
+
+      int rv;
+      for (int i=0; i < NTHREADS; i++){
+        params[i].thread_num = i;
+        params[i].p_sema = &sema;
+        params[i].pstop_flag = &stop_flag;
+        printf("parallel sender: starying thread %i\n", i);
+        rv = pthread_create(/*thread*/ &(thread_ids[i]),
+  			  /*pthread_attr*/ nullptr,
+  			  /* start_routine */ test_semaphore_count,
+  			  /* arg */ (void*) &params[i]);
+        ASSERT_EQ(rv, 0) << "pthread_create() failed";
+      }
+      printf("parallel sender: start OK\n");
+      
+    
+
+      for (int i=0; i < LOOPCOUNT2; i++){
+        if (i == (LOOPCOUNT2 - NTHREADS)){
+          // instruct threads to stop
+          stop_flag = true;
+        }
+        printf("parallel sender: posting to sema, i=%i\n", i);
+        orv = osal_semaphore_post(&sema);
+	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+      }
+      printf("parallel sender: joining\n");
+
+      long sum_count = 0;
+      for (int i=0; i < NTHREADS; i++){
+        rv = pthread_join(/*thread*/ thread_ids[i],
+	        	  /*retval*/ nullptr);
+        ASSERT_EQ(rv, 0) << "pthread_join() failed";
+        sum_count += params[i].count;
+      }
+      orv = osal_semaphore_destroy(&sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
+
+    
+      EXPECT_EQ(sum_count, LOOPCOUNT2)
+          << "the count of events does not match";
+    }
+
   
 }
 

@@ -54,7 +54,7 @@
 
 ## Semaphore osal_semaphore_wait()/osal_semaphore_post()
 
-### semaphore
+### semaphore used as binary semaphore for 1:1 signaling
 
 - test with atomic counters und time stamps
 
@@ -80,16 +80,19 @@
   before the receive time.
 
   
-### counting semaphore
+###  semaphore  tested as counting somaphore for many processes
 
 similar as above, but 
 
 - more than one waiter and sender, respectively
 
-- variant 1: sending and receiving times are registered
+- variant 1: just count how many events were received
 
-- Variant 2: the sender thread holds a mutex to introduce a random delay,
-  which the receiver waits for, and the time registered by the senders 
+- variant 2: sending and receiving times are registered
+
+- Variant 3: the sender thread holds a mutex to introduce a random delay,
+  which the receivers waits for, and posts a small random number of
+  events at once. And the time registered by the senders 
   is the time after releasing the mutex
   
 - sending and waiting times are merge-sorted before
@@ -98,10 +101,12 @@ similar as above, but
 
 ### semaphore_trywait()
 
+- uses variant 1 from above with a random long delay
+
 ### semaphoore_timedwait()
 
 
-## Condition variables
+  ## Condition variables
 
 - analog to counting semaphores, with the
   counter being the protexted variable
