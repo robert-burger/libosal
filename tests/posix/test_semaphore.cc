@@ -36,7 +36,6 @@ namespace test_semaphore {
      tested semaphore in fact prevents race conditions
      (it needs to order memory access to be consistent).
   */
-#if 0
   const uint LOOPCOUNT = 50000;
 
   /* The struct here is shard data used for the test.  One could
@@ -496,7 +495,6 @@ namespace test_semaphore {
       }
       
     }
-#endif
 
 /* The following tests test the semaphore with one
    sender and multiple receiver threads.
@@ -513,8 +511,8 @@ namespace test_semaphore {
 
 */
 
-  const int LOOPCOUNT2 = 10;
-  const int NTHREADS = 1;
+  const int LOOPCOUNT2 = 10000;
+  const int NTHREADS = 50;
 
   typedef struct {
     int thread_num;
@@ -541,17 +539,16 @@ namespace test_semaphore {
       // not work for calles functions, while EXPECT_* does.
       EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
 
-      // store the value passed from the sender
-      printf("thread %i: flag received, count = %lu\n",
-             params->thread_num,
-             params->count);
-      params->count++;
       if (*params->pstop_flag) {
-         printf("thread %i: flag received, stopping at count = %lu\n",
-                params->thread_num,
-                params->count);
-         break;
+         if (verbose) {
+           printf("thread %i: flag received, stopping at count = %lu\n",
+	          params->thread_num,
+	          params->count);
+         }
+       break;
       }
+      // store the value passed from the sender
+      params->count++;
     }
   
   return nullptr;
@@ -567,7 +564,7 @@ namespace test_semaphore {
       thread_param_count_t params[NTHREADS]; /* shared data protected by
     			    semaphore and mutex */
       assert(NTHREADS > 0);
-      //assert(LOOPCOUNT2 > 0);
+      assert(LOOPCOUNT2 > 0);
       osal_retval_t orv;
       osal_semaphore_t sema;
       std::atomic<bool> stop_flag = false;
@@ -580,7 +577,6 @@ namespace test_semaphore {
         params[i].thread_num = i;
         params[i].p_sema = &sema;
         params[i].pstop_flag = &stop_flag;
-        printf("parallel sender: starying thread %i\n", i);
         rv = pthread_create(/*thread*/ &(thread_ids[i]),
   			  /*pthread_attr*/ nullptr,
   			  /* start_routine */ test_semaphore_count,
@@ -592,14 +588,16 @@ namespace test_semaphore {
     
 
       for (int i=0; i < LOOPCOUNT2; i++){
-        if (i == (LOOPCOUNT2 - NTHREADS)){
-          // instruct threads to stop
-          stop_flag = true;
-        }
-        printf("parallel sender: posting to sema, i=%i\n", i);
         orv = osal_semaphore_post(&sema);
 	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
       }
+      sleep(1);
+      // instruct threads to stop
+      stop_flag = true;
+      for (int i=0; i < LOOPCOUNT2; i++){
+        orv = osal_semaphore_post(&sema);
+	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+        }
       printf("parallel sender: joining\n");
 
       long sum_count = 0;
