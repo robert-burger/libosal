@@ -805,6 +805,160 @@ namespace timedwait {
     }
 }
 
+namespace trywait {
+  const int LOOPCOUNT4 = 1000;
+  const int NTHREADS = 10;
+  const int WAIT_PERIOD_NSEC = 1000000;
+
+
+  typedef struct {
+    int thread_num;
+    osal_semaphore_t* p_sema;
+    std::atomic<bool> *pstop_flag;
+    std::atomic<unsigned long> count;
+    unsigned long wait_count;
+  } thread_param_try_t;
+  
+  void* test_semaphore_trywait(void *p_params)
+  {
+    assert(p_params != nullptr);
+    // keep in mind that params is necessarily shared here,
+    // differently from some other test code.
+    thread_param_try_t *params = ((thread_param_try_t*) p_params);    
+    params->count = 0;
+    params->wait_count = 0;
+    osal_retval_t orv;
+    while (true){
+
+      // wait an interval which should normally catch a signal
+      wait_nanoseconds(WAIT_PERIOD_NSEC);
+      
+      // note: if stop events are missed, this test will hang here
+      // this can happen if there is an error with the semaphore
+      // implementation.
+      orv = osal_semaphore_trywait(params->p_sema);
+      // note: this and the following are not assertions
+      // because it does not work.... seems that
+      // the ASSERT macros contain a return which does
+      // not work for calles functions, while EXPECT_* does.
+      if ((*params->pstop_flag) || (params->wait_count > 10000000)) {
+         if (verbose) {
+	   unsigned long count = params->count;
+           printf("thread %i: stopping at count = %lu\n",
+	          params->thread_num,
+	          count);
+         }
+       break;
+      }
+
+      if (orv == OSAL_ERR_BUSY){
+         params->wait_count++;
+
+      } else {
+        EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_trywait()";
+
+        // store the value passed from the sender
+        params->count++;
+      }
+    }
+  
+  return nullptr;
+}
+  
+
+  // this just sends a number of post() events to multiple
+  // receivers, which count the received events.
+  TEST(Semaphore, TryCount)
+    {
+      
+      pthread_t thread_ids[NTHREADS];;
+      thread_param_try_t params[NTHREADS]; /* shared data protected by
+    			    semaphore and mutex */
+      assert(NTHREADS > 0);
+      assert(LOOPCOUNT4 > 0);
+      osal_retval_t orv;
+      osal_semaphore_t sema;
+      std::atomic<bool> stop_flag = false;
+    
+      orv = osal_semaphore_init(&sema, nullptr, 0);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
+
+      int rv;
+      for (int i=0; i < NTHREADS; i++){
+        params[i].thread_num = i;
+        params[i].p_sema = &sema;
+        params[i].pstop_flag = &stop_flag;
+        rv = pthread_create(/*thread*/ &(thread_ids[i]),
+  			  /*pthread_attr*/ nullptr,
+  			  /* start_routine */ test_semaphore_trywait,
+  			  /* arg */ (void*) &params[i]);
+        ASSERT_EQ(rv, 0) << "pthread_create() failed";
+      }
+      printf("parallel sender: start OK\n");
+      
+    
+
+      srand(1);
+      long sum_delays =0;
+      const int DELAY_UNIT = WAIT_PERIOD_NSEC / NTHREADS;
+      // the idea is as follows: with 1 delay units (1ms/N)
+      // for each post(), the sender can, in the ideal case, exactly keep up
+      // without the N receivers having repeated timeouts.
+      // Each extra delayunit should cause on average 
+      // one extra timeout.
+      // System latency can of course cause /more/ timeouts,
+      // but we should never see fewer.
+      for (int i=0; i < LOOPCOUNT4; i++){
+        int tick = 1 /* DELAY_UNIT */;
+        int extra_delay = rand() % 10;
+        wait_nanoseconds(DELAY_UNIT*(tick + extra_delay));
+        sum_delays += extra_delay;
+        
+        orv = osal_semaphore_post(&sema);
+      	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+      }
+
+      long sum_count = 0;
+      /* note that the wait time can be SURPRISINGLY large */
+      long max_wait_time = 10000000000; /* 10 seconds */
+      const long wait_period = 1000000; /* 1 ms */
+      while (max_wait_time > 0){
+	sum_count = 0;
+	for (int i=0; i < NTHREADS; i++){
+	  sum_count += params[i].count;
+	}
+	if (sum_count == LOOPCOUNT4){
+	  break; // all threads have finished
+	}
+	wait_nanoseconds(wait_period);
+	max_wait_time -= min(max_wait_time, wait_period);
+      }
+      
+      // instruct threads to stop, by setting flag and waiting
+      stop_flag = true;
+      for (int i=0; i < LOOPCOUNT4; i++){
+        orv = osal_semaphore_post(&sema);
+      	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+        }
+      printf("parallel sender: joining\n");
+
+      long sum_wait_count = 0;
+      for (int i=0; i < NTHREADS; i++){
+        rv = pthread_join(/*thread*/ thread_ids[i],
+	        	  /*retval*/ nullptr);
+        ASSERT_EQ(rv, 0) << "pthread_join() failed";
+        sum_wait_count += params[i].wait_count;
+      }
+      orv = osal_semaphore_destroy(&sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
+      printf("test timeout_wait: %li delays introduced,"
+             " %li timeouts observed\n", 
+             sum_delays, sum_wait_count);
+
+    
+      EXPECT_EQ(sum_count, LOOPCOUNT4)
+          << "the count of events does not match";
+      EXPECT_GE(sum_wait_count, sum_delays)
           << "some timeouts were not detected";
     }
 }
