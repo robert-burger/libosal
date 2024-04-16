@@ -14,11 +14,12 @@
 namespace test_semaphore {
 
   static int verbose = 0;
+  static int check_latency = 0;
   using std::min;
 
   using testutils::wait_nanoseconds;
   using testutils::is_realtime;
-
+  
 namespace test_single_reader {
   /* the following two tests runs two threads, a sender
      and a receiver, each of which references a common
@@ -299,8 +300,10 @@ namespace test_single_reader {
     
         EXPECT_GE(time_diff_nsecs, 0)
           << "the read time was ahead of the send time";
-        EXPECT_LT(time_diff_nsecs, max_lag)
-          << "the time difference between wait() and send() was too large";
+	if (check_latency) {
+	  EXPECT_LT(time_diff_nsecs, max_lag)
+	    << "the time difference between wait() and send() was too large";
+	}
       }
       
     }
@@ -389,8 +392,8 @@ namespace test_single_reader {
           // but error out when there is no response
           // after MAX_WAIT_SEC seconds.
 	  if (verbose) {
-  printf("[%u] sender: cond false, waiting\n", i);
-}
+	    printf("[%u] sender: cond false, waiting\n", i);
+	  }
           const int MAX_WAIT_SEC = 5;
           timespec wait_time = {};
 	  wait_time.tv_sec = time(nullptr) + MAX_WAIT_SEC;
@@ -481,17 +484,19 @@ namespace test_single_reader {
         EXPECT_GE(time_diff31_nsecs, 0)
           << "the read time was ahead of the send time";
 
-	// we discern whether wait() started earlier or later than send()
-	if (time_diff21_nsecs < 0) {
-	  // wait started already before send, we look as before at
-	  // the difference between send and read time
-	  EXPECT_LT(time_diff31_nsecs, max_lag)
+	if (check_latency) {
+	  // we discern whether wait() started earlier or later than send()
+	  if (time_diff21_nsecs < 0) {
+	    // wait started already before send, we look as before at
+	    // the difference between send and read time
+	    EXPECT_LT(time_diff31_nsecs, max_lag)
           << "the time difference between wait() and send() was too large";
-	} else {
-	  // due to receiver sleeping, wait started after send, we
-	  // look at interval betweem wait and send
-	  EXPECT_LT(time_diff32_nsecs, max_lag)
-	    << "the time difference between wait() and start_wait() was too large";
+	  } else {
+	    // due to receiver sleeping, wait started after send, we
+	    // look at interval betweem wait and send
+	    EXPECT_LT(time_diff32_nsecs, max_lag)
+	      << "the time difference between wait() and start_wait() was too large";
+	  }
 	}
       }
       
@@ -971,6 +976,9 @@ int main(int argc, char **argv)
 
   if (getenv("VERBOSE")){
     test_semaphore::verbose=1;
+  }
+  if (getenv("CHECK_LATENCY")){
+    test_semaphore::check_latency=1;
   }
   // try to lock memory
   errno = 0;

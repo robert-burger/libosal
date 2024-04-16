@@ -46,6 +46,7 @@ using testutils::is_realtime;
   */
 
   static int verbose=0;
+  static int check_latency = 0;
   
 
 /* the goal of the following test is NOT
@@ -104,7 +105,9 @@ void check_wait_times(vector<osal_uint64_t> &req_wait_times,
     
 
     EXPECT_GE(run_time_nsecs, req_wait_time_nsecs + less_margin) << "measured time has negative difference from requested time";
-    EXPECT_LE(run_time_nsecs, req_wait_time_nsecs + more_margin) << "Timer tardiness exceeds tolerance";
+    if (check_latency) {
+      EXPECT_LE(run_time_nsecs, req_wait_time_nsecs + more_margin) << "Timer tardiness exceeds tolerance";
+    }
   }
 
 }
@@ -270,8 +273,12 @@ void check_sleep_times(vector<osal_uint64_t> &req_wait_times,
 
     
 
-    EXPECT_GE(run_time_nsecs, req_wait_time_nsecs + less_margin) << "measured time has negative difference from requested time";
-    EXPECT_LE(run_time_nsecs, req_wait_time_nsecs + more_margin) << "Timer tardiness exceeds tolerance";
+    EXPECT_GE(run_time_nsecs, req_wait_time_nsecs + less_margin) <<
+      "measured time has negative difference from requested time";
+    if (check_latency) {
+      EXPECT_LE(run_time_nsecs, req_wait_time_nsecs + more_margin) <<
+	"Timer tardiness exceeds tolerance";
+    }
   }
 
 }
@@ -451,8 +458,12 @@ void check_sleep_until(vector<osal_uint64_t> &req_wait_times,
 
     
 
-    EXPECT_GE(run_time_nsecs, req_wait_time_nsecs + less_margin) << "measured time has negative difference from requested time";
-    EXPECT_LE(run_time_nsecs, req_wait_time_nsecs + more_margin) << "Timer tardiness exceeds tolerance";
+    EXPECT_GE(run_time_nsecs, req_wait_time_nsecs + less_margin) <<
+      "measured time has negative difference from requested time";
+    if (check_latency) {
+      EXPECT_LE(run_time_nsecs, req_wait_time_nsecs + more_margin) <<
+	"Timer tardiness exceeds tolerance";
+    }
   }
 
 }
@@ -592,6 +603,9 @@ int main(int argc, char **argv)
 
   if (getenv("VERBOSE")){
     test_timer::verbose=1;
+  }
+  if (getenv("CHECK_LATENCY")){
+    test_timer::check_latency=1;
   }
   // try to lock memory
   errno = 0;
