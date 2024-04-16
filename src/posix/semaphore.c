@@ -80,6 +80,7 @@ osal_retval_t osal_semaphore_post(osal_semaphore_t *sem) {
 
     int local_ret = sem_post(&sem->posix_sem);
     if (local_ret != 0) {
+        local_ret = errno;
         if (local_ret == EINVAL) {
             ret = OSAL_ERR_INVALID_PARAM;
         } else { // if (local_ret == EOVERFLOW) 
@@ -104,6 +105,7 @@ osal_retval_t osal_semaphore_wait(osal_semaphore_t *sem) {
 
     local_ret = sem_wait(&sem->posix_sem);
     if (local_ret != 0) {
+        local_ret = errno;
         if (local_ret == EINTR) {
             ret = OSAL_ERR_INTERRUPTED;
         } else { // if (local_ret == EINVAL) 
