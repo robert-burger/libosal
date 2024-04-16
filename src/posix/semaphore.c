@@ -126,6 +126,9 @@ osal_retval_t osal_semaphore_trywait(osal_semaphore_t *sem) {
 
     int local_ret = sem_trywait(&sem->posix_sem);
     if (local_ret != 0) {
+        local_ret = errno; /* Note: this is a special case for the semaphore
+			    functions, the rest of pthreads behaves
+			    differently */
         if (local_ret == EAGAIN) {
             ret = OSAL_ERR_BUSY;
         } else {
