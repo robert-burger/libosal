@@ -22,7 +22,7 @@ namespace test_semaphore {
   
 namespace test_single_reader {
   /* the following two tests runs two threads, a sender
-     and a receiver, each of which references a common
+     and a receiver, each of which references a binary
      semaphore, and each of which use a shared counter.
 
      Each thread loops. In each iteration, the receiver may pause a
@@ -36,7 +36,7 @@ namespace test_single_reader {
      ensure ordering, the receive times would be before post times.
      Further, the stored random numbers need to match, if the
      tested semaphore in fact prevents race conditions
-     (it needs to order memory access to be consistent).
+     (it needs to order memory access across threads to be consistent).
   */
   const uint LOOPCOUNT = 50000;
 
@@ -49,14 +49,14 @@ namespace test_single_reader {
 
      But on the other hand, apart from send/receive times, we also
      test that the semaphore defines before/after semantics for a
-     shared value. For testing that this before/after is correct, we
-     need to make sure that the sender thread gets a correct
-     notification that it can send new values before overwriting
-     the values sent before.
+     shared value. For testing that this before/after ordering is
+     correct, we need to make sure that the sender thread gets a
+     correct notification that it can send a new value before
+     overwriting the value sent before.
   */
      
   typedef struct {
-    osal_semaphore_t sema;
+    osal_binary_semaphore_t sema;
     unsigned long value;
     bool wait_before_read;
     bool was_read; // flag to signal finished iteration
@@ -95,12 +95,13 @@ namespace test_single_reader {
       if (verbose) {
 	printf("[%u] receiver: waiting for sema\n", i);
       }
-      orv = osal_semaphore_wait(&params->sema);
-      // note: this and the following are not assertions
-      // because it does not work.... seems that
-      // the ASSERT macros contain a return which does
-      // not work for calles functions, while EXPECT_* does.
-      EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
+      // wait for semaphore to become 1
+      orv = osal_binary_semaphore_wait(&params->sema);
+      // note: this and the following are not gtest assertions because
+      // it does not work.... seems that the ASSERT macros contain a
+      // return which does not work for called functions, while
+      // EXPECT_* does.
+      EXPECT_EQ(orv, OSAL_OK) << "error in osal_binary_semaphore_wait()";
 
       if (verbose) {
 	printf("[%u] receiver: got sema\n", i);
@@ -109,14 +110,17 @@ namespace test_single_reader {
       rv = clock_gettime(CLOCK_MONOTONIC, &params->read_times[i]);
       EXPECT_EQ(rv, 0);
 
-      // store the value passed from the sender
+      // store the protected value passed from the sender
+      /* (we assume that the semaphore forms a
+	 write barrier for the sender, and a read barrier
+	 for the receiver, so that the value is read AFTER it was posted
+	 by the other thread */
       params->read_values[i] = params->value;
       
-      // now, we need to signal back to the sender
-      // that we are done reading - we use
-      // a pthread-locked condition variable for this,
-      // since we do not want to rely on functions
-      // which are tested.
+      // now, we need to signal back to the sender that we are done
+      // reading - we use a mutex-locked condition variable from
+      // pthreads for this, since we do not want to rely on semaphore
+      // functions which are tested.
       if (verbose) {
 	printf("[%u] receiver: updating flag\n", i);
       }
@@ -179,9 +183,9 @@ namespace test_single_reader {
       params.wait_before_read = true;
       params.was_read = false;    
 
-      //osal_semaphore_attr_t attr = OSAL_SEMAPHORE_ATTR__PROCESS_SHARED;
-      orv = osal_semaphore_init(&params.sema, nullptr, 0);
-      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
+      //osal_binary_semaphore_attr_t attr = OSAL_BINARY_SEMAPHORE_ATTR__PROCESS_SHARED;
+      orv = osal_binary_semaphore_init(&params.sema, nullptr, 0);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
       
       srand(1);
@@ -205,8 +209,8 @@ namespace test_single_reader {
 	if (verbose) {
   printf("[%u] sender: posting to semaphore\n", i);
 }
-        orv = osal_semaphore_post(&params.sema);
-	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+        orv = osal_binary_semaphore_post(&params.sema);
+	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
     
         
         // now, wait for the "read complete" signal.  Completion of
@@ -223,8 +227,8 @@ namespace test_single_reader {
           // but error out when there is no response
           // after MAX_WAIT_SEC seconds.
 	  if (verbose) {
-  printf("[%u] sender: cond false, waiting\n", i);
-}
+		  printf("[%u] sender: cond false, waiting\n", i);
+	  }
           const int MAX_WAIT_SEC = 5;
           timespec wait_time = {};
 	  wait_time.tv_sec = time(nullptr) + MAX_WAIT_SEC;
@@ -258,8 +262,8 @@ namespace test_single_reader {
       rv = pthread_mutex_destroy(&params.wasread_mutex);
       ASSERT_EQ(rv, 0) << "could not destroy mutex";
       
-      orv = osal_semaphore_destroy(&params.sema);
-      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
+      orv = osal_binary_semaphore_destroy(&params.sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_destroy() failed";
       
       // Now, we have the send times in send_times[],
       // and the read times in params.read_times[]
@@ -311,7 +315,7 @@ namespace test_single_reader {
   // second case: receiver sleeps for a random time,
   // and might not have to block when wait()
   // is called. This requires that such a delay
-  // does not cause the event to be lost.
+  // in wait()ing does not cause the event to be lost.
   
     TEST(Semaphore, RandomizedDelay)
     {
@@ -348,9 +352,9 @@ namespace test_single_reader {
       params.wait_before_read = true;
       params.was_read = false;    
 
-      //osal_semaphore_attr_t attr = OSAL_SEMAPHORE_ATTR__PROCESS_SHARED;
-      orv = osal_semaphore_init(&params.sema, nullptr, 0);
-      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
+      //osal_binary_semaphore_attr_t attr = OSAL_BINARY_SEMAPHORE_ATTR__PROCESS_SHARED;
+      orv = osal_binary_semaphore_init(&params.sema, nullptr, 0);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
       
       srand(1);
@@ -372,10 +376,10 @@ namespace test_single_reader {
 	ASSERT_EQ(rv, 0) << "clock_gettime() failed";
         // signal via semaphore to receiver
 	if (verbose) {
-  printf("[%u] sender: posting to semaphore\n", i);
-}
-        orv = osal_semaphore_post(&params.sema);
-	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+		printf("[%u] sender: posting to semaphore\n", i);
+	}
+        orv = osal_binary_semaphore_post(&params.sema);
+	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
     
         
         // now, wait for the "read complete" signal.  Completion of
@@ -427,8 +431,8 @@ namespace test_single_reader {
       rv = pthread_mutex_destroy(&params.wasread_mutex);
       ASSERT_EQ(rv, 0) << "could not destroy mutex";
       
-      orv = osal_semaphore_destroy(&params.sema);
-      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
+      orv = osal_binary_semaphore_destroy(&params.sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_destroy() failed";
       
       // Now, we have the send times in send_times[],
       // and the read times in params.read_times[]
@@ -493,7 +497,7 @@ namespace test_single_reader {
           << "the time difference between wait() and send() was too large";
 	  } else {
 	    // due to receiver sleeping, wait started after send, we
-	    // look at interval betweem wait and send
+	    // look at difference between start_wait and read time
 	    EXPECT_LT(time_diff32_nsecs, max_lag)
 	      << "the time difference between wait() and start_wait() was too large";
 	  }
@@ -524,7 +528,7 @@ namespace multireader {
 
   typedef struct {
     int thread_num;
-    osal_semaphore_t* p_sema;
+    osal_binary_semaphore_t* p_sema;
     std::atomic<bool> *pstop_flag;
     unsigned long count;
   } thread_param_count_t;
@@ -540,12 +544,12 @@ namespace multireader {
     while (true){
 
       // note: if events are missed, this test will hang here
-      orv = osal_semaphore_wait(params->p_sema);
+      orv = osal_binary_semaphore_wait(params->p_sema);
       // note: this and the following are not assertions
       // because it does not work.... seems that
       // the ASSERT macros contain a return which does
       // not work for calles functions, while EXPECT_* does.
-      EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
+      EXPECT_EQ(orv, OSAL_OK) << "error in osal_binary_semaphore_wait()";
 
       if (*params->pstop_flag) {
          if (verbose) {
@@ -574,11 +578,11 @@ namespace multireader {
       assert(NTHREADS > 0);
       assert(LOOPCOUNT2 > 0);
       osal_retval_t orv;
-      osal_semaphore_t sema;
+      osal_binary_semaphore_t sema;
       std::atomic<bool> stop_flag = false;
     
-      orv = osal_semaphore_init(&sema, nullptr, 0);
-      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
+      orv = osal_binary_semaphore_init(&sema, nullptr, 0);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
       int rv;
       for (int i=0; i < NTHREADS; i++){
@@ -596,15 +600,15 @@ namespace multireader {
     
 
       for (int i=0; i < LOOPCOUNT2; i++){
-        orv = osal_semaphore_post(&sema);
-	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+        orv = osal_binary_semaphore_post(&sema);
+	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
       }
       sleep(1);
       // instruct threads to stop
-      stop_flag = true;
+       stop_flag = true;
       for (int i=0; i < LOOPCOUNT2; i++){
-        orv = osal_semaphore_post(&sema);
-	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+        orv = osal_binary_semaphore_post(&sema);
+	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
         }
       printf("parallel sender: joining\n");
 
@@ -615,11 +619,194 @@ namespace multireader {
         ASSERT_EQ(rv, 0) << "pthread_join() failed";
         sum_count += params[i].count;
       }
-      orv = osal_semaphore_destroy(&sema);
-      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
+      orv = osal_binary_semaphore_destroy(&sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_destroy() failed";
 
     
       EXPECT_EQ(sum_count, LOOPCOUNT2)
+          << "the count of events does not match";
+    }
+}
+
+
+/* this is nearly the same test as above,
+   but writes and reads are synchronized,
+   which has the result that the number
+   of write and reads has to match,
+   even for the binary semaphore.
+*/
+	
+namespace multireader_synchronized {
+  const int LOOPCOUNT5 = 10000;
+  const int NTHREADS = 50;
+
+  typedef struct {
+	  int thread_num;
+	  osal_binary_semaphore_t* p_sema;
+	  pthread_mutex_t* p_wasread_mutex;
+	  pthread_cond_t* p_wasread_cond; // condition variable for signaling read
+	  bool* was_read;
+	  std::atomic<bool> *pstop_flag;
+	  unsigned long count;
+  } thread_param_count_t;
+	
+  void* test_semaphore_count(void *p_params)
+  {
+    assert(p_params != nullptr);
+    // keep in mind that params is necessarily shared here,
+    // differently from some other test code.
+    thread_param_count_t *params = ((thread_param_count_t*) p_params);    
+    params->count = 0;
+    osal_retval_t orv;
+    while (true){
+
+      // note: if events are missed, this test will hang here
+      orv = osal_binary_semaphore_wait(params->p_sema);
+      // note: this and the following are not assertions
+      // because it does not work.... seems that
+      // the ASSERT macros contain a return which does
+      // not work for calles functions, while EXPECT_* does.
+      EXPECT_EQ(orv, OSAL_OK) << "error in osal_binary_semaphore_wait()";
+
+      if (*params->pstop_flag) {
+         if (verbose) {
+           printf("thread %i: flag received, stopping at count = %lu\n",
+	          params->thread_num,
+	          params->count);
+         }
+       break;
+      }
+      // store the value passed from the sender
+      params->count++;
+    }
+  
+  return nullptr;
+}
+  
+
+  // this just sends a number of post() events to multiple
+  // receivers, which count the received events.
+  TEST(Semaphore, ParallelSynchronizedCount)
+    {
+      
+      pthread_t thread_ids[NTHREADS];;
+      thread_param_count_t params[NTHREADS]; /* shared data protected by
+    			    semaphore and mutex */
+      pthread_mutex_t wasread_mutex;
+      pthread_cond_t wasread_cond; // condition variable for signaling read
+      bool was_read = false;
+
+      assert(NTHREADS > 0);
+      assert(LOOPCOUNT5 > 0);
+      osal_retval_t orv;
+      osal_binary_semaphore_t sema;
+      std::atomic<bool> stop_flag = false;
+
+      int rv = pthread_mutex_init(&wasread_mutex, nullptr);
+      ASSERT_EQ(rv, 0) << " could not create mutex";
+      rv = pthread_cond_init(&wasread_cond, nullptr);
+      ASSERT_EQ(rv, 0) << " could not create cond var";
+      
+    
+      orv = osal_binary_semaphore_init(&sema, nullptr, 0);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
+
+      int rv;
+      for (int i=0; i < NTHREADS; i++){
+        params[i].thread_num = i;
+        params[i].p_sema = &sema;
+	
+	/* piping for read confirmation */
+        params[i].pwas_read = &was_read;
+	
+        params[i].p_wasread_cond = &wasread_cond;
+	params[i].p_wasread_mutex = &wasread_mutex;
+        params[i].pstop_flag = &stop_flag;
+	
+        rv = pthread_create(/*thread*/ &(thread_ids[i]),
+			    /*pthread_attr*/ nullptr,
+			    /* start_routine */ test_semaphore_count,
+			    /* arg */ (void*) &params[i]);
+        ASSERT_EQ(rv, 0) << "pthread_create() failed";
+      }
+      printf("parallel sender: start OK\n");
+      
+    
+
+      for (int i=0; i < LOOPCOUNT5; i++){
+        orv = osal_binary_semaphore_post(&sema);
+	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
+
+	/* now, we wait for some thread to read the semaphore event,
+	   and confirm it. 
+
+	   Here, this is necessary because multiple post() events
+	   on the same semaphore cause events to be missed
+	   from count, because the semaphore value is only
+	   either 0 or 1.
+	*/
+
+	rv = pthread_mutex_lock(&params.wasread_mutex);
+	ASSERT_EQ(rv, 0) << "mutex lock failed";
+	
+        while (!params.was_read) {
+		// we wait for the reader thread to respond,
+		// but error out when there is no response
+		// after MAX_WAIT_SEC seconds.
+		
+		if (verbose) {
+			printf("[%u] sender: cond false, waiting\n", i);
+		}
+		const int MAX_WAIT_SEC = 5;
+		timespec wait_time = {};
+		wait_time.tv_sec = time(nullptr) + MAX_WAIT_SEC;
+		if (verbose) {
+			printf("waiting maximally until %lu sec epoch\n",
+			       wait_time.tv_sec);
+		}
+		wait_time.tv_nsec = 0;      
+		rv = pthread_cond_timedwait(&wasread_cond,
+					    &wasread_mutex,
+					    &wait_time);
+		
+		ASSERT_EQ(rv, 0) << "pthread_cond_[timed]wait() failed";
+        }
+        was_read=false;	
+        rv = pthread_mutex_unlock(&wasread_mutex);
+	
+	ASSERT_EQ(rv, 0) << "pthread_mutex_unlock() failed";
+
+	
+      }
+
+      // instruct threads to stop
+       stop_flag = true;
+      for (int i=0; i < LOOPCOUNT5; i++){
+        orv = osal_binary_semaphore_post(&sema);
+	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
+        }
+      printf("parallel sender: joining\n");
+
+      long sum_count = 0;
+      for (int i=0; i < NTHREADS; i++){
+        rv = pthread_join(/*thread*/ thread_ids[i],
+	        	  /*retval*/ nullptr);
+        ASSERT_EQ(rv, 0) << "pthread_join() failed";
+        sum_count += params[i].count;
+      }
+      orv = osal_binary_semaphore_destroy(&sema);      
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_destroy() failed";
+
+      
+      rv = pthread_cond_destroy(&wasread_cond);
+      ASSERT_EQ(rv, 0) << "could not destroy cond var";
+      
+      rv = pthread_mutex_destroy(&wasread_mutex);
+      ASSERT_EQ(rv, 0) << "could not destroy mutex";
+
+      // as a result of waiting for confirmation,
+      // we expect that the number of events matches.
+      EXPECT_EQ(sum_count, LOOPCOUNT5)
           << "the count of events does not match";
     }
 }
@@ -634,7 +821,7 @@ namespace timedwait {
 
   typedef struct {
     int thread_num;
-    osal_semaphore_t* p_sema;
+    osal_binary_semaphore_t* p_sema;
     std::atomic<bool> *pstop_flag;
     std::atomic<unsigned long> count;
     std::atomic<unsigned long> timeout_count;
@@ -666,7 +853,7 @@ namespace timedwait {
       // note: if stop events are missed, this test will hang here
       // this can happen if there is an error with the semaphore
       // implementation.
-      orv = osal_semaphore_timedwait(params->p_sema, &deadline_osal);
+      orv = osal_binary_semaphore_timedwait(params->p_sema, &deadline_osal);
       // note: this and the following are not assertions
       // because it does not work.... seems that
       // the ASSERT macros contain a return which does
@@ -684,7 +871,7 @@ namespace timedwait {
       if (orv == OSAL_ERR_TIMEOUT){
          params->timeout_count++;
       } else {
-        EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_wait()";
+        EXPECT_EQ(orv, OSAL_OK) << "error in osal_binary_semaphore_wait()";
 
         // store the value passed from the sender
         params->count++;
@@ -706,11 +893,11 @@ namespace timedwait {
       assert(NTHREADS > 0);
       assert(LOOPCOUNT3 > 0);
       osal_retval_t orv;
-      osal_semaphore_t sema;
+      osal_binary_semaphore_t sema;
       std::atomic<bool> stop_flag = false;
     
-      orv = osal_semaphore_init(&sema, nullptr, 0);
-      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
+      orv = osal_binary_semaphore_init(&sema, nullptr, 0);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
       int rv;
       for (int i=0; i < NTHREADS; i++){
@@ -743,8 +930,8 @@ namespace timedwait {
         wait_nanoseconds(DELAY_UNIT*(tick + extra_delay));
         sum_delays += extra_delay;
         
-        orv = osal_semaphore_post(&sema);
-      	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+        orv = osal_binary_semaphore_post(&sema);
+      	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
       }
 
       /* wait for threads to finish counting.  the following codes
@@ -773,8 +960,8 @@ namespace timedwait {
       // now, instruct threads to stop
       stop_flag = true;
       for (int i=0; i < LOOPCOUNT3; i++){
-        orv = osal_semaphore_post(&sema);
-      	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+        orv = osal_binary_semaphore_post(&sema);
+      	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
         }
       printf("parallel sender: joining\n");
 
@@ -785,8 +972,8 @@ namespace timedwait {
         ASSERT_EQ(rv, 0) << "pthread_join() failed";
         sum_timeout_count += params[i].timeout_count;
       }
-      orv = osal_semaphore_destroy(&sema);
-      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
+      orv = osal_binary_semaphore_destroy(&sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_destroy() failed";
       printf("test timeout_wait: %li delays introduced,"
              " %li timeouts observed\n", 
              sum_delays, sum_timeout_count);
@@ -809,7 +996,7 @@ namespace trywait {
 
   typedef struct {
     int thread_num;
-    osal_semaphore_t* p_sema;
+    osal_binary_semaphore_t* p_sema;
     std::atomic<bool> *pstop_flag;
     std::atomic<unsigned long> count;
     unsigned long wait_count;
@@ -832,7 +1019,7 @@ namespace trywait {
       // note: if stop events are missed, this test will hang here
       // this can happen if there is an error with the semaphore
       // implementation.
-      orv = osal_semaphore_trywait(params->p_sema);
+      orv = osal_binary_semaphore_trywait(params->p_sema);
       // note: this and the following are not assertions
       // because it does not work.... seems that
       // the ASSERT macros contain a return which does
@@ -851,7 +1038,7 @@ namespace trywait {
          params->wait_count++;
 
       } else {
-        EXPECT_EQ(orv, OSAL_OK) << "error in osal_semaphore_trywait()";
+        EXPECT_EQ(orv, OSAL_OK) << "error in osal_binary_semaphore_trywait()";
 
         // store the value passed from the sender
         params->count++;
@@ -873,11 +1060,11 @@ namespace trywait {
       assert(NTHREADS > 0);
       assert(LOOPCOUNT4 > 0);
       osal_retval_t orv;
-      osal_semaphore_t sema;
+      osal_binary_semaphore_t sema;
       std::atomic<bool> stop_flag = false;
     
-      orv = osal_semaphore_init(&sema, nullptr, 0);
-      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
+      orv = osal_binary_semaphore_init(&sema, nullptr, 0);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
       int rv;
       for (int i=0; i < NTHREADS; i++){
@@ -910,8 +1097,8 @@ namespace trywait {
         wait_nanoseconds(DELAY_UNIT*(tick + extra_delay));
         sum_delays += extra_delay;
         
-        orv = osal_semaphore_post(&sema);
-      	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+        orv = osal_binary_semaphore_post(&sema);
+      	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
       }
 
       long sum_count = 0;
@@ -933,8 +1120,8 @@ namespace trywait {
       // instruct threads to stop, by setting flag and waiting
       stop_flag = true;
       for (int i=0; i < LOOPCOUNT4; i++){
-        orv = osal_semaphore_post(&sema);
-      	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+        orv = osal_binary_semaphore_post(&sema);
+      	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
         }
       printf("parallel sender: joining\n");
 
@@ -945,8 +1132,8 @@ namespace trywait {
         ASSERT_EQ(rv, 0) << "pthread_join() failed";
         sum_wait_count += params[i].wait_count;
       }
-      orv = osal_semaphore_destroy(&sema);
-      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
+      orv = osal_binary_semaphore_destroy(&sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_destroy() failed";
       printf("test timeout_wait: %li delays introduced,"
              " %li timeouts observed\n", 
              sum_delays, sum_wait_count);
