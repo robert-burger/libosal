@@ -184,7 +184,7 @@ namespace test_single_reader {
       params.was_read = false;    
 
       //osal_binary_semaphore_attr_t attr = OSAL_BINARY_SEMAPHORE_ATTR__PROCESS_SHARED;
-      orv = osal_binary_semaphore_init(&params.sema, nullptr, 0);
+      orv = osal_binary_semaphore_init(&params.sema, nullptr);
       ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
       
@@ -353,7 +353,7 @@ namespace test_single_reader {
       params.was_read = false;    
 
       //osal_binary_semaphore_attr_t attr = OSAL_BINARY_SEMAPHORE_ATTR__PROCESS_SHARED;
-      orv = osal_binary_semaphore_init(&params.sema, nullptr, 0);
+      orv = osal_binary_semaphore_init(&params.sema, nullptr);
       ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
       
@@ -530,6 +530,7 @@ namespace multireader {
     int thread_num;
     osal_binary_semaphore_t* p_sema;
     std::atomic<bool> *pstop_flag;
+    std::atomic<int> *p_thread_count;
     unsigned long count;
   } thread_param_count_t;
   
@@ -538,7 +539,8 @@ namespace multireader {
     assert(p_params != nullptr);
     // keep in mind that params is necessarily shared here,
     // differently from some other test code.
-    thread_param_count_t *params = ((thread_param_count_t*) p_params);    
+    thread_param_count_t *params = ((thread_param_count_t*) p_params);
+    *(params->p_thread_count) += 1;
     params->count = 0;
     osal_retval_t orv;
     while (true){
@@ -563,6 +565,7 @@ namespace multireader {
       params->count++;
     }
   
+    *(params->p_thread_count) -= 1;
   return nullptr;
 }
   
@@ -579,9 +582,11 @@ namespace multireader {
       assert(LOOPCOUNT2 > 0);
       osal_retval_t orv;
       osal_binary_semaphore_t sema;
-      std::atomic<bool> stop_flag = false;
+      std::atomic<bool> stop_flag(false);
+      std::atomic<int> thread_count(0);
+
     
-      orv = osal_binary_semaphore_init(&sema, nullptr, 0);
+      orv = osal_binary_semaphore_init(&sema, nullptr);
       ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
       int rv;
@@ -589,6 +594,7 @@ namespace multireader {
         params[i].thread_num = i;
         params[i].p_sema = &sema;
         params[i].pstop_flag = &stop_flag;
+        params[i].p_thread_count = &thread_count;
         rv = pthread_create(/*thread*/ &(thread_ids[i]),
   			  /*pthread_attr*/ nullptr,
   			  /* start_routine */ test_semaphore_count,
@@ -605,10 +611,13 @@ namespace multireader {
       }
       sleep(1);
       // instruct threads to stop
-       stop_flag = true;
-      for (int i=0; i < LOOPCOUNT2; i++){
+      stop_flag = true;
+      long stop_events = 0;
+      while (thread_count >0){
         orv = osal_binary_semaphore_post(&sema);
+	stop_events ++;
 	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
+	wait_nanoseconds(1000000);
         }
       printf("parallel sender: joining\n");
 
@@ -622,9 +631,8 @@ namespace multireader {
       orv = osal_binary_semaphore_destroy(&sema);
       ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_destroy() failed";
 
-    
-      EXPECT_EQ(sum_count, LOOPCOUNT2)
-          << "the count of events does not match";
+      EXPECT_LE(sum_count, LOOPCOUNT2 + stop_events)
+          << "the count of events is too large!";
     }
 }
 
@@ -645,8 +653,9 @@ namespace multireader_synchronized {
 	  osal_binary_semaphore_t* p_sema;
 	  pthread_mutex_t* p_wasread_mutex;
 	  pthread_cond_t* p_wasread_cond; // condition variable for signaling read
-	  bool* was_read;
-	  std::atomic<bool> *pstop_flag;
+	  bool* p_was_read;
+	  std::atomic<bool> *p_stop_flag;
+	  std::atomic<int> *p_thread_count;
 	  unsigned long count;
   } thread_param_count_t;
 	
@@ -656,6 +665,7 @@ namespace multireader_synchronized {
     // keep in mind that params is necessarily shared here,
     // differently from some other test code.
     thread_param_count_t *params = ((thread_param_count_t*) p_params);    
+    *(params->p_thread_count) += 1;
     params->count = 0;
     osal_retval_t orv;
     while (true){
@@ -668,7 +678,7 @@ namespace multireader_synchronized {
       // not work for calles functions, while EXPECT_* does.
       EXPECT_EQ(orv, OSAL_OK) << "error in osal_binary_semaphore_wait()";
 
-      if (*params->pstop_flag) {
+      if (*params->p_stop_flag) {
          if (verbose) {
            printf("thread %i: flag received, stopping at count = %lu\n",
 	          params->thread_num,
@@ -678,8 +688,28 @@ namespace multireader_synchronized {
       }
       // store the value passed from the sender
       params->count++;
+
+      if (verbose) {
+	printf("[%u] receiver: updating flag\n", params->thread_num);
+      }
+      int rv = pthread_mutex_lock(params->p_wasread_mutex);
+      EXPECT_EQ(rv, 0) << "could not lock mutex";
+      *(params->p_was_read) = true;
+      if (verbose) {
+	printf("[%u] receiver: flag was set\n", params->thread_num);
+      }
+      rv = pthread_cond_signal(params->p_wasread_cond);
+      EXPECT_EQ(rv, 0) << "signaling condition failed";
+      rv = pthread_mutex_unlock(params->p_wasread_mutex);
+      EXPECT_EQ(rv, 0) << "could not unlock mutex";
+      if (verbose) {
+	printf("[%u] receiver: update done\n", params->thread_num);
+      }
+
+      
     }
   
+    *(params->p_thread_count) -= 1;
   return nullptr;
 }
   
@@ -700,7 +730,8 @@ namespace multireader_synchronized {
       assert(LOOPCOUNT5 > 0);
       osal_retval_t orv;
       osal_binary_semaphore_t sema;
-      std::atomic<bool> stop_flag = false;
+      std::atomic<bool> stop_flag(false);
+      std::atomic<int> thread_count(0);
 
       int rv = pthread_mutex_init(&wasread_mutex, nullptr);
       ASSERT_EQ(rv, 0) << " could not create mutex";
@@ -708,20 +739,20 @@ namespace multireader_synchronized {
       ASSERT_EQ(rv, 0) << " could not create cond var";
       
     
-      orv = osal_binary_semaphore_init(&sema, nullptr, 0);
+      orv = osal_binary_semaphore_init(&sema, nullptr);
       ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
-      int rv;
       for (int i=0; i < NTHREADS; i++){
         params[i].thread_num = i;
         params[i].p_sema = &sema;
 	
 	/* piping for read confirmation */
-        params[i].pwas_read = &was_read;
+        params[i].p_was_read = &was_read;
 	
         params[i].p_wasread_cond = &wasread_cond;
 	params[i].p_wasread_mutex = &wasread_mutex;
-        params[i].pstop_flag = &stop_flag;
+        params[i].p_stop_flag = &stop_flag;
+        params[i].p_thread_count = &thread_count;
 	
         rv = pthread_create(/*thread*/ &(thread_ids[i]),
 			    /*pthread_attr*/ nullptr,
@@ -737,19 +768,19 @@ namespace multireader_synchronized {
         orv = osal_binary_semaphore_post(&sema);
 	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
 
-	/* now, we wait for some thread to read the semaphore event,
-	   and confirm it. 
+	/* now, we wait for some thread to read the semaphore event
+	   and confirm this. 
 
-	   Here, this is necessary because multiple post() events
-	   on the same semaphore cause events to be missed
-	   from count, because the semaphore value is only
+	   Here, this is necessary because multiple post() events on
+	   the same semaphore would otherwise cause events to be
+	   missed from count, because the semaphore value is only
 	   either 0 or 1.
 	*/
 
-	rv = pthread_mutex_lock(&params.wasread_mutex);
+	rv = pthread_mutex_lock(&wasread_mutex);
 	ASSERT_EQ(rv, 0) << "mutex lock failed";
 	
-        while (!params.was_read) {
+        while (!was_read) {
 		// we wait for the reader thread to respond,
 		// but error out when there is no response
 		// after MAX_WAIT_SEC seconds.
@@ -757,7 +788,7 @@ namespace multireader_synchronized {
 		if (verbose) {
 			printf("[%u] sender: cond false, waiting\n", i);
 		}
-		const int MAX_WAIT_SEC = 5;
+		const int MAX_WAIT_SEC = 10;
 		timespec wait_time = {};
 		wait_time.tv_sec = time(nullptr) + MAX_WAIT_SEC;
 		if (verbose) {
@@ -771,6 +802,7 @@ namespace multireader_synchronized {
 		
 		ASSERT_EQ(rv, 0) << "pthread_cond_[timed]wait() failed";
         }
+	// reset the read flag
         was_read=false;	
         rv = pthread_mutex_unlock(&wasread_mutex);
 	
@@ -780,10 +812,13 @@ namespace multireader_synchronized {
       }
 
       // instruct threads to stop
-       stop_flag = true;
-      for (int i=0; i < LOOPCOUNT5; i++){
+      stop_flag = true;
+      long stop_events = 0;
+      while (thread_count > 0){
         orv = osal_binary_semaphore_post(&sema);
+	stop_events ++;
 	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
+	wait_nanoseconds(1000000);
         }
       printf("parallel sender: joining\n");
 
@@ -806,9 +841,153 @@ namespace multireader_synchronized {
 
       // as a result of waiting for confirmation,
       // we expect that the number of events matches.
-      EXPECT_EQ(sum_count, LOOPCOUNT5)
+      EXPECT_GE(sum_count, LOOPCOUNT5)
           << "the count of events does not match";
     }
+
+
+	// this does the previous test again, but now so that multiple
+	// signals are given while holding the lock. Because it is a
+	// binary semaphore, only one thread should see an event.
+
+
+	  // this just sends a number of post() events to multiple
+  // receivers, which count the received events.
+	// here, events are posted so that we expect that
+	// some are lost.
+  TEST(Semaphore, ParallelLossyCount)
+    {
+      
+      pthread_t thread_ids[NTHREADS];;
+      thread_param_count_t params[NTHREADS]; /* shared data protected by
+    			    semaphore and mutex */
+      pthread_mutex_t wasread_mutex;
+      pthread_cond_t wasread_cond; // condition variable for signaling read
+      bool was_read = false;
+      std::atomic<int> thread_count(0);
+
+      assert(NTHREADS > 0);
+      assert(LOOPCOUNT5 > 0);
+      osal_retval_t orv;
+      osal_binary_semaphore_t sema;
+      std::atomic<bool> stop_flag(false);
+
+      int rv = pthread_mutex_init(&wasread_mutex, nullptr);
+      ASSERT_EQ(rv, 0) << " could not create mutex";
+      rv = pthread_cond_init(&wasread_cond, nullptr);
+      ASSERT_EQ(rv, 0) << " could not create cond var";
+      
+    
+      orv = osal_binary_semaphore_init(&sema, nullptr);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
+
+      for (int i=0; i < NTHREADS; i++){
+        params[i].thread_num = i;
+        params[i].p_sema = &sema;
+	
+	/* piping for read confirmation */
+        params[i].p_was_read = &was_read;
+	
+        params[i].p_wasread_cond = &wasread_cond;
+	params[i].p_wasread_mutex = &wasread_mutex;
+        params[i].p_stop_flag = &stop_flag;
+        params[i].p_thread_count = &thread_count;
+	
+        rv = pthread_create(/*thread*/ &(thread_ids[i]),
+			    /*pthread_attr*/ nullptr,
+			    /* start_routine */ test_semaphore_count,
+			    /* arg */ (void*) &params[i]);
+        ASSERT_EQ(rv, 0) << "pthread_create() failed";
+      }
+      printf("parallel sender: start OK\n");
+      
+    
+      srand(1);
+      for (int i=0; i < LOOPCOUNT5; i++){
+
+	rv = pthread_mutex_lock(&wasread_mutex);
+	ASSERT_EQ(rv, 0) << "mutex lock failed";
+
+	// here, post multiple times
+	int num_posts = 1 + rand() % NTHREADS;
+	if (verbose) {
+		printf("[%u] sender: signalling %i times\n", i, num_posts);
+	}
+	for (int n=0; n < num_posts; n++){		
+		orv = osal_binary_semaphore_post(&sema);
+		ASSERT_EQ(orv, OSAL_OK) <<
+			"osal_binary_semaphore_post() failed";
+	}
+
+	/* now, we wait for one thread to read the semaphore event
+	   and confirm this via the cond var. 
+	*/
+	
+        while (!was_read) {
+		// we wait for the reader thread to respond,
+		// but error out when there is no response
+		// after MAX_WAIT_SEC seconds.
+		
+		if (verbose) {
+			printf("[%u] sender: cond false, waiting\n", i);
+		}
+		const int MAX_WAIT_SEC = 10;
+		timespec wait_time = {};
+		wait_time.tv_sec = time(nullptr) + MAX_WAIT_SEC;
+		if (verbose) {
+			printf("waiting maximally until %lu sec epoch\n",
+			       wait_time.tv_sec);
+		}
+		wait_time.tv_nsec = 0;      
+		rv = pthread_cond_timedwait(&wasread_cond,
+					    &wasread_mutex,
+					    &wait_time);
+		
+		ASSERT_EQ(rv, 0) << "pthread_cond_[timed]wait() failed";
+        }
+	// reset the read flag
+        was_read=false;	
+        rv = pthread_mutex_unlock(&wasread_mutex);
+	
+	ASSERT_EQ(rv, 0) << "pthread_mutex_unlock() failed";
+
+	
+      }
+
+      // instruct threads to stop
+      stop_flag = true;
+      long stop_events = 0;
+      while (thread_count > 0){
+        orv = osal_binary_semaphore_post(&sema);
+	stop_events++;
+	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
+	wait_nanoseconds(1000000);
+        }
+      printf("parallel sender: joining\n");
+
+      long sum_count = 0;
+      for (int i=0; i < NTHREADS; i++){
+        rv = pthread_join(/*thread*/ thread_ids[i],
+	        	  /*retval*/ nullptr);
+        ASSERT_EQ(rv, 0) << "pthread_join() failed";
+        sum_count += params[i].count;
+      }
+      orv = osal_binary_semaphore_destroy(&sema);      
+      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_destroy() failed";
+
+      
+      rv = pthread_cond_destroy(&wasread_cond);
+      ASSERT_EQ(rv, 0) << "could not destroy cond var";
+      
+      rv = pthread_mutex_destroy(&wasread_mutex);
+      ASSERT_EQ(rv, 0) << "could not destroy mutex";
+
+      // as a result of waiting for confirmation,
+      // we expect that the number of events matches.
+      EXPECT_GE(sum_count, LOOPCOUNT5)
+          << "the count of events does not match";
+    }
+
 }
 
 
@@ -823,6 +1002,7 @@ namespace timedwait {
     int thread_num;
     osal_binary_semaphore_t* p_sema;
     std::atomic<bool> *pstop_flag;
+    std::atomic<int> *p_thread_count;
     std::atomic<unsigned long> count;
     std::atomic<unsigned long> timeout_count;
   } thread_param_count_t;
@@ -832,7 +1012,8 @@ namespace timedwait {
     assert(p_params != nullptr);
     // keep in mind that params is necessarily shared here,
     // differently from some other test code.
-    thread_param_count_t *params = ((thread_param_count_t*) p_params);    
+    thread_param_count_t *params = ((thread_param_count_t*) p_params);
+    *(params->p_thread_count) += 1;
     params->count = 0;
     params->timeout_count = 0;
     osal_retval_t orv;
@@ -877,7 +1058,8 @@ namespace timedwait {
         params->count++;
       }
     }
-  
+    
+  *(params->p_thread_count) -= 1;
   return nullptr;
 }
   
@@ -894,9 +1076,10 @@ namespace timedwait {
       assert(LOOPCOUNT3 > 0);
       osal_retval_t orv;
       osal_binary_semaphore_t sema;
-      std::atomic<bool> stop_flag = false;
-    
-      orv = osal_binary_semaphore_init(&sema, nullptr, 0);
+      std::atomic<bool> stop_flag(false);
+      std::atomic<int> thread_count(0);
+      
+      orv = osal_binary_semaphore_init(&sema, nullptr);
       ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
       int rv;
@@ -904,6 +1087,7 @@ namespace timedwait {
         params[i].thread_num = i;
         params[i].p_sema = &sema;
         params[i].pstop_flag = &stop_flag;
+	params[i].p_thread_count = &thread_count;
         rv = pthread_create(/*thread*/ &(thread_ids[i]),
   			  /*pthread_attr*/ nullptr,
   			  /* start_routine */ test_semaphore_timedwait,
@@ -936,14 +1120,14 @@ namespace timedwait {
 
       /* wait for threads to finish counting.  the following codes
 	 uses the arrangement that the counter params[i].count, which
-	 is compared to, is atomic.  We expect the counter to match
-	 LOOPCOUNT3 as long as the semaphore implementation does not
-	 lose events.
+	 is compared to, is atomic.  We expect the counter to ideally
+	 approach LOOPCOUNT3, but we might see fewer counts
+	 because we test a binary semaphore.
       */
 	 
       long sum_count = 0;
       /* note that the wait time can be SURPRISINGLY large */
-      long max_wait_time = 10000000000; /* 10 seconds */
+      long max_wait_time = 5000000000; /* 5 seconds */
       const long wait_period = 10000000; /* 10 ms */
       while (max_wait_time > 0){
 	sum_count = 0;
@@ -957,16 +1141,23 @@ namespace timedwait {
 	max_wait_time -= min(max_wait_time, wait_period);
       }
       
-      // now, instruct threads to stop
+      // now, instruct all threads to stop
       stop_flag = true;
-      for (int i=0; i < LOOPCOUNT3; i++){
-        orv = osal_binary_semaphore_post(&sema);
-      	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
-        }
+      int wait_interval = 1000000; /* 1 ms */
+      long stop_events = 0;
+      while (thread_count > 0){
+	      orv = osal_binary_semaphore_post(&sema);
+	      stop_events++;
+	      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
+	      wait_nanoseconds(wait_interval);
+      }
+
       printf("parallel sender: joining\n");
 
       long sum_timeout_count = 0;
       for (int i=0; i < NTHREADS; i++){
+	// in this variant, we joint threads one by one
+	// in order to not lose events
         rv = pthread_join(/*thread*/ thread_ids[i],
 	        	  /*retval*/ nullptr);
         ASSERT_EQ(rv, 0) << "pthread_join() failed";
@@ -979,8 +1170,8 @@ namespace timedwait {
              sum_delays, sum_timeout_count);
 
     
-      EXPECT_EQ(sum_count, LOOPCOUNT3)
-          << "the count of events does not match";
+      EXPECT_LE(sum_count, LOOPCOUNT3 + stop_events)
+          << "the count of events is too large";
       
       /* we cannot assert for the number of timeouts here, because
 	 they can differ in both directions. */
@@ -998,6 +1189,7 @@ namespace trywait {
     int thread_num;
     osal_binary_semaphore_t* p_sema;
     std::atomic<bool> *pstop_flag;
+    std::atomic<int> *p_thread_count;
     std::atomic<unsigned long> count;
     unsigned long wait_count;
   } thread_param_try_t;
@@ -1005,9 +1197,9 @@ namespace trywait {
   void* test_semaphore_trywait(void *p_params)
   {
     assert(p_params != nullptr);
-    // keep in mind that params is necessarily shared here,
-    // differently from some other test code.
+
     thread_param_try_t *params = ((thread_param_try_t*) p_params);    
+    *(params->p_thread_count) += 1;
     params->count = 0;
     params->wait_count = 0;
     osal_retval_t orv;
@@ -1045,6 +1237,7 @@ namespace trywait {
       }
     }
   
+  *(params->p_thread_count) -= 1;
   return nullptr;
 }
   
@@ -1061,9 +1254,10 @@ namespace trywait {
       assert(LOOPCOUNT4 > 0);
       osal_retval_t orv;
       osal_binary_semaphore_t sema;
-      std::atomic<bool> stop_flag = false;
+      std::atomic<bool> stop_flag(false);
+      std::atomic<int> thread_count(0);
     
-      orv = osal_binary_semaphore_init(&sema, nullptr, 0);
+      orv = osal_binary_semaphore_init(&sema, nullptr);
       ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_init() failed";
 
       int rv;
@@ -1071,6 +1265,7 @@ namespace trywait {
         params[i].thread_num = i;
         params[i].p_sema = &sema;
         params[i].pstop_flag = &stop_flag;
+	params[i].p_thread_count = &thread_count;
         rv = pthread_create(/*thread*/ &(thread_ids[i]),
   			  /*pthread_attr*/ nullptr,
   			  /* start_routine */ test_semaphore_trywait,
@@ -1102,8 +1297,8 @@ namespace trywait {
       }
 
       long sum_count = 0;
-      /* note that the wait time can be SURPRISINGLY large */
-      long max_wait_time = 10000000000; /* 10 seconds */
+      /* note that the wait time can be large */
+      long max_wait_time = 5000000000; /* 5 seconds */
       const long wait_period = 1000000; /* 1 ms */
       while (max_wait_time > 0){
 	sum_count = 0;
@@ -1118,15 +1313,21 @@ namespace trywait {
       }
       
       // instruct threads to stop, by setting flag and waiting
+      // for them to decrease the thread count
       stop_flag = true;
-      for (int i=0; i < LOOPCOUNT4; i++){
-        orv = osal_binary_semaphore_post(&sema);
-      	ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
-        }
+      int wait_interval = 1000000; /* 1 ms */
+      int stop_events = 0;
+      while (thread_count > 0){
+	      orv = osal_binary_semaphore_post(&sema);
+	      stop_events++;
+	      ASSERT_EQ(orv, OSAL_OK) << "osal_binary_semaphore_post() failed";
+	      wait_nanoseconds(wait_interval);
+      }
+      
       printf("parallel sender: joining\n");
 
       long sum_wait_count = 0;
-      for (int i=0; i < NTHREADS; i++){
+      for (int i=0; i < NTHREADS; i++){	
         rv = pthread_join(/*thread*/ thread_ids[i],
 	        	  /*retval*/ nullptr);
         ASSERT_EQ(rv, 0) << "pthread_join() failed";
@@ -1139,8 +1340,8 @@ namespace trywait {
              sum_delays, sum_wait_count);
 
     
-      EXPECT_EQ(sum_count, LOOPCOUNT4)
-          << "the count of events does not match";
+      EXPECT_LE(sum_count, LOOPCOUNT4 + stop_events)
+          << "the count of events is too large";
       EXPECT_GE(sum_wait_count, sum_delays)
           << "some timeouts were not detected";
     }

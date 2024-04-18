@@ -1,6 +1,7 @@
 *.log
 *.trs
-timer
-sema
-mutex
+check_timer
+check_sema
+check_mutex
+check_binarysema
 

@@ -25,7 +25,7 @@ libgtest_la_LDFLAGS = -pthread
 # bit it is actually needed to prevent clashes with
 # google_test internal symbols!
 
-check_PROGRAMS = check_sema check_timer check_mutex
+check_PROGRAMS = check_binarysema check_sema check_timer check_mutex
 
 check_timer_SOURCES = test_timer.cc
 
@@ -55,6 +55,17 @@ check_sema_LDFLAGS = -pthread -Wall -Werror
 check_sema_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
 
-TESTS = check_sema check_timer check_mutex
+check_binarysema_SOURCES = test_binary_semaphore.cc
+
+check_binarysema_LDADD = libgtest.la ../../src/libosal.la
+
+check_binarysema_LDFLAGS = -pthread -Wall -Werror
+
+check_binarysema_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+
+
+#TESTS = check_binarysema check_sema check_timer check_mutex
+
+TESTS = check_binarysema check_sema check_timer check_mutex
 
 endif

@@ -772,7 +772,7 @@ namespace timedwait {
       
       // now, instruct threads to stop
       stop_flag = true;
-      for (int i=0; i < LOOPCOUNT3; i++){
+      for (int i=0; i < NTHREADS; i++){
         orv = osal_semaphore_post(&sema);
       	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
         }
@@ -932,7 +932,7 @@ namespace trywait {
       
       // instruct threads to stop, by setting flag and waiting
       stop_flag = true;
-      for (int i=0; i < LOOPCOUNT4; i++){
+      for (int i=0; i < NTHREADS; i++){
         orv = osal_semaphore_post(&sema);
       	ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
         }
