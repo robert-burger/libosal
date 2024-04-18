@@ -64,8 +64,7 @@ check_binarysema_LDFLAGS = -pthread -Wall -Werror
 check_binarysema_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
 
-#TESTS = check_binarysema check_sema check_timer check_mutex
-
 TESTS = check_binarysema check_sema check_timer check_mutex
+
 
 endif
