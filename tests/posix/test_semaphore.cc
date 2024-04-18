@@ -575,7 +575,7 @@ namespace multireader {
       assert(LOOPCOUNT2 > 0);
       osal_retval_t orv;
       osal_semaphore_t sema;
-      std::atomic<bool> stop_flag = false;
+      std::atomic<bool> stop_flag(false);
     
       orv = osal_semaphore_init(&sema, nullptr, 0);
       ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
@@ -707,7 +707,7 @@ namespace timedwait {
       assert(LOOPCOUNT3 > 0);
       osal_retval_t orv;
       osal_semaphore_t sema;
-      std::atomic<bool> stop_flag = false;
+      std::atomic<bool> stop_flag(false);
     
       orv = osal_semaphore_init(&sema, nullptr, 0);
       ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
@@ -874,7 +874,7 @@ namespace trywait {
       assert(LOOPCOUNT4 > 0);
       osal_retval_t orv;
       osal_semaphore_t sema;
-      std::atomic<bool> stop_flag = false;
+      std::atomic<bool> stop_flag(false);
     
       orv = osal_semaphore_init(&sema, nullptr, 0);
       ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
