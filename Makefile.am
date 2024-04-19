@@ -8,6 +8,7 @@ SUBDIRS=src
 if BUILD_POSIX
 if !BUILD_MINGW32
 SUBDIRS += src/tools/logger 
+SUBDIRS += src/tools/shmtest
 endif
 endif
 

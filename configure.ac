@@ -155,5 +155,5 @@ AC_TYPE_UINT32_T
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile src/Makefile src/tools/logger/Makefile libosal.pc])
+AC_CONFIG_FILES([Makefile src/Makefile src/tools/logger/Makefile src/tools/shmtest/Makefile libosal.pc])
 AC_OUTPUT
