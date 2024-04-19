@@ -11,6 +11,51 @@ namespace testutils {
 
 using std::vector;
 
+/* a bit ridiculous, but this is only
+   standardized in C++20 */
+	
+inline int popcount(ulong bits){
+	int count=0;
+	while (bits != 0){
+		if (bits & 1ul){
+			count++;
+		}
+		bits = bits >> 1;
+	}
+	return count;
+}
+
+/* this function is used to select some random 
+   inactive thread from a bitmask of free threads 
+
+   The input is a bit mask, and the return value
+   is some random position among the bits that
+   are set. This needs srand() to be called once
+   before for initialization. */
+	
+inline int pick_random_from_bits(ulong mask) {
+	assert(mask > 0ul);
+	uint numbits = popcount(mask);
+
+	int choice = 0;
+	if (numbits > 1) {
+	   choice = rand() % numbits;
+	}
+	assert(choice < popcount(mask));
+	
+	int selected_bit = -1;
+	while (choice >= 0){
+		// test rightmost bit and count down
+		if (mask & 1ul) {
+			choice --;
+		}
+		mask = mask >> 1;
+		selected_bit += 1;
+	}
+	return selected_bit;
+}
+		
+
 inline bool is_realtime()
 {
   bool runs_realtime = false;
