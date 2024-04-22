@@ -1,0 +1,2 @@
+#!/bin/sh
+clang-format --style=google -i *.cc *.h
