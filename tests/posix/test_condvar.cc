@@ -1,3 +1,8 @@
+#include "libosal/osal.h"
+#include "libosal/timer.h"
+#include "test_utils.h"
+#include "gtest/gtest.h"
+#include <cassert>
 #include <errno.h>
 #include <limits.h>
 #include <pthread.h>
@@ -6,12 +11,7 @@
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <time.h>
-#include <cassert>
 #include <vector>
-#include "gtest/gtest.h"
-#include "libosal/osal.h"
-#include "libosal/timer.h"
-#include "test_utils.h"
 namespace test_condvar {
 
 static int verbose = 0;
@@ -85,8 +85,8 @@ typedef struct {
   // end of items protected by mutex
 
   // piping for clean termination
-  sem_t finished_sem;             // is signaled when a thread terminates
-  std::atomic<int> thread_count;  // count of active threads
+  sem_t finished_sem;            // is signaled when a thread terminates
+  std::atomic<int> thread_count; // count of active threads
 
 } shared_t;
 
@@ -280,9 +280,9 @@ TEST(Condvar, ParallelMasked) {
         << "the count of events does not match";
   }
 }
-}  // namespace condvar_multithread
+} // namespace condvar_multithread
 
-}  // namespace test_condvar
+} // namespace test_condvar
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
