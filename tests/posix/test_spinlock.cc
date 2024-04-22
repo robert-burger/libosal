@@ -5,14 +5,14 @@
 #include "libosal/osal.h"
 #include "test_utils.h"
 
-namespace test_mutex {
+namespace test_spinlock {
 
 using testutils::wait_nanoseconds;
 
-TEST(MutexSane, SingleThreadedNoRelease) {
-  osal_mutex_t my_mutex;
-  osal_mutex_init(&my_mutex, nullptr);
-  osal_mutex_lock(&my_mutex);
+TEST(SpinlockSane, SingleThreadedNoRelease) {
+  osal_spinlock_t my_spinlock;
+  osal_spinlock_init(&my_spinlock, nullptr);
+  osal_spinlock_lock(&my_spinlock);
   const int loopcount = 100;
   int counter = 0;
 
@@ -20,23 +20,24 @@ TEST(MutexSane, SingleThreadedNoRelease) {
     counter += 1;
   }
 
-  osal_mutex_unlock(&my_mutex);
-  osal_mutex_destroy(&my_mutex);
+  osal_spinlock_unlock(&my_spinlock);
+
+  osal_spinlock_destroy(&my_spinlock);
 
   EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
                                     "is totally wrong");
 }
 
-TEST(MutexSane, SingleThreadedWithRelease) {
-  osal_mutex_t my_mutex;
-  osal_mutex_init(&my_mutex, nullptr);
+TEST(SpinlockSane, SingleThreadedWithRelease) {
+  osal_spinlock_t my_spinlock;
+  osal_spinlock_init(&my_spinlock, nullptr);
   const int loopcount = 100;
   int counter = 0;
 
   for (int i = 0; i < loopcount; i++) {
-    osal_mutex_lock(&my_mutex);
+    osal_spinlock_lock(&my_spinlock);
     counter += 1;
-    osal_mutex_unlock(&my_mutex);
+    osal_spinlock_unlock(&my_spinlock);
   }
 
   EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
@@ -44,14 +45,14 @@ TEST(MutexSane, SingleThreadedWithRelease) {
 }
 
 /* the following test runs N threads, each of which hold a common
-   mutex, and each of which use a common counter.
+   spinlock, and each of which use a common counter.
 
    Each thread loops, and in each iteration, will pause a random
    time (in order to increase chance of concurrent access), get the
-   mutex, pause a bit more, increase the coutner, and return the
-   mutex.
+   spinlock, pause a bit more, increase the coutner, and return the
+   spinlock.
 
-   The rationale of the test is that if the mutex would not
+   The rationale of the test is that if the spinlock would not
    protect shared data properly, we would have some missing
    counts due to race conditions.
 */
@@ -60,7 +61,7 @@ typedef struct {
   uint loopcount;
   uint max_wait_time_nsec;
   unsigned long *p_counter;
-  osal_mutex_t *p_count_mutex;
+  osal_spinlock_t *p_count_spinlock;
 } thread_param_t;
 
 void *test_random(void *p_params) {
@@ -68,7 +69,6 @@ void *test_random(void *p_params) {
 
   const int thread_id = params.thread_id;
   const uint max_wait_time = params.max_wait_time_nsec;
-  osal_retval_t orv;
 
   if (max_wait_time > 0) {
     srand(thread_id);
@@ -79,8 +79,7 @@ void *test_random(void *p_params) {
       wait_nanoseconds(rand() % max_wait_time);
     }
 
-    orv = osal_mutex_lock(params.p_count_mutex);
-    EXPECT_EQ(orv, OSAL_OK) << "osal_mutex_lock() failed";
+    osal_spinlock_lock(params.p_count_spinlock);
 
     unsigned long old_value = *(params.p_counter);
     // randomly wait
@@ -92,32 +91,28 @@ void *test_random(void *p_params) {
     *(params.p_counter) = old_value + 1;
 
     // return lock
-    orv = osal_mutex_unlock(params.p_count_mutex);
-    EXPECT_EQ(orv, OSAL_OK) << "osal_mutex_unlock() failed";
+    osal_spinlock_unlock(params.p_count_spinlock);
   }
 
   return nullptr;
 }
 
-TEST(MutexMultithreading, Parallel) {
+TEST(SpinlockMultithreading, Parallel) {
   const ulong N_THREADS = 100;
   const uint LOOPCOUNT = 100000;
 
   pthread_t thread_ids[N_THREADS];
   thread_param_t thread_params[N_THREADS];
-  osal_mutex_t count_mutex;
+  osal_spinlock_t count_spinlock;
   unsigned long counter = 0;
-  osal_retval_t orv;
-  int rv;
 
   bool verbose = (getenv("VERBOSE") != nullptr);
 
-  orv = osal_mutex_init(&count_mutex, nullptr);
-  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() failed";
+  osal_spinlock_init(&count_spinlock, nullptr);
 
   for (ulong i = 0; i < N_THREADS; i++) {
     thread_params[i].thread_id = i;
-    thread_params[i].p_count_mutex = &count_mutex;
+    thread_params[i].p_count_spinlock = &count_spinlock;
     thread_params[i].p_counter = &counter;
     thread_params[i].loopcount = LOOPCOUNT;
     thread_params[i].max_wait_time_nsec = 0;
@@ -129,18 +124,15 @@ TEST(MutexMultithreading, Parallel) {
                    /*pthread_attr*/ nullptr,
                    /* start_routine */ test_random,
                    /* arg */ (void *)&(thread_params[i]));
-    ASSERT_EQ(rv, 0) << "pthread_create() failed";
   }
   for (ulong i = 0; i < N_THREADS; i++) {
     if (verbose) {
       printf("joining thread %lu\n", i);
     }
-    rv = pthread_join(/*thread*/ thread_ids[i],
-                      /*retval*/ nullptr);
-    ASSERT_EQ(rv, 0) << "pthread_join() failed";
+    pthread_join(/*thread*/ thread_ids[i],
+                 /*retval*/ nullptr);
   }
-  orv = osal_mutex_destroy(&count_mutex);
-  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() failed";
+  osal_spinlock_destroy(&count_spinlock);
 
   if (verbose) {
     printf("expected counts: %lu, actual counter: %lu \n",
@@ -151,23 +143,23 @@ TEST(MutexMultithreading, Parallel) {
       << "multi-threaded counter test failed";
 }
 
-TEST(MutexMultithreading, RandomizedPlusWait) {
+TEST(SpinlockMultithreading, RandomizedPlusWait) {
   const ulong N_THREADS = 8;
   const uint LOOPCOUNT = 10000;
   const uint MAX_WAIT_TIME_NSEC = 500;
 
   pthread_t thread_ids[N_THREADS];
   thread_param_t thread_params[N_THREADS];
-  osal_mutex_t count_mutex;
+  osal_spinlock_t count_spinlock;
   unsigned long counter = 0;
 
   bool verbose = (getenv("VERBOSE") != nullptr);
 
-  osal_mutex_init(&count_mutex, nullptr);
+  osal_spinlock_init(&count_spinlock, nullptr);
 
   for (ulong i = 0; i < N_THREADS; i++) {
     thread_params[i].thread_id = i;
-    thread_params[i].p_count_mutex = &count_mutex;
+    thread_params[i].p_count_spinlock = &count_spinlock;
     thread_params[i].p_counter = &counter;
     thread_params[i].loopcount = LOOPCOUNT;
     thread_params[i].max_wait_time_nsec = MAX_WAIT_TIME_NSEC;
@@ -188,8 +180,7 @@ TEST(MutexMultithreading, RandomizedPlusWait) {
     pthread_join(/*thread*/ thread_ids[i],
                  /*retval*/ nullptr);
   }
-  osal_mutex_destroy(&count_mutex);
-
+  osal_spinlock_destroy(&count_spinlock);
   if (verbose) {
     printf("expected counts: %lu, actual counter: %lu \n",
            N_THREADS * LOOPCOUNT, counter);
@@ -199,7 +190,7 @@ TEST(MutexMultithreading, RandomizedPlusWait) {
       << "multi-threaded counter test failed";
 }
 
-} // namespace test_mutex
+} // namespace test_spinlock
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
