@@ -1,3 +1,5 @@
+#include <cassert>
+#include <errno.h>
 #include <stdlib.h>
 #include <time.h>
 #include <vector>
