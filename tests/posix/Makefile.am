@@ -26,7 +26,7 @@ libgtest_la_LDFLAGS = -pthread
 # google_test internal symbols!
 
 check_PROGRAMS = check_condvar check_binarysema check_sema check_timer \
-		 check_mutex check_spinlock
+		 check_mutex check_spinlock check_tasks
 
 check_timer_SOURCES = test_timer.cc
 
@@ -45,6 +45,14 @@ check_mutex_LDADD = libgtest.la ../../src/libosal.la
 check_mutex_LDFLAGS = -pthread -Wall -Werror
 
 check_mutex_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+
+check_tasks_SOURCES = test_tasks.cc
+
+check_tasks_LDADD = libgtest.la ../../src/libosal.la
+
+check_tasks_LDFLAGS = -pthread -Wall -Werror
+
+check_tasks_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
 
 check_sema_SOURCES = test_semaphore.cc
@@ -83,7 +91,7 @@ check_spinlock_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/in
 
 
 
-TESTS = check_spinlock check_condvar check_binarysema check_sema check_timer check_mutex
+TESTS = check_spinlock check_condvar check_binarysema check_sema check_timer check_mutex check_tasks
 
 
 endif
