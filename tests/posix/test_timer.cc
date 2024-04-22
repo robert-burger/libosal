@@ -1,15 +1,15 @@
+#include "gtest/gtest.h"
 #include <errno.h>
 #include <pthread.h>
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <time.h>
 #include <vector>
-#include "gtest/gtest.h"
 
-#include <sched.h>
 #include "libosal/osal.h"
 #include "libosal/timer.h"
 #include "test_utils.h"
+#include <sched.h>
 
 namespace test_timer {
 using std::vector;
@@ -458,7 +458,7 @@ TEST(TimerSleepUntil, SaneMultiThreaded) {
   }
 }
 
-}  // namespace test_timer
+} // namespace test_timer
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

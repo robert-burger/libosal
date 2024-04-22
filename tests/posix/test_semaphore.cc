@@ -1,15 +1,15 @@
+#include "libosal/osal.h"
+#include "libosal/timer.h"
+#include "test_utils.h"
+#include "gtest/gtest.h"
+#include <cassert>
 #include <errno.h>
 #include <pthread.h>
 #include <sched.h>
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <time.h>
-#include <cassert>
 #include <vector>
-#include "gtest/gtest.h"
-#include "libosal/osal.h"
-#include "libosal/timer.h"
-#include "test_utils.h"
 
 namespace test_semaphore {
 
@@ -59,9 +59,9 @@ typedef struct {
   osal_semaphore_t sema;
   unsigned long value;
   bool wait_before_read;
-  bool was_read;  // flag to signal finished iteration
+  bool was_read; // flag to signal finished iteration
   pthread_mutex_t wasread_mutex;
-  pthread_cond_t wasread_cond;  // condition variable for signaling read
+  pthread_cond_t wasread_cond; // condition variable for signaling read
 
   struct timespec startwait_times[LOOPCOUNT];
   struct timespec read_times[LOOPCOUNT];
@@ -471,7 +471,7 @@ TEST(Semaphore, RandomizedDelay) {
     }
   }
 }
-}  // namespace test_single_reader
+} // namespace test_single_reader
 
 /* The following tests test the semaphore with one
    sender and multiple receiver threads.
@@ -583,7 +583,7 @@ TEST(Semaphore, ParallelCount) {
 
   EXPECT_EQ(sum_count, LOOPCOUNT2) << "the count of events does not match";
 }
-}  // namespace multireader
+} // namespace multireader
 
 namespace timedwait {
 const int LOOPCOUNT3 = 1000;
@@ -606,7 +606,7 @@ void *test_semaphore_timedwait(void *p_params) {
   params->count = 0;
   params->timeout_count = 0;
   osal_retval_t orv;
-  osal_timer_t deadline_osal = {};  // this is an absolute time!!
+  osal_timer_t deadline_osal = {}; // this is an absolute time!!
   struct timespec deadline_posix = {};
   while (true) {
     int rv = clock_gettime(CLOCK_REALTIME, &deadline_posix);
@@ -715,7 +715,7 @@ TEST(Semaphore, TimedCount) {
       sum_count += params[i].count;
     }
     if (sum_count == LOOPCOUNT3) {
-      break;  // all threads have finished
+      break; // all threads have finished
     }
     wait_nanoseconds(wait_period);
     max_wait_time -= min(max_wait_time, wait_period);
@@ -738,17 +738,16 @@ TEST(Semaphore, TimedCount) {
   }
   orv = osal_semaphore_destroy(&sema);
   ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
-  printf(
-      "test timeout_wait: %li delays introduced,"
-      " %li timeouts observed\n",
-      sum_delays, sum_timeout_count);
+  printf("test timeout_wait: %li delays introduced,"
+         " %li timeouts observed\n",
+         sum_delays, sum_timeout_count);
 
   EXPECT_EQ(sum_count, LOOPCOUNT3) << "the count of events does not match";
 
   /* we cannot assert for the number of timeouts here, because
      they can differ in both directions. */
 }
-}  // namespace timedwait
+} // namespace timedwait
 
 namespace trywait {
 const int LOOPCOUNT4 = 1000;
@@ -865,7 +864,7 @@ TEST(Semaphore, TryCount) {
       sum_count += params[i].count;
     }
     if (sum_count == LOOPCOUNT4) {
-      break;  // all threads have finished
+      break; // all threads have finished
     }
     wait_nanoseconds(wait_period);
     max_wait_time -= min(max_wait_time, wait_period);
@@ -888,17 +887,16 @@ TEST(Semaphore, TryCount) {
   }
   orv = osal_semaphore_destroy(&sema);
   ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_destroy() failed";
-  printf(
-      "test timeout_wait: %li delays introduced,"
-      " %li timeouts observed\n",
-      sum_delays, sum_wait_count);
+  printf("test timeout_wait: %li delays introduced,"
+         " %li timeouts observed\n",
+         sum_delays, sum_wait_count);
 
   EXPECT_EQ(sum_count, LOOPCOUNT4) << "the count of events does not match";
   EXPECT_GE(sum_wait_count, sum_delays) << "some timeouts were not detected";
 }
-}  // namespace trywait
+} // namespace trywait
 
-}  // namespace test_semaphore
+} // namespace test_semaphore
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

@@ -1,6 +1,6 @@
+#include "gtest/gtest.h"
 #include <pthread.h>
 #include <vector>
-#include "gtest/gtest.h"
 
 #include "libosal/osal.h"
 #include "test_utils.h"
@@ -22,9 +22,8 @@ TEST(MutexSane, SingleThreadedNoRelease) {
 
   osal_mutex_unlock(&my_mutex);
 
-  EXPECT_EQ(counter, loopcount)
-      << (" sanity test failed, something "
-          "is totally wrong");
+  EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
+                                    "is totally wrong");
 }
 
 TEST(MutexSane, SingleThreadedWithRelease) {
@@ -39,9 +38,8 @@ TEST(MutexSane, SingleThreadedWithRelease) {
     osal_mutex_unlock(&my_mutex);
   }
 
-  EXPECT_EQ(counter, loopcount)
-      << (" sanity test failed, something "
-          "is totally wrong");
+  EXPECT_EQ(counter, loopcount) << (" sanity test failed, something "
+                                    "is totally wrong");
 }
 
 /* the following test runs N threads, each of which hold a common
@@ -187,7 +185,7 @@ TEST(MutexMultithreading, RandomizedPlusWait) {
       << "multi-threaded counter test failed";
 }
 
-}  // namespace test_mutex
+} // namespace test_mutex
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

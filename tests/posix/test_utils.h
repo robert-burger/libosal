@@ -67,7 +67,7 @@ inline bool is_realtime() {
 
 template <typename T>
 vector<T> shuffle_vector(vector<T> ordered_numbers, int seed) {
-  vector<T> vec(ordered_numbers);  // allocate a copy
+  vector<T> vec(ordered_numbers); // allocate a copy
 
   size_t vlen = vec.size();
   srand(seed);
@@ -94,5 +94,5 @@ inline void wait_nanoseconds(long wait_time) {
     }
   }
 }
-}  // namespace testutils
+} // namespace testutils
 #endif
