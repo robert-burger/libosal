@@ -66,7 +66,7 @@ void *test_random(void *p_params) {
   return nullptr;
 }
 
-TEST(MutexMultithreading, Parallel) {
+TEST(TasksMultithreading, Parallel) {
   const ulong N_THREADS = 100;
   const uint LOOPCOUNT = 100000;
 
@@ -118,7 +118,7 @@ TEST(MutexMultithreading, Parallel) {
       << "multi-threaded counter test failed";
 }
 
-TEST(MutexMultithreading, RandomizedPlusWait) {
+TEST(TasksMultithreading, RandomizedPlusWait) {
   const ulong N_THREADS = 8;
   const uint LOOPCOUNT = 10000;
   const uint MAX_WAIT_TIME_NSEC = 500;
