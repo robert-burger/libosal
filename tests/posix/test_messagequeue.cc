@@ -194,16 +194,21 @@ TEST(MessageQueue, MultiSendMultiReceive) {
   osal_mq_attr_t attr = {};
   attr.oflags = OSAL_MQ_ATTR__OFLAG__RDWR | OSAL_MQ_ATTR__OFLAG__CREAT;
   // attr.oflags = OSAL_MQ_ATTR__OFLAG__RDWR;
-  attr.max_messages = 100;
+  attr.max_messages = 10;
   ASSERT_GE(attr.max_messages, 0u);
   attr.max_message_size = sizeof(message_t);
   ASSERT_GE(attr.max_message_size, 0u);
   attr.mode = S_IRUSR | S_IWUSR;
+  // attr.mode = 0666;
   // unlink message queue if it exists
   // the return value is intentionally not checked.
   mq_unlink("/test1");
+  errno = 0;
   //
   orv = osal_mq_open(&shared.queue, "/test1", &attr);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
   ASSERT_EQ(orv, OSAL_OK) << "osal_mq_open() failed";
 
   // initialize consumers
