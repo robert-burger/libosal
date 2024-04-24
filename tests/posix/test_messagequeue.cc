@@ -8,6 +8,8 @@
 
 namespace test_messagequeue {
 
+static int verbose = 0;
+
 using testutils::wait_nanoseconds;
 
 /*
@@ -44,7 +46,7 @@ using testutils::wait_nanoseconds;
 
 const uint N_PRODUCERS = 30;
 const uint M_CONSUMERS = 20;
-const uint K_ENDPOINTS = 30;
+const uint K_ENDPOINTS = 10;
 
 const ulong NUM_MESSAGES = 1000 * N_PRODUCERS * M_CONSUMERS;
 const ulong NUM_MESSAGES_PER_PRODUCER = NUM_MESSAGES / N_PRODUCERS;
@@ -62,7 +64,6 @@ typedef struct {
   uint32_t counter;
   size_t hash;
   pthread_mutex_t dest_mutex;
-  //  pthread_cond_t dest_cond;
 } dest_t;
 
 typedef struct {
@@ -77,8 +78,13 @@ typedef struct {
   osal_mq_t queue;
 } shared_t;
 
-// combine two hash values (as in a HMAV,
-// just not cryptographically secure. */
+typedef struct {
+  uint32_t thread_id;
+  shared_t *pshared;
+} thread_data_t;
+
+// combine two hash values (as in a HMAC,
+// just not cryptographically secure). */
 
 size_t gethash(uint32_t const n) { return std::hash<uint32_t>{}(n); }
 
@@ -89,12 +95,16 @@ size_t combine_hash(size_t const oldhash, uint32_t const payload) {
 
 void *run_producer(void *p_params) {
 
-  shared_t *pshared = ((shared_t *)p_params);
+  shared_t *pshared = ((thread_data_t *)p_params)->pshared;
+  uint32_t const thread_id = ((thread_data_t *)p_params)->thread_id;
 
   osal_retval_t orv;
   int rv;
 
   message_t msg;
+  if (verbose) {
+    printf("started: producer # %u\n", thread_id);
+  }
 
   for (ulong i = 0; i < NUM_MESSAGES_PER_PRODUCER; i++) {
 
@@ -103,7 +113,10 @@ void *run_producer(void *p_params) {
     source_t *source = &pshared->source[msg.dest_id];
 
     // the lock is needed here for two things:
-    // 1. to protect the per-thread counter
+    //
+    // 1. to protect the per-endpoint counter, so that we can check
+    // ordering later
+    //
     // 2. to protect the ordering of messages in respect to that endpoint
     rv = pthread_mutex_lock(&source->source_mutex);
     EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_lock()[dest] failed";
@@ -112,9 +125,18 @@ void *run_producer(void *p_params) {
     msg.payload = 0xFFFFFFFF & gethash(source->counter);
     source->hash = combine_hash(source->hash, msg.payload);
 
+    if (verbose) {
+      printf("sending from producer thread_id %u to endpoint %u\n", thread_id,
+             msg.dest_id);
+    }
     osal_uint32_t const prio = 0;
     orv = osal_mq_send(&pshared->queue, (char *)&msg, sizeof(msg), prio);
     EXPECT_EQ(orv, OSAL_OK) << "osal_mq_send() failed";
+
+    if (verbose) {
+      printf("sending from producer thread_id %u to endpoint %u .. OK\n",
+             thread_id, msg.dest_id);
+    }
 
     // return dest lock
     rv = pthread_mutex_unlock(&source->source_mutex);
@@ -124,27 +146,47 @@ void *run_producer(void *p_params) {
     wait_nanoseconds(rand() % MAX_WAIT_TIME_NS);
   }
 
+  if (verbose) {
+    printf("exiting: producer # %u\n", thread_id);
+  }
   return nullptr;
 }
 
 void *run_consumer(void *p_params) {
 
-  shared_t *pshared = ((shared_t *)p_params);
+  shared_t *pshared = ((thread_data_t *)p_params)->pshared;
+  uint32_t const thread_id = ((thread_data_t *)p_params)->thread_id;
 
   osal_retval_t orv;
   int rv;
 
   message_t msg;
 
+  if (verbose) {
+    printf("started: consumer # %u\n", thread_id);
+  }
+
   for (ulong i = 0; i < NUM_MESSAGES_PER_CONSUMER; i++) {
 
+    if (verbose) {
+      printf("consumer thread_id %u : locking\n", thread_id);
+    }
     rv = pthread_mutex_lock(&pshared->receive_lock);
     EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_lock() [mq] failed";
-    osal_uint32_t rprio;
+    if (verbose) {
+      printf("wait/receive from consumer thread_id %u\n", thread_id);
+    }
+    osal_uint32_t rprio = 0;
     orv = osal_mq_receive(&pshared->queue, (char *)&msg, sizeof(msg), &rprio);
     EXPECT_EQ(orv, OSAL_OK) << "osal_mq_receive() failed";
 
     dest_t *dest = &pshared->dest[msg.dest_id];
+
+    if (verbose) {
+      printf("received from consumer thread_id %u for endpoint %u\n", thread_id,
+             msg.dest_id);
+    }
+
     rv = pthread_mutex_lock(&dest->dest_mutex);
     EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_lock()[dest] failed";
 
@@ -160,26 +202,30 @@ void *run_consumer(void *p_params) {
     EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_unlock()[mq] failed";
   }
 
+  if (verbose) {
+    printf("exiting: consumer # %u\n", thread_id);
+  }
   return nullptr;
 }
 
 TEST(MessageQueue, MultiSendMultiReceive) {
 
-  bool verbose = (getenv("VERBOSE") != nullptr);
   int rv;
   osal_retval_t orv;
 
   shared_t shared;
 
   pthread_t producers[N_PRODUCERS];
+  thread_data_t prod_data[N_PRODUCERS];
   pthread_t consumers[M_CONSUMERS];
+  thread_data_t cons_data[M_CONSUMERS];
 
   // initialize sources
   for (uint i = 0; i < K_ENDPOINTS; i++) {
     shared.source[i].counter = 0;
     shared.source[i].hash = 0;
     rv = pthread_mutex_init(&shared.source[i].source_mutex, nullptr);
-    ASSERT_EQ(rv, 0) << "pthread_mutex_init() failed";
+    ASSERT_EQ(rv, 0) << "pthread_mutex_init()[source] failed";
   }
 
   // initialize destinations
@@ -187,24 +233,25 @@ TEST(MessageQueue, MultiSendMultiReceive) {
     shared.dest[i].counter = 0;
     shared.dest[i].hash = 0;
     rv = pthread_mutex_init(&shared.dest[i].dest_mutex, nullptr);
-    ASSERT_EQ(rv, 0) << "pthread_mutex_init() failed";
+    ASSERT_EQ(rv, 0) << "pthread_mutex_init()[dest] failed";
   }
+
+  rv = pthread_mutex_init(&shared.receive_lock, nullptr);
+  ASSERT_EQ(rv, 0) << "pthread_mutex_init()[rlock] failed";
 
   // initialize message queue
   osal_mq_attr_t attr = {};
   attr.oflags = OSAL_MQ_ATTR__OFLAG__RDWR | OSAL_MQ_ATTR__OFLAG__CREAT;
-  // attr.oflags = OSAL_MQ_ATTR__OFLAG__RDWR;
-  attr.max_messages = 10;
+  attr.max_messages = 10; /* system default, won't work with larger
+                           * number without adjustment */
   ASSERT_GE(attr.max_messages, 0u);
   attr.max_message_size = sizeof(message_t);
   ASSERT_GE(attr.max_message_size, 0u);
   attr.mode = S_IRUSR | S_IWUSR;
-  // attr.mode = 0666;
-  // unlink message queue if it exists
-  // the return value is intentionally not checked.
+  // unlink message queue if it exists.
+  // Note: the return value is intentionally not checked.
   mq_unlink("/test1");
-  errno = 0;
-  //
+
   orv = osal_mq_open(&shared.queue, "/test1", &attr);
   if (orv != 0) {
     perror("failed to open mq:");
@@ -212,23 +259,37 @@ TEST(MessageQueue, MultiSendMultiReceive) {
   ASSERT_EQ(orv, OSAL_OK) << "osal_mq_open() failed";
 
   // initialize consumers
+  if (verbose) {
+    printf("starting consumers\n");
+  }
   for (uint i = 0; i < M_CONSUMERS; i++) {
+    cons_data[i].pshared = &shared;
+    cons_data[i].thread_id = i;
     rv = pthread_create(/*thread*/ &(consumers[i]),
                         /*pthread_attr*/ nullptr,
                         /* start_routine */ run_consumer,
-                        /* arg */ (void *)&shared);
+                        /* arg */ (void *)(&cons_data[i]));
     ASSERT_EQ(rv, 0) << "pthread_create()[consumers] failed";
   }
 
   // initialize producers
+  if (verbose) {
+    printf("starting producers\n");
+  }
   for (uint i = 0; i < N_PRODUCERS; i++) {
+    prod_data[i].pshared = &shared;
+    prod_data[i].thread_id = i;
+
     rv = pthread_create(/*thread*/ &(producers[i]),
                         /*pthread_attr*/ nullptr,
                         /* start_routine */ run_producer,
-                        /* arg */ (void *)&shared);
+                        /* arg */ (void *)(&prod_data[i]));
     ASSERT_EQ(rv, 0) << "pthread_create()[producers] failed";
   }
 
+  if (verbose) {
+    printf("joining producers\n");
+  }
   // the following waits for all producers to finish first
   // join producers
   for (uint i = 0; i < N_PRODUCERS; i++) {
@@ -238,6 +299,9 @@ TEST(MessageQueue, MultiSendMultiReceive) {
   }
 
   // join consumers
+  if (verbose) {
+    printf("joining consumers\n");
+  }
   for (uint i = 0; i < M_CONSUMERS; i++) {
     rv = pthread_join(/*thread*/ consumers[i],
                       /*retval*/ nullptr);
@@ -247,6 +311,9 @@ TEST(MessageQueue, MultiSendMultiReceive) {
   // destroy message queue
   orv = osal_mq_close(&shared.queue);
   ASSERT_EQ(orv, OSAL_OK) << "osal_mq_close() failed";
+
+  rv = pthread_mutex_destroy(&shared.receive_lock);
+  ASSERT_EQ(rv, 0) << "pthread_mutex_destroy()[rlock] failed";
 
   // destroy destinations mutexes
   for (uint i = 0; i < K_ENDPOINTS; i++) {
@@ -282,6 +349,9 @@ TEST(MessageQueue, MultiSendMultiReceive) {
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
+  if (getenv("VERBOSE")) {
+    test_messagequeue::verbose = 1;
+  }
 
   return RUN_ALL_TESTS();
 }
