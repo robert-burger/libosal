@@ -8,7 +8,7 @@
 
 namespace test_messagequeue {
 
-static int verbose = 0;
+int verbose = 0;
 
 using testutils::wait_nanoseconds;
 
@@ -44,6 +44,7 @@ using testutils::wait_nanoseconds;
 
 */
 
+namespace multiwriter_multireadr {
 const uint N_PRODUCERS = 30;
 const uint M_CONSUMERS = 20;
 const uint K_ENDPOINTS = 10;
@@ -344,6 +345,7 @@ TEST(MessageQueue, MultiSendMultiReceive) {
         << "hashes do not match";
   }
 }
+} // namespace multiwriter_multireadr
 
 } // namespace test_messagequeue
 

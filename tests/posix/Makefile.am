@@ -90,7 +90,7 @@ check_spinlock_LDFLAGS = -pthread -Wall -Werror
 
 check_spinlock_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
-check_messagequeue_SOURCES = test_messagequeue.cc
+check_messagequeue_SOURCES = test_messagequeue.cc test_messagequeue_timed.cc
 
 check_messagequeue_LDADD = libgtest.la ../../src/libosal.la
 
