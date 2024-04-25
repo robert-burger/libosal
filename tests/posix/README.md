@@ -38,3 +38,6 @@ To generate colorful HTML output using gcovr, run
 ````
 
 (or include the equivalent line in the conan build script).
+
+Then, open libosal/tests/posix/coverage/details.html
+in your browser.
