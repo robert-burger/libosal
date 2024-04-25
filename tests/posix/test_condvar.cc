@@ -281,7 +281,7 @@ TEST(Condvar, ParallelMasked) {
   }
 }
 } // namespace condvar_multithread
-#if 0	
+//#if 0
 /*
  This test is very similar to the multithread test,
  but with the difference that each thread
@@ -520,7 +520,7 @@ TEST(Condvar, ParallelSingleNotification) {
   }
 }
 } // namespace condvar_single
-#endif
+//#endif
 
 namespace condvar_timedwait {
 const int LOOPCOUNT2 = 50000;
