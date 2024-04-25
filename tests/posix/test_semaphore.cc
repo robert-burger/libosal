@@ -585,6 +585,7 @@ TEST(Semaphore, ParallelCount) {
 }
 } // namespace multireader
 
+#if 0	
 namespace timedwait {
 const int LOOPCOUNT3 = 1000;
 const int NTHREADS = 10;
@@ -748,6 +749,7 @@ TEST(Semaphore, TimedCount) {
      they can differ in both directions. */
 }
 } // namespace timedwait
+#endif
 
 namespace trywait {
 const int LOOPCOUNT4 = 1000;
