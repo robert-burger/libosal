@@ -27,3 +27,14 @@ server, since they can fail randomly depending on system load.
 Set VERBOSE=1 to get verbose progress reports. These might be
 useful if some tests time out or hang due to errors.
 
+
+## Coverage Analysis
+
+Coverage analysis is generated during the test.
+To generate colorful HTML output using gcovr, run
+
+````bash
+./run-gcovr.sh
+````
+
+(or include the equivalent line in the conan build script).
