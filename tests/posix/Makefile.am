@@ -7,6 +7,28 @@ AM_LDFLAGS = -no-undefined
 
 if BUILD_POSIX
 
+cov-reset:
+	rm -fr coverage
+	@find . -name "*.gcda" -o -name "*.gcno" -exec rm {} \;
+
+cov-report:
+	@mkdir -p coverage
+	@gcov *.cc *.gcno
+	@echo result coverage reports are in *.cc.gcov
+	@echo run run-gcovr.sh for additional graphical display of coverage in HTML
+
+cov:
+	@make cov-report
+
+clean-local:
+	@make cov-reset 
+
+check:
+	@make cov
+
+
+AM_CXXFLAGS = --coverage -O0 -I$(top_srcdir)/src
+
 # build the gtest library with the same flags as we are using
 check_LTLIBRARIES = libgtest.la
 libgtest_la_SOURCES = ../../googletest/googletest/src/gtest-all.cc
@@ -103,6 +125,7 @@ check_messagequeue_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletes
 TESTS = check_spinlock check_condvar check_binarysema \
 	check_sema check_timer check_mutex check_tasks \
 	check_messagequeue
+
 
 
 endif
