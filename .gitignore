@@ -44,5 +44,6 @@ check_sema
 check_timer
 check_spinlock
 check_tasks
+*.gcno
 
 
