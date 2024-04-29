@@ -9,4 +9,6 @@ check_mutex
 check_binarysema
 check_condvar
 check_messagequeue
+check_sharedmemory
+hash-sum-pid*.asc
 /coverage

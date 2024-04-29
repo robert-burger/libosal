@@ -150,7 +150,7 @@ libgtest_la_LDFLAGS = -pthread
 
 check_PROGRAMS = check_condvar check_binarysema check_sema check_timer \
 		 check_mutex check_spinlock check_tasks \
-		 check_messagequeue
+		 check_messagequeue check_sharedmemory
 
 check_timer_SOURCES = test_timer.cc
 
@@ -235,12 +235,23 @@ check_messagequeue_LDFLAGS = -pthread -Wall -Werror
 
 check_messagequeue_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
+
+
+# check of shared memory
+
+check_sharedmemory_SOURCES = test_sharedmemory.cc
+check_sharedmemory_LDADD = libgtest.la libosal.la
+
+check_sharedmemory_LDFLAGS = -pthread -Wall -Werror
+
+check_sharedmemory_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+
 # you can quickly run individual tests, for example using
 # "make check TESTS=check_mutex"
 
 TESTS = check_spinlock check_condvar check_binarysema \
 	check_sema check_timer check_mutex check_tasks \
-	check_messagequeue
+	check_messagequeue check_sharedmemory
 
 
 
