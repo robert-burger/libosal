@@ -589,7 +589,7 @@ void *test_condvar_wait(void *arg) {
 
   while (true) {
     // note: if events are missed, this test will hang here
-    osal_mutex_lock(&p_shared_objects->mutex);
+    orv = osal_mutex_lock(&p_shared_objects->mutex);
     EXPECT_EQ(orv, OSAL_OK) << "error in receiver: osal_mutex_lock()";
 
     while (!((p_shared_objects->active_mask >> thread_id) & 1ul) &&
