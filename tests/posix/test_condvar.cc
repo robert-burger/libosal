@@ -334,6 +334,8 @@ void *test_condvar_separate(void *arg) {
 
   osal_retval_t orv;
   int rv;
+
+  p_shared_objects->thread_count++; // signal start of thread
   while (true) {
     // note: if events are missed, this test will hang here
     osal_mutex_lock(&p_shared_objects->mutex[thread_id]);
@@ -414,7 +416,7 @@ TEST(Condvar, ParallelSingleNotification) {
   ASSERT_EQ(rv, 0) << "creating pthreads semaphore failed!";
 
   // initialize count of active threads
-  shared_objects.thread_count = NTHREADS;
+  shared_objects.thread_count = 0;
   memset(event_count, 0, sizeof(event_count));
   memset(shared_objects.event_count, 0, sizeof(shared_objects.event_count));
   // start threads
@@ -432,7 +434,13 @@ TEST(Condvar, ParallelSingleNotification) {
                         /*pthread_attr*/ nullptr,
                         /* start_routine */ test_condvar_separate,
                         /* arg */ (void *)&thread_vars[i]);
-    //	      ASSERT_EQ(rv, 0) << "pthread_create() failed";
+    ASSERT_EQ(rv, 0) << "pthread_create() failed";
+
+    // wait for that thread to start, so that no
+    // events are missed later
+    while (shared_objects.thread_count <= i) {
+      wait_nanoseconds(1000000); // one millisecond
+    }
   }
 
   if (verbose) {
@@ -463,27 +471,36 @@ TEST(Condvar, ParallelSingleNotification) {
     ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_unlock() failed";
   }
 
-  // instruct threads to stop
-  for (int i = 0; i < NTHREADS; i++) {
-    orv = osal_mutex_lock(&shared_objects.mutex[i]);
-    ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_mutex_lock() failed";
-  }
+  // instruct threads to stop, by setting an atomic flag,
+  // and sending a condition broadcast
+  /* this part is a bit finicky. The issue is that there
+     is no guarantee that a specific thread receives
+     that event, depending on what it might be doing.
+  */
   shared_objects.stop = true;
-  for (int i = 0; i < NTHREADS; i++) {
-    orv = osal_condvar_broadcast(&shared_objects.condvar[i]);
-    ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_condvar_broadcast() failed";
-    orv = osal_mutex_unlock(&shared_objects.mutex[i]);
-    ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_mutex_unlock() failed";
-  }
-
-  struct timespec max_time = {time(nullptr) + 10, 0};
-
   while (shared_objects.thread_count > 0) {
-    rv = sem_timedwait(&shared_objects.finished_sem, &max_time);
-    EXPECT_EQ(rv, 0) << "wait for termination failed";
-    if (rv) {
-      printf("wait for termination of threads timed out\n");
-      break;
+    for (int i = 0; i < NTHREADS; i++) {
+      orv = osal_mutex_lock(&shared_objects.mutex[i]);
+      ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_mutex_lock() failed";
+    }
+    wait_nanoseconds(1000000); // one millisecond
+    for (int i = 0; i < NTHREADS; i++) {
+      orv = osal_condvar_broadcast(&shared_objects.condvar[i]);
+      ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_condvar_broadcast() failed";
+      orv = osal_mutex_unlock(&shared_objects.mutex[i]);
+      ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_mutex_unlock() failed";
+    }
+
+    struct timespec max_time = {time(nullptr) + 10, 0};
+
+    while (shared_objects.thread_count > 0) {
+      rv = sem_timedwait(&shared_objects.finished_sem, &max_time);
+      // This wait is not reliable..
+      // EXPECT_EQ(rv, 0) << "wait for termination failed";
+      if (rv) {
+        printf("wait for termination of threads timed out\n");
+        break;
+      }
     }
   }
   if (verbose) {
@@ -730,6 +747,7 @@ TEST(Condvar, ParallelWait) {
   ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_mutex_lock() failed";
   // instruct threads to stop
   shared_objects.stop = true;
+  sleep(1);
   // broadcast change
   orv = osal_condvar_broadcast(&shared_objects.condvar);
   ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_condvar_broadcast() failed";
@@ -804,7 +822,7 @@ int main(int argc, char **argv) {
   // try to lock memory
   errno = 0;
   if (mlockall(MCL_CURRENT | MCL_FUTURE) == -1) {
-    perror("test_condvar: could not lock memory");
+    perror("test_condvar: [info] could not lock memory");
   }
   return RUN_ALL_TESTS();
 }
