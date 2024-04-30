@@ -595,6 +595,7 @@ typedef struct {
   int thread_num;
   osal_semaphore_t *p_sema;
   std::atomic<bool> *pstop_flag;
+  std::atomic<int> *running;
   std::atomic<unsigned long> count;
   std::atomic<unsigned long> timeout_count;
 } thread_param_count_t;
@@ -647,6 +648,7 @@ void *test_semaphore_timedwait(void *p_params) {
     }
   }
 
+  (*params->running)--;
   return nullptr;
 }
 
@@ -662,6 +664,7 @@ TEST(Semaphore, TimedCount) {
   osal_retval_t orv;
   osal_semaphore_t sema;
   std::atomic<bool> stop_flag(false);
+  std::atomic<int> running(0);
 
   orv = osal_semaphore_init(&sema, nullptr, 0);
   ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
@@ -671,11 +674,13 @@ TEST(Semaphore, TimedCount) {
     params[i].thread_num = i;
     params[i].p_sema = &sema;
     params[i].pstop_flag = &stop_flag;
+    params[i].running = &running;
     rv = pthread_create(/*thread*/ &(thread_ids[i]),
                         /*pthread_attr*/ nullptr,
                         /* start_routine */ test_semaphore_timedwait,
                         /* arg */ (void *)&params[i]);
     ASSERT_EQ(rv, 0) << "pthread_create() failed";
+    running++;
   }
   printf("parallel sender: start OK\n");
 
@@ -723,10 +728,18 @@ TEST(Semaphore, TimedCount) {
   }
 
   // now, instruct threads to stop
-  stop_flag = true;
-  for (int i = 0; i < NTHREADS; i++) {
-    orv = osal_semaphore_post(&sema);
-    ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+  while (running > 0) {
+    stop_flag = true;
+    for (int i = 0; i < NTHREADS; i++) {
+      orv = osal_semaphore_post(&sema);
+      ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_post() failed";
+    }
+    if (running > 0) {
+      int remaining = running;
+      printf("parallel sender: waiting for threads to finish (%i remainung)\n",
+             remaining);
+      sleep(1);
+    }
   }
   printf("parallel sender: joining\n");
 
