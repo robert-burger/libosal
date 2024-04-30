@@ -312,28 +312,27 @@ typedef struct {
 
   std::atomic<bool> stop;
 
-  // piping for clean termination
-  sem_t finished_sem;            // is signaled when a thread terminates
+  // indicator for actual termination
   std::atomic<int> thread_count; // count of active threads
 
 } shared_t;
 
 typedef struct {
   int thread_id;
+  std::atomic<bool> has_stopped;
   shared_t *p_shared;
 
-} threadvar_t;
+} threadvar_separate_t;
 
 void *test_condvar_separate(void *arg) {
   assert(arg != nullptr);
   // keep in mind that shared_objects is necessarily shared here,
   // differently from some other test code.
-  threadvar_t thread_var = *((threadvar_t *)arg);
-  const int thread_id = thread_var.thread_id;
-  shared_t *p_shared_objects = thread_var.p_shared;
+  threadvar_separate_t *thread_var = ((threadvar_separate_t *)arg);
+  const int thread_id = thread_var->thread_id;
+  shared_t *p_shared_objects = thread_var->p_shared;
 
   osal_retval_t orv;
-  int rv;
 
   p_shared_objects->thread_count++; // signal start of thread
   while (true) {
@@ -379,8 +378,7 @@ void *test_condvar_separate(void *arg) {
   }
 
   p_shared_objects->thread_count -= 1;
-  rv = sem_post(&p_shared_objects->finished_sem);
-  EXPECT_EQ(rv, 0) << "error when sending finished sem signal";
+  thread_var->has_stopped = true;
 
   return nullptr;
 }
@@ -395,7 +393,7 @@ TEST(Condvar, ParallelSingleNotification) {
   shared_t shared_objects; /* shared data protected by
                               condvar and mutex */
 
-  threadvar_t thread_vars[NTHREADS];
+  threadvar_separate_t thread_vars[NTHREADS];
 
   shared_objects.thread_count = 0;
 
@@ -410,10 +408,9 @@ TEST(Condvar, ParallelSingleNotification) {
   pthread_t thread_ids[NTHREADS];
   unsigned long event_count[NTHREADS];
 
-  shared_objects.active_mask = 0;
+  ulong wait_count = 0;
 
-  rv = sem_init(&shared_objects.finished_sem, 0, 0);
-  ASSERT_EQ(rv, 0) << "creating pthreads semaphore failed!";
+  shared_objects.active_mask = 0;
 
   // initialize count of active threads
   shared_objects.thread_count = 0;
@@ -429,6 +426,7 @@ TEST(Condvar, ParallelSingleNotification) {
 
     thread_vars[i].p_shared = &shared_objects;
     thread_vars[i].thread_id = i;
+    thread_vars[i].has_stopped = false;
 
     rv = pthread_create(/*thread*/ &(thread_ids[i]),
                         /*pthread_attr*/ nullptr,
@@ -440,6 +438,8 @@ TEST(Condvar, ParallelSingleNotification) {
     // events are missed later
     while (shared_objects.thread_count <= i) {
       wait_nanoseconds(1000000); // one millisecond
+      wait_count++;
+      ASSERT_LE(wait_count, 5000ul) << "wait for thread start failed";
     }
   }
 
@@ -473,34 +473,24 @@ TEST(Condvar, ParallelSingleNotification) {
 
   // instruct threads to stop, by setting an atomic flag,
   // and sending a condition broadcast
-  /* this part is a bit finicky. The issue is that there
-     is no guarantee that a specific thread receives
-     that event, depending on what it might be doing.
-  */
   shared_objects.stop = true;
   while (shared_objects.thread_count > 0) {
     for (int i = 0; i < NTHREADS; i++) {
-      orv = osal_mutex_lock(&shared_objects.mutex[i]);
-      ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_mutex_lock() failed";
-    }
-    wait_nanoseconds(1000000); // one millisecond
-    for (int i = 0; i < NTHREADS; i++) {
-      orv = osal_condvar_broadcast(&shared_objects.condvar[i]);
-      ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_condvar_broadcast() failed";
-      orv = osal_mutex_unlock(&shared_objects.mutex[i]);
-      ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_mutex_unlock() failed";
-    }
+      if (!thread_vars[i].has_stopped) {
+        orv = osal_mutex_lock(&shared_objects.mutex[i]);
+        ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_mutex_lock() failed";
 
-    struct timespec max_time = {time(nullptr) + 10, 0};
-
-    while (shared_objects.thread_count > 0) {
-      rv = sem_timedwait(&shared_objects.finished_sem, &max_time);
-      // This wait is not reliable..
-      // EXPECT_EQ(rv, 0) << "wait for termination failed";
-      if (rv) {
-        printf("wait for termination of threads timed out\n");
-        break;
+        orv = osal_condvar_signal(&shared_objects.condvar[i]);
+        ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_condvar_broadcast() failed";
+        orv = osal_mutex_unlock(&shared_objects.mutex[i]);
+        ASSERT_EQ(orv, OSAL_OK) << "stopping: osal_mutex_unlock() failed";
       }
+    }
+
+    if (shared_objects.thread_count > 0) {
+      wait_nanoseconds(1000000); // one millisecond
+      wait_count++;
+      ASSERT_LE(wait_count, 10000ul) << "stopping: wait for termination failed";
     }
   }
   if (verbose) {
@@ -511,9 +501,6 @@ TEST(Condvar, ParallelSingleNotification) {
                       /*retval*/ nullptr);
     EXPECT_EQ(rv, 0) << "pthread_join() failed";
   }
-
-  rv = sem_destroy(&shared_objects.finished_sem);
-  EXPECT_EQ(rv, 0) << "could not destroy mutex";
 
   for (int i = 0; i < NTHREADS; i++) {
     orv = osal_condvar_destroy(&shared_objects.condvar[i]);
