@@ -55,9 +55,7 @@ osal_retval_t checksum_memory() {
   //     return ((osal_retval_t)errno);
   //   }
   //
-  osal_shm_attr_t attr =
-      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_MAP_ATTR__PROT_READ |
-       OSAL_SHM_MAP_ATTR__PROT_WRITE);
+  osal_shm_attr_t attr = (OSAL_SHM_ATTR__FLAG__RDWR);
 
   orv = osal_shm_open(&shm, SHM_NAME, &attr, sizeof(shared_t));
   if (orv) {
@@ -153,7 +151,7 @@ TEST(Sharedmemory, RandomWrites) {
 
   osal_shm_attr_t attr =
       (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
-       OSAL_SHM_MAP_ATTR__PROT_READ | OSAL_SHM_MAP_ATTR__PROT_WRITE);
+       (S_IRWXU << OSAL_SHM_ATTR__MODE__SHIFT));
 
   orv = osal_shm_open(&shm, SHM_NAME, &attr, sizeof(shared_t));
   if (orv) {
