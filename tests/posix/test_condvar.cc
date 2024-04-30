@@ -564,13 +564,13 @@ typedef struct {
   int thread_id;
   shared_wait_t *p_shared;
 
-} threadvar_t;
+} threadvar_wait_t;
 
 void *test_condvar_wait(void *arg) {
   assert(arg != nullptr);
   // keep in mind that shared_objects is necessarily shared here,
   // differently from some other test code.
-  threadvar_t thread_var = *((threadvar_t *)arg);
+  threadvar_wait_t thread_var = *((threadvar_wait_t *)arg);
   const int thread_id = thread_var.thread_id;
   shared_wait_t *p_shared_objects = thread_var.p_shared;
 
@@ -654,7 +654,7 @@ TEST(Condvar, ParallelWait) {
   shared_wait_t shared_objects; /* shared data protected by
                               condvar and mutex */
 
-  threadvar_t thread_vars[NTHREADS];
+  threadvar_wait_t thread_vars[NTHREADS];
 
   static_assert(NTHREADS <= CHAR_BIT * sizeof(shared_objects.active_mask));
   shared_objects.active_mask = 0;
