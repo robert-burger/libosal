@@ -955,7 +955,7 @@ void *test_semaphore_timedwait(void *p_params) {
     deadline_osal.nsec = deadline_posix.tv_nsec + TIMEOUT_PERIOD_NSEC;
     // normalize input
     while (deadline_osal.nsec > 1000000000) {
-      deadline_osal.nsec -= 10000000000;
+      deadline_osal.nsec -= 1000000000;
       deadline_osal.sec += 1;
     }
     // note: if stop events are missed, this test will hang here
