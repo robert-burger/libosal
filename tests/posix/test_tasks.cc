@@ -63,6 +63,7 @@ void *test_random(void *p_params) {
     EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_unlock() failed";
   }
 
+  osal_task_delete();
   return nullptr;
 }
 
