@@ -251,6 +251,122 @@ TEST(TasksMultithreading, TaskCancel) {
 
 } // namespace test_cancel
 
+namespace test_getattrs {
+
+typedef struct {
+  osal_condvar_t condvar;
+  osal_mutex_t mutex;
+  uint32_t iterations;
+} thread_attrs_param_t;
+
+void *test_attrs(void *p_thread_params) {
+  thread_attrs_param_t *p_params = (thread_attrs_param_t *)p_thread_params;
+
+  osal_retval_t orv;
+
+  while (p_params->iterations < 1) {
+    orv = osal_mutex_lock(&p_params->mutex);
+    EXPECT_EQ(orv, OSAL_OK) << "error in receiver: osal_mutex_lock()";
+
+    orv = osal_condvar_wait(&p_params->condvar, &p_params->mutex);
+    EXPECT_EQ(orv, OSAL_OK) << "error in receiver: osal_condvar_wait()";
+
+    p_params->iterations++;
+
+    orv = osal_mutex_unlock(&p_params->mutex);
+    EXPECT_EQ(orv, OSAL_OK) << "error in receiver: osal_mutex_unlock()";
+  }
+  return nullptr;
+}
+
+TEST(TasksMultithreading, TaskAttributes) {
+
+  osal_task_t thread_id;
+  thread_attrs_param_t thread_params;
+
+  osal_retval_t orv;
+
+  bool verbose = (getenv("VERBOSE") != nullptr);
+
+  orv = osal_condvar_init(&thread_params.condvar, nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_condvar_init() failed";
+
+  orv = osal_mutex_init(&thread_params.mutex, nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() failed";
+
+  if (verbose) {
+    printf("starting thread\n");
+  }
+  thread_params.iterations = 0;
+  orv = osal_task_create(/*thread*/ &thread_id,
+                         /*osal_task_attr*/ nullptr,
+                         /* start_routine */ test_attrs,
+                         /* arg */ (void *)&(thread_params));
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_create() failed";
+
+  sleep(1);
+
+  osal_task_t hdl;
+
+  orv = osal_task_get_hdl(&hdl);
+  EXPECT_EQ(orv, OSAL_ERR_NOT_IMPLEMENTED) << "error in osal_task_get_hdl";
+
+  osal_task_sched_affinity_t affinity;
+  orv = osal_task_get_affinity(&thread_id, &affinity);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_get_affinity() failed";
+
+  orv = osal_task_set_affinity(&thread_id, affinity);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_set_affinity() failed";
+
+  osal_task_sched_policy_t policy;
+  orv = osal_task_get_policy(&thread_id, &policy);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_get_policy() failed";
+
+  orv = osal_task_set_policy(&thread_id, policy);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_set_policy() failed";
+
+  osal_task_sched_priority_t prio;
+  orv = osal_task_get_priority(&thread_id, &prio);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_get_priority() failed";
+
+  orv = osal_task_set_priority(&thread_id, prio);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_set_priority() failed";
+
+  osal_task_attr_t attr;
+  orv = osal_task_get_task_attr(&thread_id, &attr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_get_task_attr() failed";
+
+  orv = osal_task_set_task_attr(&thread_id, &attr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_set_task_attr() failed";
+
+  osal_task_state_t state;
+  orv = osal_task_get_state(&thread_id, &state);
+  ASSERT_EQ(orv, OSAL_ERR_NOT_IMPLEMENTED) << "osal_task_get_state() failed";
+
+  orv = osal_condvar_signal(&thread_params.condvar);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_condvar_signal() failed";
+
+  if (verbose) {
+    printf("joining thread\n");
+  }
+  orv = osal_task_join(/*thread*/ &thread_id,
+                       /*retval*/ nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_join() failed";
+
+  orv = osal_condvar_destroy(&thread_params.condvar);
+  EXPECT_EQ(orv, OSAL_OK) << "osal_condvar_destroy() failed";
+
+  orv = osal_mutex_unlock(&thread_params.mutex);
+  EXPECT_EQ(orv, OSAL_OK) << "error in parent: osal_mutex_unlock()";
+
+  orv = osal_mutex_destroy(&thread_params.mutex);
+  // ASSERT_EQ(orv, 0) << "osal_mutex_destroy() failed";
+
+  EXPECT_EQ(thread_params.iterations, 1u) << "task cancel test failed";
+}
+
+} // namespace test_getattrs
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
 
