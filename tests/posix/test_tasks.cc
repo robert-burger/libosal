@@ -365,6 +365,65 @@ TEST(TasksMultithreading, TaskAttributes) {
   EXPECT_EQ(thread_params.iterations, 1u) << "task cancel test failed";
 }
 
+TEST(TasksMultithreading, SuspendResume) {
+
+  osal_task_t thread_id;
+  thread_attrs_param_t thread_params;
+
+  osal_retval_t orv;
+
+  bool try_suspend = (getenv("SUSPEND") != nullptr);
+  bool verbose = (getenv("VERBOSE") != nullptr);
+
+  orv = osal_condvar_init(&thread_params.condvar, nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_condvar_init() failed";
+
+  orv = osal_mutex_init(&thread_params.mutex, nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() failed";
+
+  if (verbose) {
+    printf("starting thread\n");
+  }
+  thread_params.iterations = 0;
+  orv = osal_task_create(/*thread*/ &thread_id,
+                         /*osal_task_attr*/ nullptr,
+                         /* start_routine */ test_attrs,
+                         /* arg */ (void *)&(thread_params));
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_create() failed";
+
+  sleep(1);
+
+  orv = osal_condvar_signal(&thread_params.condvar);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_condvar_signal() failed";
+
+  // suspend and resumt child task
+  if (try_suspend) {
+    orv = osal_task_suspend(&thread_id);
+    ASSERT_EQ(orv, OSAL_OK) << "osal_task_suspend() failed";
+    sleep(1);
+    orv = osal_task_resume(&thread_id);
+    ASSERT_EQ(orv, OSAL_OK) << "osal_task_resume() failed";
+  }
+
+  if (verbose) {
+    printf("joining thread\n");
+  }
+  orv = osal_task_join(/*thread*/ &thread_id,
+                       /*retval*/ nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_join() failed";
+
+  orv = osal_condvar_destroy(&thread_params.condvar);
+  EXPECT_EQ(orv, OSAL_OK) << "osal_condvar_destroy() failed";
+
+  orv = osal_mutex_unlock(&thread_params.mutex);
+  EXPECT_EQ(orv, OSAL_OK) << "error in parent: osal_mutex_unlock()";
+
+  orv = osal_mutex_destroy(&thread_params.mutex);
+  // ASSERT_EQ(orv, 0) << "osal_mutex_destroy() failed";
+
+  EXPECT_EQ(thread_params.iterations, 1u) << "task cancel test failed";
+}
+
 } // namespace test_getattrs
 
 int main(int argc, char **argv) {
