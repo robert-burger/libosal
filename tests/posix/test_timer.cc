@@ -458,6 +458,17 @@ TEST(TimerSleepUntil, SaneMultiThreaded) {
   }
 }
 
+TEST(Timer, BusyWait) {
+  const osal_uint64_t now = osal_timer_gettime_nsec();
+  const osal_uint64_t delta = 500000000;
+  const osal_uint64_t test_time_nsec = now + delta;
+  osal_retval_t orv = osal_busy_wait_until_nsec(test_time_nsec);
+  const osal_uint64_t stop = osal_timer_gettime_nsec();
+
+  EXPECT_EQ(orv, OSAL_OK) << "osal_busy_wait failed";
+  EXPECT_GE(stop, now + delta) << "osal_busy_wait incorrect delta";
+}
+
 } // namespace test_timer
 
 int main(int argc, char **argv) {
