@@ -172,8 +172,84 @@ TEST(TasksMultithreading, RandomizedPlusWait) {
   EXPECT_EQ(counter, N_THREADS * LOOPCOUNT)
       << "multi-threaded counter test failed";
 }
-
 } // namespace test_tasks
+
+namespace test_cancel {
+
+typedef struct {
+  osal_condvar_t condvar;
+  osal_mutex_t mutex;
+  uint32_t iterations;
+} thread_cancel_param_t;
+
+void *test_cancel(void *p_thread_params) {
+  thread_cancel_param_t *p_params = (thread_cancel_param_t *)p_thread_params;
+
+  osal_retval_t orv;
+
+  while (true) {
+    orv = osal_mutex_lock(&p_params->mutex);
+    EXPECT_EQ(orv, OSAL_OK) << "error in receiver: osal_mutex_lock()";
+
+    orv = osal_condvar_wait(&p_params->condvar, &p_params->mutex);
+    EXPECT_EQ(orv, OSAL_OK) << "error in receiver: osal_condvar_wait()";
+
+    p_params->iterations++;
+
+    orv = osal_mutex_unlock(&p_params->mutex);
+    EXPECT_EQ(orv, OSAL_OK) << "error in receiver: osal_mutex_unlock()";
+  }
+  return nullptr;
+}
+
+TEST(TasksMultithreading, TaskCancel) {
+
+  osal_task_t thread_id;
+  thread_cancel_param_t thread_params;
+
+  osal_retval_t orv;
+
+  bool verbose = (getenv("VERBOSE") != nullptr);
+
+  orv = osal_condvar_init(&thread_params.condvar, nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_condvar_init() failed";
+
+  orv = osal_mutex_init(&thread_params.mutex, nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() failed";
+
+  if (verbose) {
+    printf("starting thread\n");
+  }
+  thread_params.iterations = 0;
+  orv = osal_task_create(/*thread*/ &thread_id,
+                         /*osal_task_attr*/ nullptr,
+                         /* start_routine */ test_cancel,
+                         /* arg */ (void *)&(thread_params));
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_create() failed";
+
+  // cancel task
+  orv = osal_task_destroy(&thread_id);
+
+  if (verbose) {
+    printf("joining thread\n");
+  }
+  orv = osal_task_join(/*thread*/ &thread_id,
+                       /*retval*/ nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_join() failed";
+
+  orv = osal_condvar_destroy(&thread_params.condvar);
+  EXPECT_EQ(orv, OSAL_OK) << "osal_condvar_destroy() failed";
+
+  orv = osal_mutex_unlock(&thread_params.mutex);
+  EXPECT_EQ(orv, OSAL_OK) << "error in parent: osal_mutex_unlock()";
+
+  orv = osal_mutex_destroy(&thread_params.mutex);
+  // ASSERT_EQ(orv, 0) << "osal_mutex_destroy() failed";
+
+  EXPECT_EQ(thread_params.iterations, 0u) << "task cancel test failed";
+}
+
+} // namespace test_cancel
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
