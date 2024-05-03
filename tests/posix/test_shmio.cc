@@ -2,11 +2,14 @@
 
 #include "libosal/io.h"
 #include "libosal/osal.h"
+#include <unistd.h>
 
 namespace test_shmio {
 
 TEST(IO, shmio) {
   const char TEST_MESSAGE[] = "abcd\n";
+
+  unlink("/dev/shm/shm_io");
   osal_retval_t orv = osal_io_shm_setup("shm_io", 1024, 512);
   ASSERT_EQ(orv, 0) << " setting up shm io failed";
 
