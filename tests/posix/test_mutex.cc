@@ -199,6 +199,33 @@ TEST(MutexMultithreading, RandomizedPlusWait) {
       << "multi-threaded counter test failed";
 }
 
+TEST(MutexSane, TryWait) {
+  osal_mutex_t my_mutex;
+  osal_retval_t orv;
+
+  orv = osal_mutex_init(&my_mutex, nullptr);
+  EXPECT_EQ(orv, OSAL_OK) << "osal_mutex_init() failed";
+
+  orv = osal_mutex_lock(&my_mutex);
+  EXPECT_EQ(orv, OSAL_OK) << "osal_mutex_lock() failed";
+
+  orv = osal_mutex_trylock(&my_mutex);
+  EXPECT_EQ(orv, OSAL_ERR_BUSY) << "osal_mutex_trylock() has wrong result!";
+
+  orv = osal_mutex_unlock(&my_mutex);
+  EXPECT_EQ(orv, OSAL_OK) << "osal_mutex_unlock() failed";
+
+  orv = osal_mutex_trylock(&my_mutex);
+  EXPECT_EQ(orv, OSAL_OK)
+      << "osal_mutex_trylock() failed in spite of free lock";
+
+  orv = osal_mutex_unlock(&my_mutex);
+  EXPECT_EQ(orv, OSAL_OK) << "osal_mutex_unlock() failed";
+
+  orv = osal_mutex_destroy(&my_mutex);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_destroy() failed";
+}
+
 } // namespace test_mutex
 
 int main(int argc, char **argv) {
