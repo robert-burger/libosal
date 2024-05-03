@@ -151,7 +151,7 @@ libgtest_la_LDFLAGS = -pthread
 check_PROGRAMS = check_condvar check_binarysema check_sema check_timer \
 		 check_mutex check_spinlock check_tasks \
 		 check_messagequeue check_sharedmemory check_io \
-		 check_shmio
+		 check_shmio check_trace
 
 check_timer_SOURCES = test_timer.cc
 
@@ -267,13 +267,23 @@ check_shmio_LDFLAGS = -pthread -Wall -Werror
 check_shmio_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
 
 
+# check of tracing routines
+
+check_trace_SOURCES = test_trace.cc
+check_trace_LDADD = libgtest.la libosal.la
+
+check_trace_LDFLAGS = -pthread -Wall -Werror
+
+check_trace_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include -I$(top_srcdir)/googletest/googletest -I$(top_srcdir)/include -pthread
+
+
 # you can quickly run individual tests, for example using
 # "make check TESTS=check_mutex"
 
 TESTS = check_spinlock check_condvar check_binarysema \
 	check_sema check_timer check_mutex check_tasks \
 	check_messagequeue check_sharedmemory check_io \
-	check_shmio 
+	check_shmio check_trace
 
 
 

@@ -10,5 +10,6 @@ check_binarysema
 check_condvar
 check_messagequeue
 check_sharedmemory
+check_trace
 hash-sum-pid*.asc
 /coverage
