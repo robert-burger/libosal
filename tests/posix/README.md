@@ -31,9 +31,19 @@ useful if some tests time out or hang due to errors.
 ## Coverage Analysis
 
 Coverage analysis is generated during the test.
+
+This analysis requires extra cflags when compiling,
+use, from the project root folder:
+
+````bash
+make clean
+make CFLAGS="--coverage -O0"
+````
+
 To generate colorful HTML output using gcovr, run
 
 ````bash
+cd tests/posix
 ./run-gcovr.sh
 ````
 

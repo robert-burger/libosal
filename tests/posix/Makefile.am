@@ -5,95 +5,6 @@
 ACLOCAL_AMFLAGS = -I m4
 AM_LDFLAGS = -no-undefined
 
-#############################################################################
-##
-## This section below partially replicates the make script for the
-## library and builds a copy of libosal.la with extra flags for
-## testing and coverage analysis.
-##
-## This duplication is not yet satisfying, but seems for a start
-## necessary for setting the right flags for coverage analysis, and
-## could also help with debugging.
-##
-#############################################################################
-
-includedir = $(prefix)/include/libosal
-includeposixdir = $(prefix)/include/libosal/posix
-
-lib_LTLIBRARIES = libosal.la
-
-include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
-				  $(top_srcdir)/include/libosal/config.h \
-				  $(top_srcdir)/include/libosal/types.h \
-				  $(top_srcdir)/include/libosal/mutex.h \
-				  $(top_srcdir)/include/libosal/task.h \
-				  $(top_srcdir)/include/libosal/timer.h \
-				  $(top_srcdir)/include/libosal/semaphore.h \
-				  $(top_srcdir)/include/libosal/spinlock.h \
-				  $(top_srcdir)/include/libosal/binary_semaphore.h \
-				  $(top_srcdir)/include/libosal/condvar.h \
-				  $(top_srcdir)/include/libosal/queue.h \
-				  $(top_srcdir)/include/libosal/trace.h \
-				  $(top_srcdir)/include/libosal/shm.h \
-				  $(top_srcdir)/include/libosal/io.h
-
-if HAVE_MQUEUE_H
-include_HEADERS += $(top_srcdir)/include/libosal/mq.h
-endif
-
-includeposix_HEADERS = 
-
-libosal_la_SOURCES	= $(top_srcdir)/src/io.c  \
-			$(top_srcdir)/src/osal.c  \
-			$(top_srcdir)/src/trace.c \
-			$(top_srcdir)/src/timer.c 
-
-ADD_LIBS = @MATH_LIBS@
-ADD_CFLAGS = 
-
-if BUILD_POSIX
-includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/binary_semaphore.h \
-						   $(top_srcdir)/include/libosal/posix/condvar.h \
-						   $(top_srcdir)/include/libosal/posix/mutex.h \
-						   $(top_srcdir)/include/libosal/posix/semaphore.h \
-						   $(top_srcdir)/include/libosal/posix/task.h \
-						   $(top_srcdir)/include/libosal/posix/timer.h \
-						   $(top_srcdir)/include/libosal/posix/shm.h \
-						   $(top_srcdir)/include/libosal/posix/spinlock.h 
-
-libosal_la_SOURCES += $(top_srcdir)/src/posix/binary_semaphore.c
-libosal_la_SOURCES += $(top_srcdir)/src/posix/mutex.c
-libosal_la_SOURCES += $(top_srcdir)/src/posix/condvar.c
-libosal_la_SOURCES += $(top_srcdir)/src/posix/task.c
-libosal_la_SOURCES += $(top_srcdir)/src/posix/timer.c
-libosal_la_SOURCES += $(top_srcdir)/src/posix/semaphore.c
-libosal_la_SOURCES += $(top_srcdir)/src/posix/spinlock.c
-libosal_la_SOURCES += $(top_srcdir)/src/posix/io.c
-
-if HAVE_MQUEUE_H
-includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/mq.h
-libosal_la_SOURCES += $(top_srcdir)/src/posix/mq.c
-endif
-
-if HAVE_SYS_MMAN_H
-libosal_la_SOURCES += $(top_srcdir)/src/posix/shm.c
-endif
-
-ADD_LIBS += @PTHREAD_LIBS@ @RT_LIBS@
-ADD_CFLAGS += -Wno-unused-const-variable --coverage -O0
-endif
-
-
-libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror $(ADD_CFLAGS) -I$(top_srcdir)/include
-libosal_la_LDFLAGS	= -Wall -Werror $(AM_LDFLAGS) $(ADD_LIBS)
-libosal_la_LIBS     = -lm $(ADD_LIBS)
-
-
-
-##################################################################################
-## end of build script for libosal.la
-##################################################################################
-
 
 if BUILD_POSIX
 
@@ -155,7 +66,7 @@ check_PROGRAMS = check_condvar check_binarysema check_sema check_timer \
 
 check_timer_SOURCES = test_timer.cc
 
-check_timer_LDADD = libgtest.la libosal.la
+check_timer_LDADD = libgtest.la ../../src/libosal.la
 
 check_timer_LDFLAGS = -pthread -Wall -Werror
 
@@ -166,7 +77,7 @@ check_timer_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/inclu
 
 check_mutex_SOURCES = test_mutex.cc
 
-check_mutex_LDADD = libgtest.la libosal.la
+check_mutex_LDADD = libgtest.la ../../src/libosal.la
 
 check_mutex_LDFLAGS = -pthread -Wall -Werror
 
@@ -177,7 +88,7 @@ check_mutex_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/inclu
 
 check_tasks_SOURCES = test_tasks.cc
 
-check_tasks_LDADD = libgtest.la libosal.la
+check_tasks_LDADD = libgtest.la ../../src/libosal.la
 
 check_tasks_LDFLAGS = -pthread -Wall -Werror
 
@@ -188,7 +99,7 @@ check_tasks_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/inclu
 
 check_sema_SOURCES = test_semaphore.cc
 
-check_sema_LDADD = libgtest.la libosal.la
+check_sema_LDADD = libgtest.la ../../src/libosal.la
 
 check_sema_LDFLAGS = -pthread -Wall -Werror
 
@@ -198,7 +109,7 @@ check_sema_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/includ
 
 check_binarysema_SOURCES = test_binary_semaphore.cc
 
-check_binarysema_LDADD = libgtest.la libosal.la
+check_binarysema_LDADD = libgtest.la ../../src/libosal.la
 
 check_binarysema_LDFLAGS = -pthread -Wall -Werror
 
@@ -209,7 +120,7 @@ check_binarysema_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/
 
 check_condvar_SOURCES = test_condvar.cc
 
-check_condvar_LDADD = libgtest.la libosal.la
+check_condvar_LDADD = libgtest.la ../../src/libosal.la
 
 check_condvar_LDFLAGS = -pthread -Wall -Werror
 
@@ -219,7 +130,7 @@ check_condvar_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/inc
 
 check_spinlock_SOURCES = test_spinlock.cc
 
-check_spinlock_LDADD = libgtest.la libosal.la
+check_spinlock_LDADD = libgtest.la ../../src/libosal.la
 
 check_spinlock_LDFLAGS = -pthread -Wall -Werror
 
@@ -230,7 +141,7 @@ check_spinlock_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/in
 
 check_messagequeue_SOURCES = test_messagequeue.cc test_messagequeue_timed.cc
 
-check_messagequeue_LDADD = libgtest.la libosal.la
+check_messagequeue_LDADD = libgtest.la ../../src/libosal.la
 
 check_messagequeue_LDFLAGS = -pthread -Wall -Werror
 
@@ -241,7 +152,7 @@ check_messagequeue_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletes
 # check of shared memory
 
 check_sharedmemory_SOURCES = test_sharedmemory.cc
-check_sharedmemory_LDADD = libgtest.la libosal.la
+check_sharedmemory_LDADD = libgtest.la ../../src/libosal.la
 
 check_sharedmemory_LDFLAGS = -pthread -Wall -Werror
 
@@ -251,7 +162,7 @@ check_sharedmemory_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletes
 # check of IO routines
 
 check_io_SOURCES = test_io.cc
-check_io_LDADD = libgtest.la libosal.la
+check_io_LDADD = libgtest.la ../../src/libosal.la
 
 check_io_LDFLAGS = -pthread -Wall -Werror
 
@@ -260,7 +171,7 @@ check_io_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/include 
 # check of shm io routines
 
 check_shmio_SOURCES = test_shmio.cc
-check_shmio_LDADD = libgtest.la libosal.la
+check_shmio_LDADD = libgtest.la ../../src/libosal.la
 
 check_shmio_LDFLAGS = -pthread -Wall -Werror
 
@@ -270,7 +181,7 @@ check_shmio_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/inclu
 # check of tracing routines
 
 check_trace_SOURCES = test_trace.cc
-check_trace_LDADD = libgtest.la libosal.la
+check_trace_LDADD = libgtest.la ../../src/libosal.la
 
 check_trace_LDFLAGS = -pthread -Wall -Werror
 

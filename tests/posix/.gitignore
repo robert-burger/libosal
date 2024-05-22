@@ -11,5 +11,6 @@ check_condvar
 check_messagequeue
 check_sharedmemory
 check_trace
+check_io
 hash-sum-pid*.asc
 /coverage
