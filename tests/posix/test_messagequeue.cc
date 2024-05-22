@@ -819,6 +819,32 @@ TEST(MessageQueue, OverlyLongName) {
       << "osal_mq_open() failed to check overly long mq name";
 }
 
+TEST(MessageQueue, ExceedingSizeLimit) {
+
+  osal_retval_t orv;
+  osal_mq_t fqueue;
+
+  // initialize message queue
+  osal_mq_attr_t attr = {};
+  attr.oflags = OSAL_MQ_ATTR__OFLAG__WRONLY | OSAL_MQ_ATTR__OFLAG__CREAT;
+  attr.max_messages = 10000; /* system default, won't work with larger
+                              * number without adjustment */
+  ASSERT_GE(attr.max_messages, 0u);
+  attr.max_message_size = 4096;
+  ASSERT_GE(attr.max_message_size, 0u);
+  attr.mode = S_IRUSR | S_IWUSR;
+  // unlink message queue if it exists.
+  // Note: the return value is intentionally not checked.
+  mq_unlink("/test7");
+
+  orv = osal_mq_open(&fqueue, "/test7", &attr);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
+  ASSERT_EQ(orv, OSAL_ERR_INVALID_PARAM)
+      << "osal_mq_open() failed to check memory limit";
+}
+
 } // namespace test_invalidparams
 
 } // namespace test_messagequeue
