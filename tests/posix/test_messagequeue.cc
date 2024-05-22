@@ -785,6 +785,40 @@ TEST(MessageQueue, NonExistingName) {
       << "osal_mq_open() failed to check non-existant mq name";
 }
 
+TEST(MessageQueue, OverlyLongName) {
+
+  osal_retval_t orv;
+  osal_mq_t fqueue;
+
+  // initialize message queue
+  osal_mq_attr_t attr = {};
+  attr.oflags = OSAL_MQ_ATTR__OFLAG__WRONLY | OSAL_MQ_ATTR__OFLAG__CREAT;
+  attr.max_messages = 10; /* system default, won't work with larger
+                           * number without adjustment */
+  ASSERT_GE(attr.max_messages, 0u);
+  attr.max_message_size = 256;
+  ASSERT_GE(attr.max_message_size, 0u);
+  attr.mode = S_IRUSR | S_IWUSR;
+  // unlink message queue if it exists.
+  // Note: the return value is intentionally not checked.
+  const size_t name_len = 10000;
+  char queue_name[name_len];
+  queue_name[0] = '/';
+  for (size_t i = 1; i < (name_len - 1); i++) {
+    queue_name[i] = 'a';
+  }
+  queue_name[name_len - 1] = '\0';
+
+  mq_unlink(queue_name);
+  errno = 0;
+  orv = osal_mq_open(&fqueue, queue_name, &attr);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
+  ASSERT_EQ(orv, OSAL_ERR_INVALID_PARAM)
+      << "osal_mq_open() failed to check overly long mq name";
+}
+
 } // namespace test_invalidparams
 
 } // namespace test_messagequeue
