@@ -513,7 +513,7 @@ void *run_rconsumer(void *p_params) {
   return nullptr;
 }
 
-TEST(MessageQueue, MultiSendMultiReceive) {
+TEST(MessageQueue, ReadonlyWriteonly) {
 
   int rv;
   osal_retval_t orv;
@@ -555,9 +555,9 @@ TEST(MessageQueue, MultiSendMultiReceive) {
   attr_w.mode = S_IRUSR | S_IWUSR;
   // unlink message queue if it exists.
   // Note: the return value is intentionally not checked.
-  mq_unlink("/test1");
+  mq_unlink("/test2");
 
-  orv = osal_mq_open(&shared.wqueue, "/test1", &attr_w);
+  orv = osal_mq_open(&shared.wqueue, "/test2", &attr_w);
   if (orv != 0) {
     perror("failed to open mq:");
   }
@@ -572,7 +572,7 @@ TEST(MessageQueue, MultiSendMultiReceive) {
   ASSERT_GE(attr_r.max_message_size, 0u);
   attr_r.mode = S_IRUSR | S_IWUSR;
 
-  orv = osal_mq_open(&shared.rqueue, "/test1", &attr_r);
+  orv = osal_mq_open(&shared.rqueue, "/test2", &attr_r);
   if (orv != 0) {
     perror("failed to open mq:");
   }
@@ -668,6 +668,49 @@ TEST(MessageQueue, MultiSendMultiReceive) {
   }
 }
 } // namespace readonly_writeonly
+
+namespace test_invalidparams {
+TEST(MessageQueue, InvalidParams) {
+
+  int rv;
+  osal_retval_t orv;
+  osal_mq_t fqueue;
+
+  // initialize message queue
+  osal_mq_attr_t attr = {};
+  attr.oflags = OSAL_MQ_ATTR__OFLAG__WRONLY | OSAL_MQ_ATTR__OFLAG__CREAT;
+  attr.max_messages = 10; /* system default, won't work with larger
+                           * number without adjustment */
+  ASSERT_GE(attr.max_messages, 0u);
+  attr.max_message_size = 256;
+  ASSERT_GE(attr.max_message_size, 0u);
+  attr.mode = S_IRUSR | S_IWUSR;
+  // unlink message queue if it exists.
+  // Note: the return value is intentionally not checked.
+  mq_unlink("/test3");
+
+  orv = osal_mq_open(&fqueue, "/test3", &attr);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mq_open() failed";
+
+  // destroy message queues
+  orv = osal_mq_close(&fqueue);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mq_close() failed";
+
+  rv = chmod("/dev/mqueue/test3", S_IROTH);
+  ASSERT_EQ(rv, 0) << "chmod() failed";
+
+  attr.oflags = OSAL_MQ_ATTR__OFLAG__WRONLY;
+  orv = osal_mq_open(&fqueue, "/test3", &attr);
+  if (orv != OSAL_OK) {
+    perror("correctly failed to fail opening mq:");
+  }
+  ASSERT_EQ(orv, OSAL_ERR_PERMISSION_DENIED)
+      << "osal_mq_open() succeeded wrongly";
+}
+} // namespace test_invalidparams
 
 } // namespace test_messagequeue
 
