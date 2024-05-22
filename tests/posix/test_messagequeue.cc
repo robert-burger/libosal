@@ -44,7 +44,7 @@ using testutils::wait_nanoseconds;
 
 */
 
-namespace multiwriter_multireadr {
+namespace multiwriter_multireader {
 const uint N_PRODUCERS = 30;
 const uint M_CONSUMERS = 20;
 const uint K_ENDPOINTS = 10;
@@ -345,7 +345,329 @@ TEST(MessageQueue, MultiSendMultiReceive) {
         << "hashes do not match";
   }
 }
-} // namespace multiwriter_multireadr
+} // namespace multiwriter_multireader
+
+namespace readonly_writeonly {
+const uint N_PRODUCERS = 30;
+const uint M_CONSUMERS = 20;
+const uint K_ENDPOINTS = 10;
+
+const ulong NUM_MESSAGES = 1000 * N_PRODUCERS * M_CONSUMERS;
+const ulong NUM_MESSAGES_PER_PRODUCER = NUM_MESSAGES / N_PRODUCERS;
+const ulong NUM_MESSAGES_PER_CONSUMER = NUM_MESSAGES / M_CONSUMERS;
+const ulong MIN_WAIT_TIME_NS = 1000;
+const ulong MAX_WAIT_TIME_NS = 100000;
+
+typedef struct {
+  uint32_t counter;
+  size_t hash;
+  pthread_mutex_t source_mutex;
+} source_t;
+
+typedef struct {
+  uint32_t counter;
+  size_t hash;
+  pthread_mutex_t dest_mutex;
+} dest_t;
+
+typedef struct {
+  uint dest_id;
+  uint32_t payload;
+} message_t;
+
+typedef struct {
+  source_t source[K_ENDPOINTS];
+  dest_t dest[K_ENDPOINTS];
+  pthread_mutex_t receive_lock;
+  osal_mq_t wqueue;
+  osal_mq_t rqueue;
+} shared_t;
+
+typedef struct {
+  uint32_t thread_id;
+  shared_t *pshared;
+} thread_data_t;
+
+// combine two hash values (as in a HMAC,
+// just not cryptographically secure). */
+
+size_t gethash(uint32_t const n) { return std::hash<uint32_t>{}(n); }
+
+size_t combine_hash(size_t const oldhash, uint32_t const payload) {
+  size_t new_hash = std::hash<uint32_t>{}(payload);
+  return (oldhash << 4) ^ new_hash;
+}
+
+void *run_wproducer(void *p_params) {
+
+  shared_t *pshared = ((thread_data_t *)p_params)->pshared;
+  uint32_t const thread_id = ((thread_data_t *)p_params)->thread_id;
+
+  osal_retval_t orv;
+  int rv;
+
+  message_t msg;
+  if (verbose) {
+    printf("started: producer # %u\n", thread_id);
+  }
+
+  for (ulong i = 0; i < NUM_MESSAGES_PER_PRODUCER; i++) {
+
+    // draw a random message id
+    msg.dest_id = rand() % K_ENDPOINTS;
+    source_t *source = &pshared->source[msg.dest_id];
+
+    // the lock is needed here for two things:
+    //
+    // 1. to protect the per-endpoint counter, so that we can check
+    // ordering later
+    //
+    // 2. to protect the ordering of messages in respect to that endpoint
+    rv = pthread_mutex_lock(&source->source_mutex);
+    EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_lock()[dest] failed";
+
+    source->counter++;
+    msg.payload = 0xFFFFFFFF & gethash(source->counter);
+    source->hash = combine_hash(source->hash, msg.payload);
+
+    if (verbose) {
+      printf("sending from producer thread_id %u to endpoint %u\n", thread_id,
+             msg.dest_id);
+    }
+    osal_uint32_t const prio = 0;
+    orv = osal_mq_send(&pshared->wqueue, (char *)&msg, sizeof(msg), prio);
+    EXPECT_EQ(orv, OSAL_OK) << "osal_mq_send() failed";
+
+    if (verbose) {
+      printf("sending from producer thread_id %u to endpoint %u .. OK\n",
+             thread_id, msg.dest_id);
+    }
+
+    // return dest lock
+    rv = pthread_mutex_unlock(&source->source_mutex);
+    EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_unlock()[source] failed";
+
+    // wait a bit to retain some queue capacity
+    wait_nanoseconds(rand() % MAX_WAIT_TIME_NS);
+  }
+
+  if (verbose) {
+    printf("exiting: producer # %u\n", thread_id);
+  }
+  return nullptr;
+}
+
+void *run_rconsumer(void *p_params) {
+
+  shared_t *pshared = ((thread_data_t *)p_params)->pshared;
+  uint32_t const thread_id = ((thread_data_t *)p_params)->thread_id;
+
+  osal_retval_t orv;
+  int rv;
+
+  message_t msg;
+
+  if (verbose) {
+    printf("started: consumer # %u\n", thread_id);
+  }
+
+  for (ulong i = 0; i < NUM_MESSAGES_PER_CONSUMER; i++) {
+
+    if (verbose) {
+      printf("consumer thread_id %u : locking\n", thread_id);
+    }
+    rv = pthread_mutex_lock(&pshared->receive_lock);
+    EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_lock() [mq] failed";
+    if (verbose) {
+      printf("wait/receive from consumer thread_id %u\n", thread_id);
+    }
+    osal_uint32_t rprio = 0;
+    orv = osal_mq_receive(&pshared->rqueue, (char *)&msg, sizeof(msg), &rprio);
+    EXPECT_EQ(orv, OSAL_OK) << "osal_mq_receive() failed";
+
+    dest_t *dest = &pshared->dest[msg.dest_id];
+
+    if (verbose) {
+      printf("received from consumer thread_id %u for endpoint %u\n", thread_id,
+             msg.dest_id);
+    }
+
+    rv = pthread_mutex_lock(&dest->dest_mutex);
+    EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_lock()[dest] failed";
+
+    dest->counter++;
+    dest->hash = combine_hash(dest->hash, msg.payload);
+
+    // return dest lock
+    rv = pthread_mutex_unlock(&dest->dest_mutex);
+    EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_unlock()[dest] failed";
+
+    // return mq lock
+    rv = pthread_mutex_unlock(&pshared->receive_lock);
+    EXPECT_EQ(rv, OSAL_OK) << "pthread_mutex_unlock()[mq] failed";
+  }
+
+  if (verbose) {
+    printf("exiting: consumer # %u\n", thread_id);
+  }
+  return nullptr;
+}
+
+TEST(MessageQueue, MultiSendMultiReceive) {
+
+  int rv;
+  osal_retval_t orv;
+
+  shared_t shared;
+
+  pthread_t producers[N_PRODUCERS];
+  thread_data_t prod_data[N_PRODUCERS];
+  pthread_t consumers[M_CONSUMERS];
+  thread_data_t cons_data[M_CONSUMERS];
+
+  // initialize sources
+  for (uint i = 0; i < K_ENDPOINTS; i++) {
+    shared.source[i].counter = 0;
+    shared.source[i].hash = 0;
+    rv = pthread_mutex_init(&shared.source[i].source_mutex, nullptr);
+    ASSERT_EQ(rv, 0) << "pthread_mutex_init()[source] failed";
+  }
+
+  // initialize destinations
+  for (uint i = 0; i < K_ENDPOINTS; i++) {
+    shared.dest[i].counter = 0;
+    shared.dest[i].hash = 0;
+    rv = pthread_mutex_init(&shared.dest[i].dest_mutex, nullptr);
+    ASSERT_EQ(rv, 0) << "pthread_mutex_init()[dest] failed";
+  }
+
+  rv = pthread_mutex_init(&shared.receive_lock, nullptr);
+  ASSERT_EQ(rv, 0) << "pthread_mutex_init()[rlock] failed";
+
+  // initialize message queue
+  osal_mq_attr_t attr_w = {};
+  attr_w.oflags = OSAL_MQ_ATTR__OFLAG__WRONLY | OSAL_MQ_ATTR__OFLAG__CREAT;
+  attr_w.max_messages = 10; /* system default, won't work with larger
+                             * number without adjustment */
+  ASSERT_GE(attr_w.max_messages, 0u);
+  attr_w.max_message_size = sizeof(message_t);
+  ASSERT_GE(attr_w.max_message_size, 0u);
+  attr_w.mode = S_IRUSR | S_IWUSR;
+  // unlink message queue if it exists.
+  // Note: the return value is intentionally not checked.
+  mq_unlink("/test1");
+
+  orv = osal_mq_open(&shared.wqueue, "/test1", &attr_w);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mq_open() failed";
+
+  osal_mq_attr_t attr_r = {};
+  attr_r.oflags = OSAL_MQ_ATTR__OFLAG__RDONLY;
+  attr_r.max_messages = 10; /* system default, won't work with larger
+                             * number without adjustment */
+  ASSERT_GE(attr_r.max_messages, 0u);
+  attr_r.max_message_size = sizeof(message_t);
+  ASSERT_GE(attr_r.max_message_size, 0u);
+  attr_r.mode = S_IRUSR | S_IWUSR;
+
+  orv = osal_mq_open(&shared.rqueue, "/test1", &attr_r);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mq_open() failed";
+
+  // initialize consumers
+  if (verbose) {
+    printf("starting consumers\n");
+  }
+  for (uint i = 0; i < M_CONSUMERS; i++) {
+    cons_data[i].pshared = &shared;
+    cons_data[i].thread_id = i;
+    rv = pthread_create(/*thread*/ &(consumers[i]),
+                        /*pthread_attr*/ nullptr,
+                        /* start_routine */ run_rconsumer,
+                        /* arg */ (void *)(&cons_data[i]));
+    ASSERT_EQ(rv, 0) << "pthread_create()[consumers] failed";
+  }
+
+  // initialize producers
+  if (verbose) {
+    printf("starting producers\n");
+  }
+  for (uint i = 0; i < N_PRODUCERS; i++) {
+    prod_data[i].pshared = &shared;
+    prod_data[i].thread_id = i;
+
+    rv = pthread_create(/*thread*/ &(producers[i]),
+                        /*pthread_attr*/ nullptr,
+                        /* start_routine */ run_wproducer,
+                        /* arg */ (void *)(&prod_data[i]));
+    ASSERT_EQ(rv, 0) << "pthread_create()[producers] failed";
+  }
+
+  if (verbose) {
+    printf("joining producers\n");
+  }
+  // the following waits for all producers to finish first
+  // join producers
+  for (uint i = 0; i < N_PRODUCERS; i++) {
+    rv = pthread_join(/*thread*/ producers[i],
+                      /*retval*/ nullptr);
+    ASSERT_EQ(rv, 0) << "pthread_join()[producers] failed";
+  }
+
+  // join consumers
+  if (verbose) {
+    printf("joining consumers\n");
+  }
+  for (uint i = 0; i < M_CONSUMERS; i++) {
+    rv = pthread_join(/*thread*/ consumers[i],
+                      /*retval*/ nullptr);
+    ASSERT_EQ(rv, 0) << "pthread_join()[consumers] failed";
+  }
+
+  // destroy message queues
+  orv = osal_mq_close(&shared.rqueue);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mq_close() failed";
+
+  orv = osal_mq_close(&shared.wqueue);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mq_close() failed";
+
+  rv = pthread_mutex_destroy(&shared.receive_lock);
+  ASSERT_EQ(rv, 0) << "pthread_mutex_destroy()[rlock] failed";
+
+  // destroy destinations mutexes
+  for (uint i = 0; i < K_ENDPOINTS; i++) {
+    rv = pthread_mutex_destroy(&shared.dest[i].dest_mutex);
+    ASSERT_EQ(rv, 0) << "pthread_mutex_destroy[dest]() failed";
+  }
+
+  // destroy sources mutexes
+  for (uint i = 0; i < K_ENDPOINTS; i++) {
+    rv = pthread_mutex_destroy(&shared.source[i].source_mutex);
+    ASSERT_EQ(rv, 0) << "pthread_mutex_destroy[source]() failed";
+  }
+
+  // compare results for correctness
+
+  for (ulong i = 0; i < K_ENDPOINTS; i++) {
+    EXPECT_EQ(shared.source[i].counter, shared.dest[i].counter)
+        << "counters do not match";
+  }
+  if (verbose) {
+    for (ulong i = 0; i < K_ENDPOINTS; i++) {
+      printf("hashed values: source = 0x%zx - dest = 0x%zx\n",
+             shared.source[i].hash, shared.dest[i].hash);
+    }
+  }
+  for (ulong i = 0; i < K_ENDPOINTS; i++) {
+    EXPECT_EQ(shared.source[i].hash, shared.dest[i].hash)
+        << "hashes do not match";
+  }
+}
+} // namespace readonly_writeonly
 
 } // namespace test_messagequeue
 
