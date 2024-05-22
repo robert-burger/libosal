@@ -71,6 +71,9 @@ osal_retval_t osal_mq_open(osal_mq_t *mq, const osal_char_t *name,  const osal_m
         if (attr->oflags & OSAL_MQ_ATTR__OFLAG__CREAT) {
             oflags |= O_CREAT;
         }
+        if (attr->oflags & OSAL_MQ_ATTR__OFLAG__EXCL) {
+            oflags |= O_EXCL;
+        }
 
         mode = attr->mode;
 
