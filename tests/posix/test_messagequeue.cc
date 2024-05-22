@@ -759,6 +759,32 @@ TEST(MessageQueue, InvalidParamValues) {
       << "osal_mq_open() failed to check invalid message size";
 }
 
+TEST(MessageQueue, NonExistingName) {
+
+  osal_retval_t orv;
+  osal_mq_t fqueue;
+
+  // initialize message queue
+  osal_mq_attr_t attr = {};
+  attr.oflags = OSAL_MQ_ATTR__OFLAG__WRONLY;
+  attr.max_messages = 10; /* system default, won't work with larger
+                           * number without adjustment */
+  ASSERT_GE(attr.max_messages, 0u);
+  attr.max_message_size = 256;
+  ASSERT_GE(attr.max_message_size, 0u);
+  attr.mode = S_IRUSR | S_IWUSR;
+  // unlink message queue if it exists.
+  // Note: the return value is intentionally not checked.
+  mq_unlink("/test6");
+
+  orv = osal_mq_open(&fqueue, "/test6", &attr);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
+  ASSERT_EQ(orv, OSAL_ERR_NOT_FOUND)
+      << "osal_mq_open() failed to check non-existant mq name";
+}
+
 } // namespace test_invalidparams
 
 } // namespace test_messagequeue
