@@ -670,11 +670,12 @@ TEST(MessageQueue, ReadonlyWriteonly) {
 } // namespace readonly_writeonly
 
 namespace test_invalidparams {
-TEST(MessageQueue, InvalidParams) {
+TEST(MessageQueue, InvalidParamsAccess) {
 
   int rv;
   osal_retval_t orv;
   osal_mq_t fqueue;
+  osal_mq_t gqueue;
 
   // initialize message queue
   osal_mq_attr_t attr = {};
@@ -707,6 +708,27 @@ TEST(MessageQueue, InvalidParams) {
   if (orv != OSAL_OK) {
     perror("correctly failed to fail opening mq:");
   }
+  ASSERT_EQ(orv, OSAL_ERR_PERMISSION_DENIED)
+      << "osal_mq_open() succeeded wrongly";
+
+  rv = chmod("/dev/mqueue/test3", S_IRUSR | S_IWUSR);
+  ASSERT_EQ(rv, 0) << "chmod() failed";
+  attr.oflags = (OSAL_MQ_ATTR__OFLAG__RDWR | OSAL_MQ_ATTR__OFLAG__CREAT |
+                 OSAL_MQ_ATTR__OFLAG__EXCL);
+
+  mq_unlink("/test4");
+
+  orv = osal_mq_open(&fqueue, "/test4", &attr);
+  if (orv != OSAL_OK) {
+    perror("failed to open mq /test4:");
+  }
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mq_open() failed";
+
+  orv = osal_mq_open(&gqueue, "/test4", &attr);
+  if (orv == OSAL_OK) {
+    perror("failed to check O_EXCL when opening mq /test4:");
+  }
+
   ASSERT_EQ(orv, OSAL_ERR_PERMISSION_DENIED)
       << "osal_mq_open() succeeded wrongly";
 }
