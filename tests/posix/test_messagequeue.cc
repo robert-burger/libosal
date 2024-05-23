@@ -5,6 +5,7 @@
 #include "libosal/mq.h"
 #include "libosal/osal.h"
 #include "test_utils.h"
+#include <sys/resource.h>
 
 namespace test_messagequeue {
 
@@ -347,7 +348,214 @@ TEST(MessageQueue, MultiSendMultiReceive) {
 }
 } // namespace multiwriter_multireadr
 
-} // namespace test_messagequeue
+
+namespace test_maxresources {
+
+TEST(MessageQueue, TestResourceOversubscription) {
+
+  int rv;
+  osal_retval_t orv;
+  osal_mq_t mqueue;
+
+  // initialize message queue
+  osal_mq_attr_t attr = {};
+  attr.oflags = OSAL_MQ_ATTR__OFLAG__RDWR | OSAL_MQ_ATTR__OFLAG__CREAT;
+  attr.max_messages = 10; /* system default, won't work with larger
+                           * number without adjustment */
+  ASSERT_GE(attr.max_messages, 0u);
+  attr.max_message_size = 256;
+  ASSERT_GE(attr.max_message_size, 0u);
+  attr.mode = S_IRUSR | S_IWUSR;
+  // unlink message queue if it exists.
+  // Note: the return value is intentionally not checked.
+
+  struct rlimit lim;
+  struct rlimit old_lim;
+
+  /* test limit on message queue number */
+  mq_unlink("/test8");
+  getrlimit(RLIMIT_MSGQUEUE, &lim);
+  old_lim = lim;
+  lim.rlim_cur = 0;
+  rv = setrlimit(RLIMIT_MSGQUEUE, &lim);
+  ASSERT_EQ(rv, 0) << "setrlimit failed";
+
+  orv = osal_mq_open(&mqueue, "/test8", &attr);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
+  EXPECT_EQ(orv, OSAL_ERR_SYSTEM_LIMIT_REACHED) << "osal_mq_open() failed";
+
+  rv = setrlimit(RLIMIT_MSGQUEUE, &old_lim);
+  ASSERT_EQ(rv, 0) << "setrlimit failed";
+
+
+  /* test limit on  file number */
+  mq_unlink("/test8");
+  getrlimit(RLIMIT_NOFILE, &lim);
+  old_lim = lim;
+  lim.rlim_cur = 0;
+  rv = setrlimit(RLIMIT_NOFILE, &lim);
+  ASSERT_EQ(rv, 0) << "setrlimit failed";
+
+  orv = osal_mq_open(&mqueue, "/test8", &attr);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
+  EXPECT_EQ(orv, OSAL_ERR_SYSTEM_LIMIT_REACHED) << "osal_mq_open() failed";
+
+  rv = setrlimit(RLIMIT_NOFILE, &old_lim);
+  ASSERT_EQ(rv, 0) << "setrlimit failed";
+  
+  /* test limit on file size */
+  mq_unlink("/test8");
+  getrlimit(RLIMIT_FSIZE, &lim);
+  old_lim = lim;
+  lim.rlim_cur = 0;
+  rv = setrlimit(RLIMIT_FSIZE, &lim);
+  ASSERT_EQ(rv, 0) << "setrlimit failed";
+
+  osal_mq_attr_t attr2 = attr;
+  attr2.max_messages = 10000; /* system default, won't work with larger
+                           * number without adjustment */
+  attr2.max_message_size = 1024;
+  orv = osal_mq_open(&mqueue, "/test8", &attr2);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
+  EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_open() failed";
+
+  rv = setrlimit(RLIMIT_FSIZE, &old_lim);
+  ASSERT_EQ(rv, 0) << "setrlimit failed";
+  
+  
+  /* test limit on data size */
+  mq_unlink("/test8");
+  getrlimit(RLIMIT_DATA, &lim);
+  old_lim = lim;
+  lim.rlim_cur = 0;
+  rv = setrlimit(RLIMIT_DATA, &lim);
+  ASSERT_EQ(rv, 0) << "setrlimit failed";
+
+  osal_mq_attr_t attr3 = attr;
+  attr3.max_messages = 100; /* system default, won't work with larger
+                           * number without adjustment */
+  attr3.max_message_size = 4000;
+  orv = osal_mq_open(&mqueue, "/test8", &attr3);
+  if (orv != 0) {
+    perror("failed to open mq:");
+  }
+  EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_open() failed";
+
+  rv = setrlimit(RLIMIT_DATA, &old_lim);
+  ASSERT_EQ(rv, 0) << "setrlimit failed";
+
+  // try to mq_close invalid descriptor
+
+  memset(&mqueue, 255, sizeof(mqueue));
+  orv = osal_mq_close(&mqueue);
+  if (orv != 0) {
+    perror("failed to close mq:");
+  }
+  EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_close() failed";
+  
+
+  // trying to run against max number of queue limit
+  const int num_queues= 5000;
+  osal_mq_t queue_arr[num_queues];
+
+  int cutoff= -1;
+  for (int i=0; i < num_queues; i++){
+    orv = osal_mq_open(&queue_arr[i], "/test8", &attr);
+    if (orv != 0) {
+      perror("failed to open mq:");
+      break;
+    }
+    cutoff = i;
+  }
+  EXPECT_EQ(orv, OSAL_ERR_SYSTEM_LIMIT_REACHED) << "osal_mq_open() failed";
+  for (int i=0; i <= cutoff; i++){
+    orv = osal_mq_close(&queue_arr[i]);
+    ASSERT_EQ(orv, OSAL_OK) << "osal_mq_close() failed";
+  }
+
+  
+}
+  
+}
+
+  namespace test_send_errors {
+
+    TEST(MessageQueue, TestSendErrors) {
+
+      //int rv;
+      osal_retval_t orv;
+      osal_mq_t mqueue;
+      unsigned char buf[256];
+      
+      // initialize message queue
+      osal_mq_attr_t attr = {};
+      attr.oflags = OSAL_MQ_ATTR__OFLAG__RDWR | OSAL_MQ_ATTR__OFLAG__CREAT;
+      attr.max_messages = 1; /* system default, won't work with larger
+                           * number without adjustment */
+      ASSERT_GE(attr.max_messages, 0u);
+      attr.max_message_size = 16;
+      ASSERT_GE(attr.max_message_size, 0u);
+      attr.mode = S_IRUSR | S_IWUSR;
+      
+      /* test with a too large buffer */
+      
+      // unlink message queue if it exists.
+      // Note: the return value is intentionally not checked.
+      mq_unlink("/test9");
+      
+      orv = osal_mq_open(&mqueue, "/test9", &attr);
+      if (orv != 0) {
+	perror("failed to open mq:");
+      }
+      EXPECT_EQ(orv, OSAL_OK) << "osal_mq_open() failed";
+      
+      memset(&buf, 1, sizeof(buf));
+      orv = osal_mq_send(&mqueue, (const osal_char_t*)&buf, sizeof(buf), 1);
+      // we expect this to fail since the message buffer is larger
+      // than the configured queue message size
+      EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_send() failed";
+      
+      timespec now;
+      clock_gettime(CLOCK_REALTIME, &now);
+      osal_timer_t deadline;
+      deadline.sec = now.tv_sec + 1;
+      deadline.nsec = now.tv_nsec;
+      
+      
+      orv = osal_mq_timedsend(&mqueue, (const osal_char_t*)&buf, sizeof(buf), 1, &deadline);
+      // expect invalid because buffer is larger than configured in mq
+      EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_send() failed";
+
+      // check with invalid deadline
+      deadline.sec = -1;
+      orv = osal_mq_timedsend(&mqueue, (const osal_char_t*)&buf, 16, 1, &deadline);
+      EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_send() failed";
+
+
+      // test with invalid descriptor
+      osal_mq_t mqueue2;
+      memset(&mqueue2, 0, sizeof(mqueue2));
+      orv = osal_mq_send(&mqueue2, (const osal_char_t*)&buf, sizeof(buf), 1);
+      // we excpect to fail because the descriptor is invalid
+      EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_send() failed";
+      
+      // check timed send with invalid descriptor
+      orv = osal_mq_timedsend(&mqueue2, (const osal_char_t*)&buf, sizeof(buf), 1, &deadline);
+      EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_send() failed";
+  
+  
+    }
+  }
+
+  
+} // namespace test_send_errors
+
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
