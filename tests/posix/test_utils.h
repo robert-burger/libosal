@@ -11,6 +11,25 @@
 
 namespace testutils {
 
+inline  osal_timer_t set_deadline(int sec, long nsec)
+  /* takes a second and a nanosecond value,
+     and generates a deadline value that
+     many seconds / nanoseconds from now.
+  */
+  {
+    timespec now;
+      clock_gettime(CLOCK_REALTIME, &now);
+      osal_timer_t deadline;
+      deadline.sec = now.tv_sec + sec;
+      deadline.nsec = now.tv_nsec + nsec;
+      while (deadline.nsec > 1000000000){
+	deadline.nsec -= 1000000000;
+	deadline.sec += 1;
+      }
+      return deadline;
+  }
+  
+
 using std::vector;
 
 /* a bit ridiculous, but this is only
