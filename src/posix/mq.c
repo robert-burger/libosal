@@ -291,13 +291,13 @@ osal_retval_t osal_mq_timedreceive(osal_mq_t *mq, osal_char_t *msg, const osal_s
     assert(msg != NULL);
     assert(to != NULL);
 
-    osal_retval_t ret = OSAL_OK;
+    osal_retval_t ret = OSAL_ERR_INTERRUPTED;
 
     struct timespec ts;
     ts.tv_sec = to->sec;
     ts.tv_nsec = to->nsec;
 
-    while (ret != OSAL_ERR_TIMEOUT) {
+    while (ret == OSAL_ERR_INTERRUPTED) {
         int local_ret = mq_timedreceive(mq->mq_desc, msg, msg_len, prio, &ts);
         if (local_ret == -1) {
             switch (errno) {
