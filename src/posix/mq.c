@@ -261,6 +261,8 @@ osal_retval_t osal_mq_receive(osal_mq_t *mq, osal_char_t *msg, const osal_size_t
                 break;
             case EINVAL:    // The call would have blocked, and abs_timeout was invalid, either because tv_sec 
                             // was less than zero, or because tv_nsec was less than zero or greater than 1000 million.
+	      /* this branch is never reached since the call does not use
+		 a timeout parameter. */
                 ret = OSAL_ERR_INVALID_PARAM;
                 break;
             case EMSGSIZE:  // msg_len was greater than the mq_msgsize attribute of the message queue.

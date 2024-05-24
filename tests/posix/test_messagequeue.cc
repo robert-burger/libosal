@@ -549,6 +549,115 @@ TEST(MessageQueue, TestResourceOversubscription) {
   
     }
   }
+
+
+  namespace test_receive_errors {
+
+    TEST(MessageQueue, TestReceiveErrors) {
+
+      //int rv;
+      osal_retval_t orv;
+      osal_mq_t mqueue;
+      unsigned char buf[256];
+      
+      // initialize message queue
+      osal_mq_attr_t attr = {};
+      attr.oflags = OSAL_MQ_ATTR__OFLAG__RDWR | OSAL_MQ_ATTR__OFLAG__CREAT;
+      attr.max_messages = 10; /* system default, won't work with larger
+                           * number without adjustment */
+      ASSERT_GE(attr.max_messages, 0u);
+      attr.max_message_size = 16;
+      ASSERT_GE(attr.max_message_size, 0u);
+      attr.mode = S_IRUSR | S_IWUSR;
+      
+      /* test with a too large buffer */
+      
+      // unlink message queue if it exists.
+      // Note: the return value is intentionally not checked.
+      mq_unlink("/test9");
+      
+      orv = osal_mq_open(&mqueue, "/test9", &attr);
+      if (orv != 0) {
+	perror("failed to open mq:");
+      }
+      EXPECT_EQ(orv, OSAL_OK) << "osal_mq_open() failed";
+      
+      memset(&buf, 1, sizeof(buf));
+      osal_uint32_t prio = {};
+
+      printf("provoke timeout\n");
+      osal_timer_t deadline = set_deadline(1, 0);
+      
+      orv = osal_mq_timedreceive(&mqueue, (osal_char_t*)&buf, 16, &prio, &deadline);
+      // expect timeout, no message is present
+      EXPECT_EQ(orv, OSAL_ERR_TIMEOUT) << "osal_mq_send() failed";
+
+      
+      // send some message
+      printf("small buffer: prepare\n");
+      orv = osal_mq_send(&mqueue, (const osal_char_t*)&buf, 16, 1);
+      EXPECT_EQ(orv, OSAL_OK) << "osal_mq_send() failed";
+
+      
+      printf("small buffer: recv\n");
+      orv = osal_mq_receive(&mqueue, (osal_char_t*)&buf, 10, &prio);
+      // we expect this to fail since the message buffer is larger
+      // than the configured queue message size
+      EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_send() failed";
+            
+      // send some message
+      printf("small buffer, timed: prepare\n");
+      orv = osal_mq_send(&mqueue, (const osal_char_t*)&buf, 16, 1);
+      EXPECT_EQ(orv, OSAL_OK) << "osal_mq_send() failed";
+      
+      printf("small buffer, timed: recv\n");
+      osal_timer_t deadline1 = set_deadline(1, 0);
+      
+      orv = osal_mq_timedreceive(&mqueue, (osal_char_t*)&buf, 10, &prio, &deadline1);
+      // expect invalid because buffer is larger than configured in mq
+      EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_send() failed";
+
+      printf("invalid deadline: prepare\n");
+      // send some message
+      //orv = osal_mq_send(&mqueue, (const osal_char_t*)&buf, 16, 1);
+      //EXPECT_EQ(orv, OSAL_OK) << "osal_mq_send() failed";
+      
+      // check with invalid deadline
+      printf("invalid deadline: recv\n");
+      osal_timer_t deadlinei = set_deadline(1, 0);
+      deadlinei.sec = -1;
+      orv = osal_mq_timedreceive(&mqueue, (osal_char_t*)&buf, 16, &prio, &deadlinei);
+      EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_send() failed";
+
+
+      
+      // send some message
+      printf("invalid descriptor: prepare\n");
+      orv = osal_mq_send(&mqueue, (const osal_char_t*)&buf, 16, 1);
+      EXPECT_EQ(orv, OSAL_OK) << "osal_mq_send() failed";
+      
+      // test with invalid descriptor      
+      printf("invalid descriptor: recv\n");
+      osal_mq_t mqueue2;
+      memset(&mqueue2, 0, sizeof(mqueue2));
+      orv = osal_mq_receive(&mqueue2, (osal_char_t*)&buf, sizeof(buf), &prio);
+      // we excpect to fail because the descriptor is invalid
+      EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_send() failed";
+      
+      // check timed send with invalid descriptor
+      // send some message
+      printf("invalid descriptor, timed: prepare\n");
+      orv = osal_mq_send(&mqueue, (const osal_char_t*)&buf, 16, 1);
+      EXPECT_EQ(orv, OSAL_OK) << "osal_mq_send() failed";
+      
+      printf("invalid descriptor, timed: recv\n");
+      osal_timer_t deadline2 = set_deadline(1, 0);
+      orv = osal_mq_timedreceive(&mqueue2, (osal_char_t*)&buf, sizeof(buf), &prio, &deadline2);
+      EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_send() failed";
+  
+  
+    }
+  }
   
   
 } // namespace test_messagequeue
