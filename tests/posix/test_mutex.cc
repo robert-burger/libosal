@@ -125,7 +125,7 @@ TEST(MutexMultithreading, Parallel) {
     if (verbose) {
       printf("starting thread %lu\n", i);
     }
-    pthread_create(/*thread*/ &(thread_ids[i]),
+    rv = pthread_create(/*thread*/ &(thread_ids[i]),
                    /*pthread_attr*/ nullptr,
                    /* start_routine */ test_random,
                    /* arg */ (void *)&(thread_params[i]));
