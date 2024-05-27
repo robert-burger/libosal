@@ -80,7 +80,7 @@ extern "C" {
  *                      the defaults of the underlying mq will be used.
  *
  * \retval OSAL_OK                          On success.
- * \etval OSAL_ERR_PERMISSION_DENIED        Tried to open an existing queue without sufficient permission.
+ * \retval OSAL_ERR_PERMISSION_DENIED        Tried to open an existing queue without sufficient permission.
  *                                          Tried to create an already existing message queue.
  * \retval OSAL_ERR_INVALID_PARAM           Name is not in correct format or it is too long.
  * \retval OSAL_ERR_SYSTEM_LIMIT_REACHED    Limit of open files has been reached.
