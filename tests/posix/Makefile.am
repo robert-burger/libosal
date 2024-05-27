@@ -190,7 +190,7 @@ check_trace_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/inclu
 
 check_mqsignals_SOURCES = test_mqsignals.cc
 
-check_mqsignals_LDADD = libgtest.la libosal.la
+check_mqsignals_LDADD = libgtest.la ../../src/libosal.la
 
 check_mqsignals_LDFLAGS = -pthread -Wall -Werror
 
