@@ -37,17 +37,14 @@ TEST(Trace, SingleThreaded) {
   osal_uint64_t max_jit;
   osal_trace_analyze(tracep, &avg, &avg_jit, &max_jit);
 
-  osal_trace_free(tracep);
-
   printf("trace average times: %lu, jitter: %lu, max jitter: %lu\n", avg,
          avg_jit, max_jit);
 
-#pragma message "osal_trace_analyze_rel() does not work yet - omitted"
-#if 0  
   osal_trace_analyze_rel(tracep, &avg, &avg_jit, &max_jit);
   printf("trace average rel times: %lu, jitter: %lu, max jitter: %lu\n", avg,
          avg_jit, max_jit);
-#endif
+
+  osal_trace_free(tracep);
 }
 
 } // namespace test_trace
