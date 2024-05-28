@@ -150,9 +150,6 @@ osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, cons
         pthread_mutex_lock(&sem->posix_mtx);
         while (!sem->value) {
             int local_ret = pthread_cond_timedwait(&sem->posix_cond, &sem->posix_mtx, &ts);
-	    if (local_ret){
-		    local_ret = errno;
-	    }
             if (local_ret == ETIMEDOUT) {
                 ret = OSAL_ERR_TIMEOUT;
                 break;
