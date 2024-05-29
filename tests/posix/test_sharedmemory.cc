@@ -9,6 +9,7 @@
 #include "libosal/osal.h"
 #include "libosal/shm.h"
 #include "test_utils.h"
+#include <sys/resource.h>
 
 namespace test_sharedmemory {
 
@@ -444,6 +445,143 @@ TEST(Sharedmemory, RandomWriteRestrict) {
 }
 
 } // namespace test_sharedmemory_restrict
+
+namespace test_sharedmemory_errors {
+
+const char *SHM_NAME3 = "/shm_test3";
+const char *PATH_SHM_NAME3 = "/dev/shm/shm_test3";
+
+TEST(Sharedmemory, TestTruncateError) {
+
+  osal_retval_t orv;
+  osal_shm_t shm;
+
+  // provoke a OSAL_ERR_PERMISION_DENIED error
+  // remove any old shm file
+  int rv;
+  unlink(PATH_SHM_NAME3);
+  // create new file
+  FILE *fp = fopen(PATH_SHM_NAME3, "w");
+  ASSERT_NE(fp, nullptr);
+  char data[] = "abc";
+  rv = fwrite(data, sizeof(data), 1, fp);
+  ASSERT_GT(rv, 0);
+  rv = fclose(fp);
+  ASSERT_EQ(rv, 0);
+  // make it read-only
+  rv = chmod(PATH_SHM_NAME3, S_IRUSR);
+  ASSERT_EQ(rv, 0);
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__TRUNC |
+       (S_IRUSR << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm, SHM_NAME3, &attr, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, OSAL_ERR_PERMISSION_DENIED)
+      << "could not open shared memory in parent";
+
+  unlink(PATH_SHM_NAME3);
+}
+
+TEST(Sharedmemory, TestExistError) {
+
+  osal_retval_t orv;
+  osal_shm_t shm1;
+  osal_shm_t shm2;
+
+  // provoke a OSAL_ERR_PERMISION_DENIED error
+  // remove any old shm file
+  unlink(PATH_SHM_NAME3);
+
+  osal_shm_attr_t attr1 =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       (S_IRUSR << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm1, SHM_NAME3, &attr1, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, 0) << "could not open shared memory in parent";
+
+  osal_shm_close(&shm1);
+
+  osal_shm_attr_t attr2 =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       OSAL_SHM_ATTR__FLAG__EXCL | (S_IRUSR << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm2, SHM_NAME3, &attr2, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, OSAL_ERR_OPERATION_FAILED)
+      << "could not open shared memory in parent";
+
+  unlink(PATH_SHM_NAME3);
+}
+
+TEST(Sharedmemory, TestInvalidName) {
+
+  osal_retval_t orv;
+  osal_shm_t shm;
+
+  const char *SHM_NAME4 = "";
+
+  // provoke a OSAL_ERR_PERMISION_DENIED error
+  // remove any old shm file
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       (S_IRUSR << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm, SHM_NAME4, &attr, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, OSAL_ERR_INVALID_PARAM)
+      << "could not open shared memory in parent";
+}
+
+TEST(Sharedmemory, TestTooManyFiles) {
+
+  osal_retval_t orv;
+  int rv;
+  osal_shm_t shm;
+  struct rlimit lim;
+  struct rlimit old_lim;
+
+  const char *SHM_NAME5 = "shm_test5";
+  const char *PATH_SHM_NAME5 = "/dev/shm/shm_test5";
+
+  // provoke a OSAL_ERR_PERMISION_DENIED error
+  // remove any old shm file
+  unlink(PATH_SHM_NAME5);
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       (S_IRUSR << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  rv = getrlimit(RLIMIT_NOFILE, &lim);
+  ASSERT_EQ(rv, 0) << "could not get rlimit";
+  old_lim = lim;
+  lim.rlim_cur = 0;
+  rv = setrlimit(RLIMIT_NOFILE, &lim);
+  ASSERT_EQ(rv, 0) << "could not set rlimit";
+
+  orv = osal_shm_open(&shm, SHM_NAME5, &attr, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  rv = setrlimit(RLIMIT_NOFILE, &old_lim);
+  ASSERT_EQ(rv, 0) << "could not restore rlimit";
+
+  ASSERT_EQ(orv, OSAL_ERR_SYSTEM_LIMIT_REACHED)
+      << "could not open shared memory in parent";
+}
+
+} // namespace test_sharedmemory_errors
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
