@@ -9,6 +9,7 @@
 #include "libosal/osal.h"
 #include "libosal/shm.h"
 #include "test_utils.h"
+#include <sys/mman.h>
 #include <sys/resource.h>
 
 namespace test_sharedmemory {
@@ -544,6 +545,34 @@ TEST(Sharedmemory, TestInvalidName) {
       << "could not open shared memory in parent";
 }
 
+TEST(Sharedmemory, TestTooLongName) {
+
+  osal_retval_t orv;
+  osal_shm_t shm;
+  // use a name that is likely longer than PATH_MAX
+  const int NAME_LENGTH = 50000;
+
+  char shm_name6[NAME_LENGTH];
+  char initc = 'a';
+
+  memset(shm_name6, initc, NAME_LENGTH);
+  shm_name6[NAME_LENGTH - 1] = '\0';
+
+  // provoke a OSAL_ERR_PERMISION_DENIED error
+  // remove any old shm file
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       (S_IRUSR << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm, shm_name6, &attr, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, OSAL_ERR_INVALID_PARAM)
+      << "could not open shared memory in parent";
+}
+
 TEST(Sharedmemory, TestTooManyFiles) {
 
   osal_retval_t orv;
@@ -582,6 +611,271 @@ TEST(Sharedmemory, TestTooManyFiles) {
 }
 
 } // namespace test_sharedmemory_errors
+
+namespace test_mmap {
+
+TEST(Sharedmemory, TestProtExec) {
+
+  const char *SHM_NAME7 = "shm_test7";
+  const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
+
+  osal_retval_t orv;
+  osal_shm_t shm;
+  long *p_mem;
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       ((S_IRUSR | S_IWUSR) << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm, SHM_NAME7, &attr, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, 0) << "could not open shared memory in parent";
+
+  osal_shm_map_attr_t map_attr =
+      (OSAL_SHM_MAP_ATTR__PROT_READ | OSAL_SHM_MAP_ATTR__PROT_EXEC |
+       OSAL_SHM_MAP_ATTR__SHARED);
+  orv = osal_shm_map(&shm, &map_attr, (osal_void_t **)&p_mem);
+  if (orv != 0) {
+    perror("could not map shared memory in parent");
+  }
+  ASSERT_EQ(orv, 0) << "could not map shared memory";
+
+  orv = osal_shm_close(&shm);
+  EXPECT_EQ(orv, 0) << "could not close shared memory";
+
+  unlink(PATH_SHM_NAME7);
+}
+
+TEST(Sharedmemory, TestProtNone) {
+
+  const char *SHM_NAME7 = "shm_test7";
+  const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
+
+  osal_retval_t orv;
+  osal_shm_t shm;
+  long *p_mem;
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       ((S_IRUSR | S_IWUSR) << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm, SHM_NAME7, &attr, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, 0) << "could not open shared memory in parent";
+
+  osal_shm_map_attr_t map_attr =
+      (OSAL_SHM_MAP_ATTR__PROT_READ | OSAL_SHM_MAP_ATTR__PROT_NONE |
+       OSAL_SHM_MAP_ATTR__SHARED);
+  orv = osal_shm_map(&shm, &map_attr, (osal_void_t **)&p_mem);
+  if (orv != 0) {
+    perror("could not map shared memory in parent");
+  }
+  ASSERT_EQ(orv, 0) << "could not map shared memory";
+
+  orv = osal_shm_close(&shm);
+  EXPECT_EQ(orv, 0) << "could not close shared memory";
+
+  unlink(PATH_SHM_NAME7);
+}
+
+TEST(Sharedmemory, TestProtPrivate) {
+
+  const char *SHM_NAME7 = "shm_test7";
+  const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
+
+  osal_retval_t orv;
+  osal_shm_t shm;
+  long *p_mem;
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       ((S_IRUSR | S_IWUSR) << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm, SHM_NAME7, &attr, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, 0) << "could not open shared memory in parent";
+
+  osal_shm_map_attr_t map_attr =
+      (OSAL_SHM_MAP_ATTR__PROT_READ | OSAL_SHM_MAP_ATTR__PRIVATE |
+       OSAL_SHM_MAP_ATTR__SHARED);
+  orv = osal_shm_map(&shm, &map_attr, (osal_void_t **)&p_mem);
+  if (orv != 0) {
+    perror("could not map shared memory in parent");
+  }
+  ASSERT_EQ(orv, 0) << "could not map shared memory";
+
+  orv = osal_shm_close(&shm);
+  EXPECT_EQ(orv, 0) << "could not close shared memory";
+
+  unlink(PATH_SHM_NAME7);
+}
+
+TEST(Sharedmemory, TestMMAPWorks) {
+
+  const char *SHM_NAME7 = "shm_test7";
+  const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
+
+  osal_retval_t orv;
+  osal_shm_t shm;
+  long *p_mem;
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       ((S_IRUSR | S_IWUSR) << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm, SHM_NAME7, &attr, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, 0) << "could not open shared memory in parent";
+
+  osal_shm_map_attr_t map_attr =
+      (OSAL_SHM_MAP_ATTR__PROT_WRITE | OSAL_SHM_MAP_ATTR__SHARED);
+  orv = osal_shm_map(&shm, &map_attr, (osal_void_t **)&p_mem);
+  if (orv != 0) {
+    perror("could not map shared memory in parent");
+  }
+  ASSERT_EQ(orv, 0) << "could not map shared memory";
+
+  orv = osal_shm_close(&shm);
+  EXPECT_EQ(orv, 0) << "could not close shared memory";
+
+  unlink(PATH_SHM_NAME7);
+}
+
+TEST(Sharedmemory, TestPermDenied) {
+
+  const char *SHM_NAME7 = "shm_test7";
+  const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
+
+  osal_retval_t orv;
+  osal_shm_t shm;
+  long *p_mem;
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDONLY | OSAL_SHM_ATTR__FLAG__CREAT |
+       ((S_IRUSR | S_IWUSR) << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm, SHM_NAME7, &attr, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, 0) << "could not open shared memory in parent";
+
+  osal_shm_map_attr_t map_attr =
+      (OSAL_SHM_MAP_ATTR__PROT_WRITE | OSAL_SHM_MAP_ATTR__SHARED);
+  orv = osal_shm_map(&shm, &map_attr, (osal_void_t **)&p_mem);
+  if (orv != 0) {
+    perror("could not map shared memory in parent");
+  }
+  ASSERT_EQ(orv, OSAL_ERR_PERMISSION_DENIED) << "could not map shared memory";
+
+  orv = osal_shm_close(&shm);
+  EXPECT_EQ(orv, 0) << "could not close shared memory";
+
+  unlink(PATH_SHM_NAME7);
+}
+
+TEST(Sharedmemory, TestMmapSizeLimit) {
+
+  const char *SHM_NAME7 = "shm_test7";
+  const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
+
+  osal_retval_t orv;
+  int rv;
+  osal_shm_t shm;
+  struct rlimit lim;
+  struct rlimit old_lim;
+  long arr[100000];
+  int lock_result;
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       ((S_IRUSR | S_IWUSR) << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm, SHM_NAME7, &attr, sizeof(arr));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, 0) << "could not open shared memory in parent";
+
+  rv = getrlimit(RLIMIT_MEMLOCK, &lim);
+  ASSERT_EQ(rv, 0) << "could not get rlimit";
+  old_lim = lim;
+  lim.rlim_cur = 0;
+  rv = setrlimit(RLIMIT_MEMLOCK, &lim);
+  ASSERT_EQ(rv, 0) << "could not set rlimit";
+
+  lock_result = mlockall(MCL_FUTURE);
+  if (lock_result) {
+    printf("info: could not lock memory\n");
+  }
+
+  osal_shm_map_attr_t map_attr =
+      (OSAL_SHM_MAP_ATTR__PROT_WRITE | OSAL_SHM_MAP_ATTR__SHARED);
+  orv = osal_shm_map(&shm, &map_attr, (osal_void_t **)&arr);
+  if (orv != 0) {
+    perror("could not map shared memory in parent");
+  }
+  if (!lock_result) {
+    ASSERT_EQ(orv, 0) << "could not map shared memory";
+  } else {
+    ASSERT_EQ(orv, 0) << "could not map shared memory";
+  }
+
+  rv = setrlimit(RLIMIT_MEMLOCK, &old_lim);
+  ASSERT_EQ(rv, 0) << "could not set rlimit";
+
+  orv = osal_shm_close(&shm);
+  EXPECT_EQ(orv, 0) << "could not close shared memory";
+
+  unlink(PATH_SHM_NAME7);
+}
+
+TEST(Sharedmemory, TestBadDescriptor) {
+
+  const char *SHM_NAME7 = "shm_test7";
+  const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
+
+  osal_retval_t orv;
+  osal_shm_t shm1;
+  osal_shm_t shm2;
+  long *p_data;
+
+  osal_shm_attr_t attr =
+      (OSAL_SHM_ATTR__FLAG__RDWR | OSAL_SHM_ATTR__FLAG__CREAT |
+       ((S_IRUSR | S_IWUSR) << OSAL_SHM_ATTR__MODE__SHIFT));
+
+  orv = osal_shm_open(&shm1, SHM_NAME7, &attr, sizeof(long));
+  if (orv) {
+    perror("could not open parent shared memory");
+  }
+  ASSERT_EQ(orv, 0) << "could not open shared memory in parent";
+
+  shm2 = shm1;
+  shm2.fd = -1;
+
+  osal_shm_map_attr_t map_attr =
+      (OSAL_SHM_MAP_ATTR__PROT_WRITE | OSAL_SHM_MAP_ATTR__SHARED);
+  orv = osal_shm_map(&shm2, &map_attr, (osal_void_t **)&p_data);
+  if (orv != 0) {
+    perror("could not map shared memory in parent");
+  }
+  ASSERT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "could not map shared memory";
+
+  orv = osal_shm_close(&shm1);
+  EXPECT_EQ(orv, 0) << "could not close shared memory";
+
+  unlink(PATH_SHM_NAME7);
+}
+
+} // end namespace test_mmap
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
