@@ -251,6 +251,47 @@ TEST(MutexSane, TestRelock) {
   EXPECT_EQ(orv, 0) << "Could not destroy mutex";
 }
 
+void *lock_thread(void *p_params) {
+  osal_mutex_t *p_mutex = (osal_mutex_t *)p_params;
+  osal_retval_t orv = {};
+
+  orv = osal_mutex_lock(p_mutex);
+  if (orv != 0) {
+    printf("could not lock mutex - return value %i \n", (int)orv);
+  } else {
+    printf("locked mutex, ok \n");
+  }
+  return nullptr;
+}
+
+TEST(MutexSane, OwnerDead) {
+  osal_mutex_t my_mutex;
+  osal_mutex_attr_t attr;
+  osal_retval_t orv = {};
+  int rv = 0;
+  pthread_t thread_id;
+
+  attr = OSAL_MUTEX_ATTR__TYPE__ERRORCHECK | OSAL_MUTEX_ATTR__ROBUST;
+
+  orv = osal_mutex_init(&my_mutex, &attr);
+  ASSERT_EQ(orv, 0) << "Could not initialize mutex";
+
+  rv = pthread_create(/*thread*/ &thread_id,
+                      /*pthread_attr*/ nullptr,
+                      /* start_routine */ lock_thread,
+                      /* arg */ (void *)&(my_mutex));
+  ASSERT_EQ(rv, 0) << "pthread_create() failed";
+  rv = pthread_join(thread_id, nullptr);
+  ASSERT_EQ(rv, 0) << "pthread_join() failed";
+
+  printf("thread joined, locking...\n");
+  orv = osal_mutex_lock(&my_mutex);
+  EXPECT_EQ(orv, OSAL_ERR_OWNER_DEAD) << "Could lock orphaned mutex";
+
+  orv = osal_mutex_destroy(&my_mutex);
+  EXPECT_EQ(orv, 0) << "Could not destroy mutex";
+}
+
 } // namespace test_mutex
 
 int main(int argc, char **argv) {
