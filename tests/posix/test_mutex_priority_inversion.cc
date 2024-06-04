@@ -1,9 +1,9 @@
-#include "gtest/gtest.h"
-#include <pthread.h>
-#include <vector>
-
 #include "libosal/osal.h"
 #include "test_utils.h"
+#include "gtest/gtest.h"
+#include <atomic>
+#include <pthread.h>
+#include <vector>
 
 namespace test_priority_inversion {
 
@@ -17,22 +17,25 @@ namespace test_priority_inversion {
     is runnable
   - two mutexes A and B, A shared between task L and task M,
     mutex B between task H and task L.
-  - two flags x (protected by mutex A) and y (protected by B)
-  - a third flag z signals completion
+  - two atomic flags L_started and H_waiting
+  - a third atomic flag L_finished signals completion, it does not
+    needs to be protected by a lock.
   - task L holds mutex A, and task M polls for it
-  - task H sets flag y which asks task L to compute something, which
+  - task H sets flag H_waiting which asks task L to compute something, which
     takes one second, during which task L holds mutex B
-  - task L then sets flag x and periodically acquires and
-    releases mutex A which could be captured y task M.
+  - task L then sets flag x to indicate work has started,
+    and periodically acquires and
+    releases mutex A which could be captured H_waiting task M.
 
-    Using mutex A and mutex B, task L sets flag z and
+    Using mutex A and mutex B, task L sets flag L_finished and
     waits for task M and task H to exit.
 
   - When task M acquires observes flag x, it keeps mutex A
-    for 10 seconds straight, and exits. If z it set,
-    it exits.
+    for 10 seconds straight, and exits. If L_finished is already
+    set, it exits.
+
   - task H records the time between its request to task L
-    and the completion signalled by flag z, and exits.
+    and the completion signalled by flag L_finished, and exits.
   - when the priority inversion works, H will have to
     wait 1 second, when it fails, 10 seconds
 
@@ -43,9 +46,9 @@ using testutils::wait_nanoseconds;
 typedef struct {
   osal_mutex_t mutexA;
   osal_mutex_t mutexB;
-  bool flag_x = {};
-  bool flag_y = {};
-  bool flag_z = {};
+  std::atomic<bool> flag_L_started;
+  std::atomic<bool> flag_H_waiting;
+  std::atomic<bool> flag_L_finished;
   int work_count = 0;
   double time_delta = 0.0;
 } shared_t;
@@ -57,15 +60,9 @@ void *run_H(void *p_params) {
 
   sleep(1); // wait for everything to start up
 
-  orv = osal_mutex_lock(&p_shared->mutexB);
-  if (orv) {
-    printf("orv = %i in osal_mutex_lock (B) in %s : %i \n", orv, __FILE__,
-           __LINE__);
-  }
-  assert(orv == 0);
   // request work from task L
-  p_shared->flag_y = true;
-  orv = osal_mutex_unlock(&p_shared->mutexB);
+  p_shared->flag_H_waiting = true;
+
   if (orv) {
     printf("orv = %i in osal_mutex_unlock (B) in %s : %i \n", orv, __FILE__,
            __LINE__);
@@ -75,31 +72,40 @@ void *run_H(void *p_params) {
   double start_time = time(nullptr);
   double stop_time = 0.0;
 
+  // wait for start of L before trying to get lock
+
+  while (!p_shared->flag_L_started) {
+    wait_nanoseconds(500000000);
+  }
+
+  // now, Mutex B should be locked by L
+  orv = osal_mutex_lock(&p_shared->mutexB);
+  if (orv) {
+    printf("orv = %i in osal_mutex_lock (B) in %s : %i \n", orv, __FILE__,
+           __LINE__);
+  }
+  assert(orv == 0);
+
   bool finished = false;
   while (!finished) {
-    orv = osal_mutex_lock(&p_shared->mutexB);
-    if (orv) {
-      printf("orv = %i in osal_mutex_lock (B) in %s : %i \n", orv, __FILE__,
-             __LINE__);
-    }
-    assert(orv == 0);
 
     // check for completion of work by task L
-    if (p_shared->flag_z) {
+    if (p_shared->flag_L_finished) {
       finished = true;
       stop_time = time(nullptr);
       p_shared->time_delta = stop_time - start_time;
     }
-    orv = osal_mutex_unlock(&p_shared->mutexB);
-    if (orv) {
-      printf("orv = %i in osal_mutex_unlock (B) in %s : %i \n", orv, __FILE__,
-             __LINE__);
-    }
-    assert(orv == 0);
     if (!finished) {
-      wait_nanoseconds(1000000);
+      wait_nanoseconds(1000000); // 1 ms
     }
   }
+  // we are finished and release the high-priority mutex
+  orv = osal_mutex_unlock(&p_shared->mutexB);
+  if (orv) {
+    printf("orv = %i in osal_mutex_unlock (B) in %s : %i \n", orv, __FILE__,
+           __LINE__);
+  }
+  assert(orv == 0);
 
   osal_task_delete();
   return nullptr;
@@ -129,8 +135,8 @@ void *run_M(void *p_params) {
     assert(orv == 0);
 
     // wait for task L's flag indicating that it is working
-    if (p_shared->flag_x && (!p_shared->flag_z)) {
-      // block task L for 10 seconds, to provoke priority inversion
+    if (p_shared->flag_L_started && (!p_shared->flag_L_finished)) {
+      // block task L, to provoke priority inversion
 
       osal_task_sched_priority_t prio = 0;
       orv = osal_task_get_priority(nullptr, &prio);
@@ -142,10 +148,10 @@ void *run_M(void *p_params) {
       printf("Task M: got actual priority = %i\n", (int)prio);
 
       if (prio <= base_prio) {
-        sleep(10);
+        sleep(10); // do slow work with low priority
       }
       finished = true;
-    } else if (p_shared->flag_z) {
+    } else if (p_shared->flag_L_finished) {
       // we have slept past L's execution and can exit already
       finished = true;
     }
@@ -168,94 +174,88 @@ void *run_M(void *p_params) {
 void *run_L(shared_t *p_shared) {
 
   osal_retval_t orv;
-  while (true) {
 
-    orv = osal_mutex_lock(&p_shared->mutexB);
+  osal_task_sched_priority_t base_prio = 0;
+  orv = osal_task_get_priority(nullptr, &base_prio);
+  if (orv) {
+    printf("orv = %i in osal_task_get_priority (L) in %s : %i \n", orv,
+           __FILE__, __LINE__);
+  }
+
+  printf("Task L: got base priority = %i\n", (int)base_prio);
+
+  orv = osal_mutex_lock(&p_shared->mutexB);
+  if (orv) {
+    printf("orv = %i in osal_mutex_lock (B) in %s : %i \n", orv, __FILE__,
+           __LINE__);
+  }
+  assert(orv == 0);
+  // wait for H to be waiting for mutex B
+  while (!p_shared->flag_H_waiting) {
+    wait_nanoseconds(1000000);
+  }
+
+  osal_task_sched_priority_t prio = 0;
+  orv = osal_task_get_priority(nullptr, &prio);
+  if (orv) {
+    printf("orv = %i in osal_task_get_priority (L) in %s : %i \n", orv,
+           __FILE__, __LINE__);
+  }
+
+  printf("Task L: got actual priority = %i\n", (int)prio);
+
+  // keep mutex B here to inherit task H's priority
+  orv = osal_mutex_lock(&p_shared->mutexA);
+  if (orv) {
+    printf("orv = %i in osal_mutex_lock (A) in %s : %i \n", orv, __FILE__,
+           __LINE__);
+  }
+  assert(orv == 0);
+  // notify M, "inviting" interference from it
+  p_shared->flag_L_started = true;
+  orv = osal_mutex_unlock(&p_shared->mutexA);
+  if (orv) {
+    printf("orv = %i in osal_mutex_unlock (A) in %s : %i \n", orv, __FILE__,
+           __LINE__);
+  }
+  assert(orv == 0);
+
+  for (int i = 0; i < 1000; i++) {
+    // work a bit, while holding mutex B
+    wait_nanoseconds(1000000); // wait 1 ms
+
+    /* yield to task M, if running. If M
+       is actually running, this will result
+       in a one-time ten-second delay. */
+    orv = osal_mutex_lock(&p_shared->mutexA);
     if (orv) {
-      printf("orv = %i in osal_mutex_lock (B) in %s : %i \n", orv, __FILE__,
+      printf("orv = %i in osal_mutex_lock (A) in %s : %i \n", orv, __FILE__,
              __LINE__);
     }
     assert(orv == 0);
-    bool do_work = p_shared->flag_y;
-    if (do_work) {
-      // keep mutex B here to inherit task H's priority
-      orv = osal_mutex_lock(&p_shared->mutexA);
-      if (orv) {
-        printf("orv = %i in osal_mutex_lock (A) in %s : %i \n", orv, __FILE__,
-               __LINE__);
-      }
-      assert(orv == 0);
-      // notify M, "inviting" interference from it
-      p_shared->flag_x = true;
-      orv = osal_mutex_unlock(&p_shared->mutexA);
-      if (orv) {
-        printf("orv = %i in osal_mutex_unlock (A) in %s : %i \n", orv, __FILE__,
-               __LINE__);
-      }
-      assert(orv == 0);
 
-      for (int i = 0; i < 1000; i++) {
-        // work a bit, while holding mutex B
-        wait_nanoseconds(1000000); // wait 1 ms
-
-        /* yield to task M, if running. If M
-           is actually running, this will result
-           in a one-time ten-second delay. */
-        orv = osal_mutex_lock(&p_shared->mutexA);
-        if (orv) {
-          printf("orv = %i in osal_mutex_lock (A) in %s : %i \n", orv, __FILE__,
-                 __LINE__);
-        }
-        assert(orv == 0);
-
-        /* the assignment is just to assure some
-           side-effect and avoid optimizing out the loop.
-        */
-        p_shared->work_count = i;
-        orv = osal_mutex_unlock(&p_shared->mutexA);
-        if (orv) {
-          printf("orv = %i in osal_mutex_unlock (A) in %s : %i \n", orv,
-                 __FILE__, __LINE__);
-        }
-        assert(orv == 0);
-      }
-
-      /* set "finished" flag to signal termination - this
-         requires to hold both mutexes */
-      orv = osal_mutex_lock(&p_shared->mutexA);
-      if (orv) {
-        printf("orv = %i in osal_mutex_lock (A) in %s : %i \n", orv, __FILE__,
-               __LINE__);
-      }
-      assert(orv == 0);
-
-      p_shared->flag_z = true;
-      orv = osal_mutex_unlock(&p_shared->mutexA);
-      if (orv) {
-        printf("orv = %i in osal_mutex_unlock (A) in %s : %i \n", orv, __FILE__,
-               __LINE__);
-      }
-      assert(orv == 0);
-
-      orv = osal_mutex_unlock(&p_shared->mutexB);
-      if (orv) {
-        printf("orv = %i in osal_mutex_unlock (B) in %s : %i \n", orv, __FILE__,
-               __LINE__);
-      }
-      assert(orv == 0);
-
-      break; // exit loop
-    } else {
-      orv = osal_mutex_unlock(&p_shared->mutexB);
-      if (orv) {
-        printf("orv = %i in osal_mutex_unlock (B) in %s : %i \n", orv, __FILE__,
-               __LINE__);
-      }
-      assert(orv == 0);
-
-      // stay in loop
+    /* the assignment is just to assure some
+       side-effect and avoid optimizing out the loop.
+    */
+    p_shared->work_count = i;
+    orv = osal_mutex_unlock(&p_shared->mutexA);
+    if (orv) {
+      printf("orv = %i in osal_mutex_unlock (A) in %s : %i \n", orv, __FILE__,
+             __LINE__);
     }
+    assert(orv == 0);
   }
+
+  /* set "finished" flag to signal termination */
+  p_shared->flag_L_finished = true;
+
+  orv = osal_mutex_unlock(&p_shared->mutexB);
+  if (orv) {
+    printf("orv = %i in osal_mutex_unlock (B) in %s : %i \n", orv, __FILE__,
+           __LINE__);
+  }
+  assert(orv == 0);
+
   /* not deleting task: this runs in the main task */
   return nullptr;
 }
@@ -275,9 +275,9 @@ TEST(MutexFunc, TestNoPriorityInheritance) {
   orv = osal_mutex_init(&shared.mutexB, &attr);
   ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() B failed";
 
-  shared.flag_x = false;
-  shared.flag_y = false;
-  shared.flag_z = false;
+  shared.flag_L_started = false;
+  shared.flag_H_waiting = false;
+  shared.flag_L_finished = false;
 
   orv = osal_task_create(/*thread*/ &(task_H),
                          /*osal_task_attr*/ nullptr,
@@ -325,6 +325,7 @@ TEST(MutexFunc, TestPriorityInheritance) {
   osal_task_attr_t task_attr = {};
   task_attr.policy = OSAL_SCHED_POLICY_FIFO;
   task_attr.priority = 0;
+  task_attr.affinity = 1;
 
   osal_retval_t orv = {};
 
@@ -334,9 +335,9 @@ TEST(MutexFunc, TestPriorityInheritance) {
   orv = osal_mutex_init(&shared.mutexB, &attr);
   ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() B failed";
 
-  shared.flag_x = false;
-  shared.flag_y = false;
-  shared.flag_z = false;
+  shared.flag_L_started = false;
+  shared.flag_H_waiting = false;
+  shared.flag_L_finished = false;
 
   task_attr.priority = 3;
   orv = osal_task_create(/*thread*/ &(task_H),
@@ -364,6 +365,12 @@ TEST(MutexFunc, TestPriorityInheritance) {
   orv = osal_task_set_priority(nullptr, 1);
   if (orv != 0) {
     printf("Warning: osal_task_set_priority() L failed "
+           "- consider running under \"chrt -f 1 ...\"\n");
+  }
+
+  orv = osal_task_set_affinity(nullptr, 1u);
+  if (orv != 0) {
+    printf("Warning: osal_task_set_affinity() L failed "
            "- consider running under \"chrt -f 1 ...\"\n");
   }
 
