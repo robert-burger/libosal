@@ -335,6 +335,30 @@ TEST(MutexSane, ProtectPar) {
   EXPECT_EQ(orv, 0) << "Could not destroy mutex";
 }
 
+TEST(MutexSane, TestRecursive) {
+  osal_mutex_t my_mutex;
+  osal_mutex_attr_t attr;
+  osal_retval_t orv = {};
+
+  attr = OSAL_MUTEX_ATTR__TYPE__ERRORCHECK | OSAL_MUTEX_ATTR__TYPE__RECURSIVE;
+
+  orv = osal_mutex_init(&my_mutex, &attr);
+  ASSERT_EQ(orv, 0) << "Could not initialize mutex";
+  orv = osal_mutex_lock(&my_mutex);
+  ASSERT_EQ(orv, 0) << "Could not initialize mutex";
+
+  // re-lock mutex, which works for a recursive mutex
+
+  // orv = osal_mutex_lock(&my_mutex);
+  // EXPECT_EQ(orv, OSAL_ERR_DEAD_LOCK) << "Could re-lock mutex";
+
+  orv = osal_mutex_unlock(&my_mutex);
+  EXPECT_EQ(orv, 0) << "Could not unlock mutex";
+
+  orv = osal_mutex_destroy(&my_mutex);
+  EXPECT_EQ(orv, 0) << "Could not destroy mutex";
+}
+
 } // namespace test_mutex
 
 int main(int argc, char **argv) {
