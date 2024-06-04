@@ -369,7 +369,7 @@ TEST(MutexSane, TestRecursive) {
   osal_mutex_attr_t attr;
   osal_retval_t orv = {};
 
-  attr = OSAL_MUTEX_ATTR__TYPE__ERRORCHECK | OSAL_MUTEX_ATTR__TYPE__RECURSIVE;
+  attr = OSAL_MUTEX_ATTR__TYPE__RECURSIVE;
 
   orv = osal_mutex_init(&my_mutex, &attr);
   ASSERT_EQ(orv, 0) << "Could not initialize mutex";
@@ -378,8 +378,12 @@ TEST(MutexSane, TestRecursive) {
 
   // re-lock mutex, which works for a recursive mutex
 
-  // orv = osal_mutex_lock(&my_mutex);
-  // EXPECT_EQ(orv, OSAL_ERR_DEAD_LOCK) << "Could re-lock mutex";
+  orv = osal_mutex_lock(&my_mutex);
+  EXPECT_EQ(orv, 0) << "Could re-lock mutex";
+
+  // need to unlock two times here
+  orv = osal_mutex_unlock(&my_mutex);
+  EXPECT_EQ(orv, 0) << "Could not unlock mutex";
 
   orv = osal_mutex_unlock(&my_mutex);
   EXPECT_EQ(orv, 0) << "Could not unlock mutex";
