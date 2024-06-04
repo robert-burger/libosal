@@ -76,7 +76,7 @@ check_timer_CPPFLAGS = -Wall -Werror -I$(top_srcdir)/googletest/googletest/inclu
 
 # check of Mutex
 
-check_mutex_SOURCES = test_mutex.cc
+check_mutex_SOURCES = test_mutex.cc test_mutex_priority_inversion.cc
 
 check_mutex_LDADD = libgtest.la ../../src/libosal.la
 
