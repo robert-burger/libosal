@@ -328,7 +328,6 @@ TEST(Semaphore, RandomizedDelay) {
   params.wait_before_read = true;
   params.was_read = false;
 
-  // osal_semaphore_attr_t attr = OSAL_SEMAPHORE_ATTR__PROCESS_SHARED;
   orv = osal_semaphore_init(&params.sema, nullptr, 0);
   ASSERT_EQ(orv, OSAL_OK) << "osal_semaphore_init() failed";
 
@@ -586,7 +585,6 @@ TEST(Semaphore, ParallelCount) {
 }
 } // namespace multireader
 
-//#if 0
 namespace timedwait {
 const int LOOPCOUNT3 = 1000;
 const int NTHREADS = 10;
@@ -659,7 +657,7 @@ TEST(Semaphore, TimedCount) {
   pthread_t thread_ids[NTHREADS];
   ;
   thread_param_count_t params[NTHREADS]; /* shared data protected by
-                        semaphore and mutex */
+                                            semaphore and mutex */
   assert(NTHREADS > 0);
   assert(LOOPCOUNT3 > 0);
   osal_retval_t orv;
@@ -763,7 +761,6 @@ TEST(Semaphore, TimedCount) {
      they can differ in both directions. */
 }
 } // namespace timedwait
-//#endif
 
 namespace trywait {
 const int LOOPCOUNT4 = 1000;
