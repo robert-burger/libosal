@@ -434,6 +434,8 @@ TEST(MutexFunc, TestPriorityCeiling) {
 }
 
 TEST(MutexFunc, TestPriorityError) {
+  /* test whether a priority that is too high is detected
+     in the priority ceiling protocol (PROTOCOL_PROTECT). */
   osal_mutex_t mutexE;
   osal_mutex_attr_t attr = (OSAL_MUTEX_ATTR__PROTOCOL__PROTECT |
                             (2 << OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT));
@@ -442,20 +444,6 @@ TEST(MutexFunc, TestPriorityError) {
 
   orv = osal_mutex_init(&mutexE, &attr);
   ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() B failed";
-
-#if 0  
-  osal_task_attr_t task_attr = {};
-  task_attr.policy = OSAL_SCHED_POLICY_FIFO;
-  task_attr.priority = 0;
-  task_attr.affinity = 1;
-  task_attr.priority = 3;
-  
-  orv = osal_task_create(/*thread*/ &(task_H),
-                         /*osal_task_attr*/ &task_attr,
-                         /* start_routine */ run_H,
-                         /* arg */ (void *)&shared);
-  ASSERT_EQ(orv, OSAL_OK) << "osal_task_create() H failed";
-#endif
 
   orv = osal_task_set_priority(nullptr, 3);
   if (orv != 0) {
@@ -472,9 +460,6 @@ TEST(MutexFunc, TestPriorityError) {
   if (!orv) {
     orv = osal_mutex_unlock(&mutexE);
   }
-
-  // orv = osal_task_join(&task_H, &trv);
-  // ASSERT_EQ(orv, OSAL_OK) << "osal_task_join H failed";
 
   orv = osal_mutex_destroy(&mutexE);
   ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_destroy E failed";
