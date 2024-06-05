@@ -283,7 +283,7 @@ TEST(Condvar, ParallelMasked) {
   }
 }
 } // namespace condvar_multithread
-//#if 0
+
 /*
  This test is very similar to the multithread test,
  but with the difference that each thread
@@ -526,7 +526,8 @@ TEST(Condvar, ParallelSingleNotification) {
   }
 }
 } // namespace condvar_single
-//#endif
+
+/* the test below repeat these above with the timed wait variant */
 
 namespace condvar_timedwait {
 const int LOOPCOUNT2 = 50000;
@@ -695,7 +696,7 @@ TEST(Condvar, ParallelWait) {
                         /*pthread_attr*/ nullptr,
                         /* start_routine */ test_condvar_wait,
                         /* arg */ (void *)&thread_vars[i]);
-    //	      ASSERT_EQ(rv, 0) << "pthread_create() failed";
+    ASSERT_EQ(rv, 0) << "pthread_create() failed";
   }
 
   if (verbose) {
