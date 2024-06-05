@@ -5,6 +5,10 @@
 #include <pthread.h>
 #include <vector>
 
+namespace test_mutex {
+
+extern int verbose;
+
 namespace test_priority_inversion {
 
 /*
@@ -64,7 +68,9 @@ void *run_H(void *p_params) {
            __FILE__, __LINE__);
   }
 
-  printf("Task H: got priority = %i\n", (int)base_prio);
+  if (verbose) {
+    printf("Task H: got priority = %i\n", (int)base_prio);
+  }
 
   sleep(1); // wait for everything to start up
 
@@ -132,7 +138,9 @@ void *run_M(void *p_params) {
            __FILE__, __LINE__);
   }
 
-  printf("Task M: got priority = %i\n", (int)base_prio);
+  if (verbose) {
+    printf("Task M: got priority = %i\n", (int)base_prio);
+  }
 
   // wait for task L to start
   while (!(p_shared->flag_L_started)) {
@@ -170,7 +178,9 @@ void *run_L(shared_t *p_shared) {
            __FILE__, __LINE__);
   }
 
-  printf("Task L: got priority = %i\n", (int)base_prio);
+  if (verbose) {
+    printf("Task L: got priority = %i\n", (int)base_prio);
+  }
 
   orv = osal_mutex_lock(&p_shared->mutexB);
   if (orv) {
@@ -270,9 +280,11 @@ TEST(MutexFunc, TestNoPriorityInheritance) {
   orv = osal_mutex_destroy(&shared.mutexB);
   ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_destroy B failed";
 
-  // here, if task L inherits priority from H, time_delta should be 1
-  // sec, otherwise 10 sec, because M blocks L in this case.
-  printf("priority inheritance test: time delta = %f\n", shared.time_delta);
+  // here, because  task does not L inherit priority from H, time_delta should
+  // be 13 sec, otherwise 3 sec, because L blocks M in this case.
+  if (verbose) {
+    printf("priority inheritance test: time delta = %f\n", shared.time_delta);
+  }
   EXPECT_GT(shared.time_delta, 5.0) << ("no priority inversion provoked");
 }
 
@@ -341,10 +353,14 @@ TEST(MutexFunc, TestPriorityInheritance) {
   orv = osal_mutex_destroy(&shared.mutexB);
   ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_destroy B failed";
 
-  // here, if task L inherits priority from H, time_delta should be 1
-  // sec, otherwise 10 sec, because M blocks L in this case.
-  printf("priority inheritance test: time delta = %f\n", shared.time_delta);
+  // here, if task L inherits priority from H, time_delta should be 3
+  // sec (L blocking M), otherwise 13 sec, because M blocks L in this case.
+  if (verbose) {
+    printf("priority inheritance test: time delta = %f\n", shared.time_delta);
+  }
   EXPECT_LT(shared.time_delta, 5.0) << (" priority adjustment failed");
 }
 
 } // namespace test_priority_inversion
+
+} // namespace test_mutex

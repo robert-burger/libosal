@@ -10,6 +10,8 @@ namespace test_mutex {
 
 using testutils::wait_nanoseconds;
 
+int verbose = 0;
+
 TEST(MutexSane, SingleThreadedNoRelease) {
   osal_mutex_t my_mutex;
   osal_mutex_init(&my_mutex, nullptr);
@@ -259,7 +261,9 @@ void *lock_thread(void *p_params) {
   if (orv != 0) {
     printf("could not lock mutex - return value %i \n", (int)orv);
   } else {
-    printf("locked mutex, ok \n");
+    if (verbose) {
+      printf("locked mutex, ok \n");
+    }
   }
   return nullptr;
 }
@@ -284,7 +288,9 @@ TEST(MutexSane, OwnerDead1) {
   rv = pthread_join(thread_id, nullptr);
   ASSERT_EQ(rv, 0) << "pthread_join() failed";
 
-  printf("thread joined, locking...\n");
+  if (verbose) {
+    printf("thread joined, locking...\n");
+  }
   orv = osal_mutex_lock(&my_mutex);
   EXPECT_EQ(orv, OSAL_ERR_OWNER_DEAD) << "Could lock orphaned mutex";
 
@@ -312,7 +318,9 @@ TEST(MutexSane, OwnerDead2) {
   rv = pthread_join(thread_id, nullptr);
   ASSERT_EQ(rv, 0) << "pthread_join() failed";
 
-  printf("thread joined, locking...\n");
+  if (verbose) {
+    printf("thread joined, locking...\n");
+  }
 
   orv = osal_mutex_trylock(&my_mutex);
   EXPECT_EQ(orv, OSAL_ERR_OWNER_DEAD) << "Could lock orphaned mutex";
@@ -396,6 +404,10 @@ TEST(MutexSane, TestRecursive) {
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
+
+  if (getenv("VERBOSE")) {
+    test_mutex::verbose = 1;
+  }
 
   return RUN_ALL_TESTS();
 }
