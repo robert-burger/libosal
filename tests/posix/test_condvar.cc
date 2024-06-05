@@ -23,6 +23,8 @@ using testutils::pick_random_from_bits;
 using testutils::popcount;
 using testutils::wait_nanoseconds;
 
+/* helper function which gets bitmask of unoccupied threads.
+ */
 int get_free_mask(std::atomic<ulong> *active_mask, int min_number,
                   int thread_number) {
   assert(thread_number > 0);
@@ -195,7 +197,7 @@ TEST(Condvar, ParallelMasked) {
                         /*pthread_attr*/ nullptr,
                         /* start_routine */ test_condvar_count,
                         /* arg */ (void *)&thread_vars[i]);
-    //	      ASSERT_EQ(rv, 0) << "pthread_create() failed";
+    ASSERT_EQ(rv, 0) << "pthread_create() failed";
   }
 
   if (verbose) {
