@@ -5,6 +5,9 @@
 #include "libosal/osal.h"
 #include "test_utils.h"
 
+int verbose = 0;
+int check_suspend = 0;
+
 namespace test_tasks {
 
 using testutils::wait_nanoseconds;
@@ -251,6 +254,112 @@ TEST(TasksMultithreading, TaskCancel) {
 
 } // namespace test_cancel
 
+namespace test_suspend {
+
+const uint32_t ITERATIONS = 1000;
+
+typedef struct {
+  osal_condvar_t condvar;
+  osal_mutex_t mutex;
+  bool continue_count;
+  uint32_t iterations;
+} thread_suspend_param_t;
+
+void *test_suspend(void *p_thread_params) {
+  thread_suspend_param_t *p_params = (thread_suspend_param_t *)p_thread_params;
+
+  osal_retval_t orv;
+
+  for (uint32_t i = 0; i < ITERATIONS; i++) {
+
+    if (i == 500) {
+      if (verbose) {
+        printf("waiting for continue signal\n");
+      }
+      orv = osal_mutex_lock(&p_params->mutex);
+      EXPECT_EQ(orv, OSAL_OK) << "error in receiver: osal_mutex_lock()";
+
+      while (!p_params->continue_count) {
+        orv = osal_condvar_wait(&p_params->condvar, &p_params->mutex);
+        EXPECT_EQ(orv, OSAL_OK) << "error in receiver: osal_condvar_wait()";
+      }
+      orv = osal_mutex_unlock(&p_params->mutex);
+      EXPECT_EQ(orv, OSAL_OK) << "error in receiver: osal_mutex_unlock()";
+    }
+    p_params->iterations++;
+  }
+  // terminate task
+  orv = osal_task_delete();
+  return nullptr;
+}
+
+TEST(TasksMultithreading, TaskSuspend) {
+
+  osal_task_t thread_id;
+  thread_suspend_param_t thread_params;
+
+  osal_retval_t orv;
+
+  bool verbose = (getenv("VERBOSE") != nullptr);
+
+  orv = osal_condvar_init(&thread_params.condvar, nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_condvar_init() failed";
+
+  orv = osal_mutex_init(&thread_params.mutex, nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() failed";
+
+  if (verbose) {
+    printf("starting thread\n");
+  }
+  thread_params.iterations = 0u;
+  thread_params.continue_count = false;
+  orv = osal_task_create(/*thread*/ &thread_id,
+                         /*osal_task_attr*/ nullptr,
+                         /* start_routine */ test_suspend,
+                         /* arg */ (void *)&(thread_params));
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_create() failed";
+
+  if (check_suspend) {
+    orv = osal_task_suspend(&thread_id);
+    ASSERT_EQ(orv, OSAL_OK) << "osal_task_suspend() failed";
+  } else {
+    printf("Skipping suspend, test with CHECK_SUSPEND=1 and use fg or kill to "
+           "resume\n");
+  }
+
+  orv = osal_mutex_lock(&thread_params.mutex);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_lock() failed";
+
+  thread_params.continue_count = true;
+
+  orv = osal_mutex_unlock(&thread_params.mutex);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_unlock() failed";
+  orv = osal_condvar_signal(&thread_params.condvar);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_condvar_signal() failed";
+
+  if (check_suspend) {
+    orv = osal_task_resume(&thread_id);
+    ASSERT_EQ(orv, OSAL_OK) << "osal_task_resume() failed";
+  }
+
+  if (verbose) {
+    printf("joining thread\n");
+  }
+  orv = osal_task_join(/*thread*/ &thread_id,
+                       /*retval*/ nullptr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_join() failed";
+
+  orv = osal_condvar_destroy(&thread_params.condvar);
+  EXPECT_EQ(orv, OSAL_OK) << "osal_condvar_destroy() failed";
+
+  orv = osal_mutex_destroy(&thread_params.mutex);
+  // ASSERT_EQ(orv, 0) << "osal_mutex_destroy() failed";
+
+  EXPECT_EQ(thread_params.iterations, ITERATIONS) << "task cancel test failed";
+}
+
+} // namespace test_suspend
+
 namespace test_getattrs {
 
 typedef struct {
@@ -428,6 +537,13 @@ TEST(TasksMultithreading, SuspendResume) {
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
+
+  if (getenv("VERBOSE")) {
+    verbose = 1;
+  }
+  if (getenv("CHECK_SUSPEND")) {
+    check_suspend = 1;
+  }
 
   return RUN_ALL_TESTS();
 }
