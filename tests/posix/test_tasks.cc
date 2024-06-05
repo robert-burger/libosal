@@ -323,8 +323,8 @@ TEST(TasksMultithreading, TaskSuspend) {
     orv = osal_task_suspend(&thread_id);
     ASSERT_EQ(orv, OSAL_OK) << "osal_task_suspend() failed";
   } else {
-    printf("Skipping suspend, test with CHECK_SUSPEND=1 and use fg or kill to "
-           "resume\n");
+    printf("Skipping suspend, test with CHECK_SUSPEND=1 and if needed, use fg "
+           "or kill to resume\n");
   }
 
   orv = osal_mutex_lock(&thread_params.mutex);
@@ -474,6 +474,8 @@ TEST(TasksMultithreading, TaskAttributes) {
   EXPECT_EQ(thread_params.iterations, 1u) << "task cancel test failed";
 }
 
+#if 0
+// replaced by test above
 TEST(TasksMultithreading, SuspendResume) {
 
   osal_task_t thread_id;
@@ -532,6 +534,8 @@ TEST(TasksMultithreading, SuspendResume) {
 
   EXPECT_EQ(thread_params.iterations, 1u) << "task cancel test failed";
 }
+
+#endif
 
 } // namespace test_getattrs
 
