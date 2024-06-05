@@ -236,6 +236,8 @@ TEST(MutexFunc, TestNoPriorityInheritance) {
   shared.flag_L_finished = false;
 
   task_attr.priority = 3;
+  strcpy(task_attr.task_name, "Task_H");
+
   orv = osal_task_create(/*thread*/ &(task_H),
                          /*osal_task_attr*/ &task_attr,
                          /* start_routine */ run_H,
@@ -243,6 +245,7 @@ TEST(MutexFunc, TestNoPriorityInheritance) {
   ASSERT_EQ(orv, OSAL_OK) << "osal_task_create() H failed";
 
   task_attr.priority = 2;
+  strcpy(task_attr.task_name, "Task_M");
   orv = osal_task_create(/*thread*/ &(task_M),
                          /*osal_task_attr*/ &task_attr,
                          /* start_routine */ run_M,
