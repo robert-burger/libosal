@@ -19,29 +19,27 @@ namespace test_priority_inversion {
   - the test requires real-time scheduling, each task
     must only run when no task with higher priority
     is runnable
-  - two mutexes A and B, A shared between task L and task M,
-    mutex B between task H and task L.
-  - two atomic flags L_started and H_waiting
-  - a third atomic flag L_finished signals completion, it does not
-    needs to be protected by a lock.
-  - task L holds mutex A, and task M polls for it
+  - a mutexes M, shared between task L and task H.
+  - two atomic flags L_started and H_waiting, and
+    a third atomic flag L_finished signals completion.
+    Being atomic, these  do not need to be protected by a lock.
+  - task L holds mutex M
   - task H sets flag H_waiting which asks task L to compute something, which
-    takes one second, during which task L holds mutex B
-  - task L then sets flag x to indicate work has started,
-    and periodically acquires and
-    releases mutex A which could be captured H_waiting task M.
-
-    Using mutex A and mutex B, task L sets flag L_finished and
-    waits for task M and task H to exit.
-
-  - When task M acquires observes flag x, it keeps mutex A
-    for 10 seconds straight, and exits. If L_finished is already
-    set, it exits.
-
+    takes three seconds.
+  - during its computation, task L holds mutex M
+  - task L then sets flag L_started to indicate work has started.
+    This advances H, which tries to acquire Mutex M,
+    bumping up the priority of L.
+  - After three second of computation, Task L sets flag L_finished and
+    waits for task M and task H to exit, which they do on
+    detecting L_finished.
+  - When task M observes flag x, it starts a ten-second
+    CPU-intensive computation.
   - task H records the time between its request to task L
     and the completion signalled by flag L_finished, and exits.
   - when the priority inversion works, H will have to
-    wait 1 second, when it fails, 10 seconds
+    wait 3 seconds, when it fails, 13 seconds. This is
+    the test criterion.
 
 */
 
