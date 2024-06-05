@@ -359,6 +359,127 @@ TEST(MutexFunc, TestPriorityInheritance) {
   EXPECT_LT(shared.time_delta, 5.0) << (" priority adjustment failed");
 }
 
+TEST(MutexFunc, TestPriorityCeiling) {
+  shared_t shared = {};
+
+  osal_task_t task_H;
+  osal_task_t task_M;
+
+  osal_mutex_attr_t attr = (OSAL_MUTEX_ATTR__PROTOCOL__PROTECT |
+                            (3 << OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT));
+
+  osal_task_attr_t task_attr = {};
+  task_attr.policy = OSAL_SCHED_POLICY_FIFO;
+  task_attr.priority = 0;
+  task_attr.affinity = 1;
+
+  osal_retval_t orv = {};
+
+  orv = osal_mutex_init(&shared.mutexM, &attr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() B failed";
+
+  shared.flag_L_started = false;
+  shared.flag_H_waiting = false;
+  shared.flag_L_finished = false;
+
+  task_attr.priority = 3;
+  orv = osal_task_create(/*thread*/ &(task_H),
+                         /*osal_task_attr*/ &task_attr,
+                         /* start_routine */ run_H,
+                         /* arg */ (void *)&shared);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_create() H failed";
+
+  task_attr.priority = 2;
+  orv = osal_task_create(/*thread*/ &(task_M),
+                         /*osal_task_attr*/ &task_attr,
+                         /* start_routine */ run_M,
+                         /* arg */ (void *)&shared);
+
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_create() M failed";
+
+  orv = osal_task_set_priority(nullptr, 1);
+  if (orv != 0) {
+    printf("Warning: osal_task_set_priority() L failed "
+           "- consider running under \"chrt -f 1 ...\"\n");
+  }
+
+  orv = osal_task_set_affinity(nullptr, 1u);
+  if (orv != 0) {
+    printf("Warning: osal_task_set_affinity() L failed "
+           "- consider running under \"chrt -f 1 ...\"\n");
+  }
+
+  orv = osal_task_set_policy(nullptr, OSAL_SCHED_POLICY_FIFO);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_set_policy() L failed";
+
+  run_L(&shared);
+
+  osal_task_retval_t trv = 0;
+
+  orv = osal_task_join(&task_M, &trv);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_join M failed";
+
+  orv = osal_task_join(&task_H, &trv);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_join H failed";
+
+  orv = osal_mutex_destroy(&shared.mutexM);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_destroy B failed";
+
+  // here, if task L inherits priority from H, time_delta should be 3
+  // sec (L blocking M), otherwise 13 sec, because M blocks L in this case.
+  if (verbose) {
+    printf("priority inheritance test: time delta = %f\n", shared.time_delta);
+  }
+  EXPECT_LT(shared.time_delta, 5.0) << (" priority adjustment failed");
+}
+
+TEST(MutexFunc, TestPriorityError) {
+  osal_mutex_t mutexE;
+  osal_mutex_attr_t attr = (OSAL_MUTEX_ATTR__PROTOCOL__PROTECT |
+                            (2 << OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT));
+
+  osal_retval_t orv = {};
+
+  orv = osal_mutex_init(&mutexE, &attr);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_init() B failed";
+
+#if 0  
+  osal_task_attr_t task_attr = {};
+  task_attr.policy = OSAL_SCHED_POLICY_FIFO;
+  task_attr.priority = 0;
+  task_attr.affinity = 1;
+  task_attr.priority = 3;
+  
+  orv = osal_task_create(/*thread*/ &(task_H),
+                         /*osal_task_attr*/ &task_attr,
+                         /* start_routine */ run_H,
+                         /* arg */ (void *)&shared);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_create() H failed";
+#endif
+
+  orv = osal_task_set_priority(nullptr, 3);
+  if (orv != 0) {
+    printf("Warning: osal_task_set_priority() L failed "
+           "- consider running under \"chrt -f 1 ...\"\n");
+  }
+
+  orv = osal_task_set_policy(nullptr, OSAL_SCHED_POLICY_FIFO);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_set_policy() E failed";
+
+  orv = osal_mutex_lock(&mutexE);
+  EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mutex_lock() E failed";
+
+  if (!orv) {
+    orv = osal_mutex_unlock(&mutexE);
+  }
+
+  // orv = osal_task_join(&task_H, &trv);
+  // ASSERT_EQ(orv, OSAL_OK) << "osal_task_join H failed";
+
+  orv = osal_mutex_destroy(&mutexE);
+  ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_destroy E failed";
+}
+
 } // namespace test_priority_inversion
 
 } // namespace test_mutex
