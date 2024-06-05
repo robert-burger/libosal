@@ -45,6 +45,7 @@ class MainProject(ConanFile):
         autotools.autoreconf()
         autotools.configure(args=args)
         autotools.make()
+        autotools.make(target="check")
 
     def package(self):
         autotools = Autotools(self)
