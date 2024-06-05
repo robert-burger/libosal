@@ -8,6 +8,11 @@
 
 namespace test_messagequeue {
 
+/* These tests are essentially a replica of the functional ones in
+   test_messagequeue.cc, but with the difference that the timed send
+   and receive functions are used.
+*/
+
 extern int verbose;
 
 const ulong NUM_MESSAGES = 100;
@@ -133,13 +138,14 @@ TEST(MessageQueue, TimeoutsDelayedSend) {
   // initialize message queue
   osal_mq_attr_t attr = {};
   attr.oflags = OSAL_MQ_ATTR__OFLAG__RDWR | OSAL_MQ_ATTR__OFLAG__CREAT;
-  attr.max_messages = 10; /* system default, won't work with larger
-                           * number without adjustment */
+  attr.max_messages = 10; /* system default for OSL15.4 . Depending on
+                           * the platform, this won't work with a larger
+                           * number without adjustment. */
   ASSERT_GE(attr.max_messages, 0u);
   attr.max_message_size = sizeof(message_t);
   ASSERT_GE(attr.max_message_size, 0u);
   attr.mode = S_IRUSR | S_IWUSR;
-  // unlink message queue if it exists.
+  // unlink message queue if it exists already.
   // Note: the return value is intentionally not checked.
   mq_unlink("/test2");
 
@@ -236,8 +242,8 @@ TEST(MessageQueue, TimeoutsDelayedRecv) {
   }
   ASSERT_EQ(orv, OSAL_OK) << "osal_mq_open() failed";
 
-  // compared to above, sender and producer are swapped
-  // initialize consumer
+  // Compared to above, sender and producer are swapped.
+  // Initialize consumer.
   if (verbose) {
     printf("starting consumer\n");
   }
