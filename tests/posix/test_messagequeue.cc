@@ -38,9 +38,9 @@ using testutils::wait_nanoseconds;
   value together with the received message
   value.
 
-  To compare, the sender threads computed the same
+  To compare, the sender threads computes the same
   sequence of hashing, and when the threads finish,
-  the resulting hashs are compared. If the message
+  the two resulting hashes are compared. If the message
   queue works correctly (preserving both content
   and order of messages), the hashes have to match.
 
@@ -911,7 +911,7 @@ TEST(MessageQueue, TestResourceOversubscription) {
   // this test is unfortunately very system-dependent,
   // because it depends on value of host system limits
   // and how exceeding the limit is handled. On some
-  // RMS OSL machines, this may exceed the limit and
+  // RMC OSL machines, this may exceed the limit and
   // cause a core dump.
   /* test limit on file size */
   mq_unlink("/test8");
