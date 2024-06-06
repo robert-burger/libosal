@@ -125,6 +125,8 @@ void *run_H(void *p_params) {
 }
 
 void *run_M(void *p_params) {
+  using testutils::combine_hashes;
+  using testutils::hash_u32;
 
   osal_retval_t orv = {};
   shared_t *p_shared = (shared_t *)p_params;
@@ -154,7 +156,7 @@ void *run_M(void *p_params) {
   uint32_t hash = 1;
   while ((time(nullptr) < stop_time) && (!(p_shared->flag_L_finished))) {
     for (int i = 0; i < 100000; i++) {
-      hash = (start_time & 0xFFFFFFFF) ^ ((hash << 1) & 0xFFFFFFFF);
+      hash = combine_hashes(hash, hash_u32(start_time & 0xFFFFFFFF));
     }
   }
 

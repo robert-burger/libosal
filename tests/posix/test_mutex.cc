@@ -12,7 +12,7 @@ using testutils::wait_nanoseconds;
 
 int verbose = 0;
 
-TEST(MutexSane, SingleThreadedNoRelease) {
+TEST(MutexFunction, SingleThreadedNoRelease) {
   osal_mutex_t my_mutex;
   osal_mutex_init(&my_mutex, nullptr);
   osal_mutex_lock(&my_mutex);
@@ -30,7 +30,7 @@ TEST(MutexSane, SingleThreadedNoRelease) {
                                     "is totally wrong");
 }
 
-TEST(MutexSane, SingleThreadedWithRelease) {
+TEST(MutexFunction, SingleThreadedWithRelease) {
   osal_mutex_t my_mutex;
   osal_mutex_init(&my_mutex, nullptr);
   const int loopcount = 100;
@@ -102,7 +102,7 @@ void *test_random(void *p_params) {
   return nullptr;
 }
 
-TEST(MutexMultithreading, Parallel) {
+TEST(MutexFunction, ParallelMultiThreading) {
   const ulong N_THREADS = 100;
   const uint LOOPCOUNT = 100000;
 
@@ -154,7 +154,7 @@ TEST(MutexMultithreading, Parallel) {
       << "multi-threaded counter test failed";
 }
 
-TEST(MutexMultithreading, RandomizedPlusWait) {
+TEST(MutexFunction, MultithreadingPlusRandomizedWait) {
   const ulong N_THREADS = 8;
   const uint LOOPCOUNT = 10000;
   const uint MAX_WAIT_TIME_NSEC = 500;
@@ -202,7 +202,7 @@ TEST(MutexMultithreading, RandomizedPlusWait) {
       << "multi-threaded counter test failed";
 }
 
-TEST(MutexSane, TryWait) {
+TEST(MutexDetect, TryLock) {
   osal_mutex_t my_mutex;
   osal_retval_t orv;
 

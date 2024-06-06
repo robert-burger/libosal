@@ -14,6 +14,8 @@
 
 namespace test_sharedmemory {
 
+using testutils::combine_hashes;
+
 const int NUM_PROCESSES = 10;
 const int NUM_VALUES = 10000;
 
@@ -25,11 +27,6 @@ int verbose = 0;
 typedef struct {
   uint32_t values[NUM_VALUES];
 } shared_t;
-
-size_t combine_hashes(size_t const oldhash, uint32_t const payload) {
-  size_t new_hash = std::hash<uint32_t>{}(payload);
-  return (oldhash << 4) ^ new_hash;
-}
 
 osal_retval_t checksum_memory() {
 

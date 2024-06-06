@@ -11,24 +11,50 @@
 
 namespace testutils {
 
-inline  osal_timer_t set_deadline(int sec, long nsec)
-  /* takes a second and a nanosecond value,
-     and generates a deadline value that
-     many seconds / nanoseconds from now.
-  */
-  {
-    timespec now;
-      clock_gettime(CLOCK_REALTIME, &now);
-      osal_timer_t deadline;
-      deadline.sec = now.tv_sec + sec;
-      deadline.nsec = now.tv_nsec + nsec;
-      while (deadline.nsec > 1000000000){
-	deadline.nsec -= 1000000000;
-	deadline.sec += 1;
-      }
-      return deadline;
+/* chain a hash value and a new value to a new hash.
+
+   In our tests, this function has two purposes:
+
+   1. It allows to compare the result of a transmission of
+   a random byte sequence, by comparing the hashes
+   of sent and received sequence. This allows for
+   the recognition of bit errors, as well as of
+   sequence errors.
+
+   2. It provides a neat function that is relatively
+   CPU-intensive, and can be used to keep a CPU
+   busy when testing for priority inversion scenarios,
+   where it matters which thread gets CPU time.
+*/
+
+inline size_t combine_hashes(size_t const oldhash, uint32_t const payload) {
+  size_t new_hash = std::hash<uint32_t>{}(payload);
+  return (oldhash << 4) ^ new_hash;
+}
+
+/* computes a hash value from a uint32 value */
+inline size_t hash_u32(uint32_t const val) {
+  size_t new_hash = std::hash<uint32_t>{}(val);
+  return new_hash;
+}
+
+inline osal_timer_t set_deadline(int sec, long nsec)
+/* takes a second and a nanosecond value,
+   and generates a deadline value that
+   many seconds / nanoseconds from now.
+*/
+{
+  timespec now;
+  clock_gettime(CLOCK_REALTIME, &now);
+  osal_timer_t deadline;
+  deadline.sec = now.tv_sec + sec;
+  deadline.nsec = now.tv_nsec + nsec;
+  while (deadline.nsec > 1000000000) {
+    deadline.nsec -= 1000000000;
+    deadline.sec += 1;
   }
-  
+  return deadline;
+}
 
 using std::vector;
 
