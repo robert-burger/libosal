@@ -1039,8 +1039,7 @@ TEST(MessageQueue, TestInvalidDescriptor) {
   EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_close() failed";
 }
 
-/* WRK */
-TEST(MessageQueue, TestResourceOversubscription) {
+TEST(MessageQueue, TestMaxNumQueues) {
 
   osal_retval_t orv;
 
