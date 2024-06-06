@@ -1024,11 +1024,25 @@ TEST(MessageQueue, TestDataSize) {
   ASSERT_EQ(rv, 0) << "setrlimit failed";
 }
 
+TEST(MessageQueue, TestInvalidDescriptor) {
+
+  osal_retval_t orv;
+  osal_mq_t mqueue;
+
+  // try to mq_close invalid descriptor
+
+  memset(&mqueue, 255, sizeof(mqueue));
+  orv = osal_mq_close(&mqueue);
+  if (orv != 0) {
+    perror("failed to close mq:");
+  }
+  EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_close() failed";
+}
+
 /* WRK */
 TEST(MessageQueue, TestResourceOversubscription) {
 
   osal_retval_t orv;
-  osal_mq_t mqueue;
 
   // initialize message queue
   osal_mq_attr_t attr = {};
@@ -1041,15 +1055,6 @@ TEST(MessageQueue, TestResourceOversubscription) {
   attr.mode = S_IRUSR | S_IWUSR;
   // unlink message queue if it exists.
   // Note: the return value is intentionally not checked.
-
-  // try to mq_close invalid descriptor
-
-  memset(&mqueue, 255, sizeof(mqueue));
-  orv = osal_mq_close(&mqueue);
-  if (orv != 0) {
-    perror("failed to close mq:");
-  }
-  EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_close() failed";
 
   // trying to run against max number of queue limit
   const int num_queues = 5000;
