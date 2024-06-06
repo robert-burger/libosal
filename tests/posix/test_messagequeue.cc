@@ -981,7 +981,7 @@ TEST(MessageQueue, TestFileSize) {
   }
 }
 
-TEST(MessageQueue, TestResourceOversubscription) {
+TEST(MessageQueue, TestDataSize) {
 
   int rv;
   osal_retval_t orv;
@@ -1022,6 +1022,25 @@ TEST(MessageQueue, TestResourceOversubscription) {
 
   rv = setrlimit(RLIMIT_DATA, &old_lim);
   ASSERT_EQ(rv, 0) << "setrlimit failed";
+}
+
+/* WRK */
+TEST(MessageQueue, TestResourceOversubscription) {
+
+  osal_retval_t orv;
+  osal_mq_t mqueue;
+
+  // initialize message queue
+  osal_mq_attr_t attr = {};
+  attr.oflags = OSAL_MQ_ATTR__OFLAG__RDWR | OSAL_MQ_ATTR__OFLAG__CREAT;
+  attr.max_messages = 10; /* system default, won't work with larger
+                           * number without adjustment */
+  ASSERT_GE(attr.max_messages, 0u);
+  attr.max_message_size = 256;
+  ASSERT_GE(attr.max_message_size, 0u);
+  attr.mode = S_IRUSR | S_IWUSR;
+  // unlink message queue if it exists.
+  // Note: the return value is intentionally not checked.
 
   // try to mq_close invalid descriptor
 
