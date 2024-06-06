@@ -8,23 +8,33 @@ Mutex Tests
 Functional Tests
 ================
 
-:MutexFunction, SingleThreadedNoRelease:
-   Tests construction, locking using osal_mutex_lock
-   and unlcking once in a single thread.
+MutexFunction, SingleThreadedNoRelease
+**************************************
 
-:MutexFunction, SingleThreadedWithRelease:
-   Tests multiple locks / unlocks in a single thread
+Tests construction, locking using osal_mutex_lock
+and unlcking once in a single thread.
+
+MutexFunction, SingleThreadedWithRelease
+****************************************
+
+Tests multiple locks / unlocks in a single thread
 
 
-:MutexFunction, ParallelMultiThreading:
-   Tests prevention of data race conditions in multilke threads.
+MutexFunction, ParallelMultiThreading
+*************************************
 
-:MutexFunction, MultithreadingPlusRandomizedWait:
-   Tests prevention of race conditions with random waits in
-   each thread.
+Tests prevention of data race conditions in multilke threads.
 
-:MutexDetect, TryLock:
-   Tests osal_mutex_trylock of a mutex that is already locked,
-   verifying correct detection of the error.
+MutexFunction, MultithreadingPlusRandomizedWait
+***********************************************
+
+Tests prevention of race conditions with random waits in
+each thread.
+
+MutexDetect, TryLock
+********************
+
+Tests osal_mutex_trylock of a mutex that is already locked,
+verifying correct detection of the error.
    
 					 
