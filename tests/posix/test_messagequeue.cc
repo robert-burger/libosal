@@ -11,6 +11,7 @@
 namespace test_messagequeue {
 
 int verbose = 0;
+int test_filesize = 0;
 
 using testutils::set_deadline;
 using testutils::wait_nanoseconds;
@@ -930,7 +931,7 @@ TEST(MessageQueue, TestFileLimit) {
   ASSERT_EQ(rv, 0) << "setrlimit failed";
 }
 
-TEST(MessageQueue, TestResourceOversubscription) {
+TEST(MessageQueue, TestFileSize) {
 
   int rv;
   osal_retval_t orv;
@@ -951,33 +952,55 @@ TEST(MessageQueue, TestResourceOversubscription) {
   struct rlimit lim;
   struct rlimit old_lim;
 
-#if 0
-  // this test is unfortunately very system-dependent,
-  // because it depends on value of host system limits
-  // and how exceeding the limit is handled. On some
-  // RMC OSL machines, this may exceed the limit and
-  // cause a core dump.
-  /* test limit on file size */
-  mq_unlink("/test8");
-  getrlimit(RLIMIT_FSIZE, &lim);
-  old_lim = lim;
-  lim.rlim_cur = 0;
-  rv = setrlimit(RLIMIT_FSIZE, &lim);
-  ASSERT_EQ(rv, 0) << "setrlimit failed";
+  if (test_filesize) {
+    // this test is unfortunately very system-dependent,
+    // because it depends on value of host system limits
+    // and how exceeding the limit is handled. On some
+    // RMC OSL machines, this may exceed the limit and
+    // cause a core dump.
+    /* test limit on file size */
+    mq_unlink("/test8");
+    getrlimit(RLIMIT_FSIZE, &lim);
+    old_lim = lim;
+    lim.rlim_cur = 0;
+    rv = setrlimit(RLIMIT_FSIZE, &lim);
+    ASSERT_EQ(rv, 0) << "setrlimit failed";
 
-  osal_mq_attr_t attr2 = attr;
-  attr2.max_messages = 1000; /* system default, won't work with larger
-                              * number without adjustment */
-  attr2.max_message_size = 256;
-  orv = osal_mq_open(&mqueue, "/test8", &attr2);
-  if (orv != 0) {
-    perror("failed to open mq:");
+    osal_mq_attr_t attr2 = attr;
+    attr2.max_messages = 1000; /* system default, won't work with larger
+                                * number without adjustment */
+    attr2.max_message_size = 256;
+    orv = osal_mq_open(&mqueue, "/test8", &attr2);
+    if (orv != 0) {
+      perror("failed to open mq:");
+    }
+    EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_open() failed";
+
+    rv = setrlimit(RLIMIT_FSIZE, &old_lim);
+    ASSERT_EQ(rv, 0) << "setrlimit failed";
   }
-  EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_open() failed";
+}
 
-  rv = setrlimit(RLIMIT_FSIZE, &old_lim);
-  ASSERT_EQ(rv, 0) << "setrlimit failed";
-#endif
+TEST(MessageQueue, TestResourceOversubscription) {
+
+  int rv;
+  osal_retval_t orv;
+  osal_mq_t mqueue;
+
+  // initialize message queue
+  osal_mq_attr_t attr = {};
+  attr.oflags = OSAL_MQ_ATTR__OFLAG__RDWR | OSAL_MQ_ATTR__OFLAG__CREAT;
+  attr.max_messages = 10; /* system default, won't work with larger
+                           * number without adjustment */
+  ASSERT_GE(attr.max_messages, 0u);
+  attr.max_message_size = 256;
+  ASSERT_GE(attr.max_message_size, 0u);
+  attr.mode = S_IRUSR | S_IWUSR;
+  // unlink message queue if it exists.
+  // Note: the return value is intentionally not checked.
+
+  struct rlimit lim;
+  struct rlimit old_lim;
 
   /* test limit on data size */
   mq_unlink("/test8");
@@ -1206,6 +1229,9 @@ int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   if (getenv("VERBOSE")) {
     test_messagequeue::verbose = 1;
+  }
+  if (getenv("TEST_FILESIZE")) {
+    test_messagequeue::test_filesize = 1;
   }
 
   return RUN_ALL_TESTS();
