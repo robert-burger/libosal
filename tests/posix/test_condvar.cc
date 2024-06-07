@@ -155,7 +155,7 @@ void *test_condvar_count(void *arg) {
 
 // this just sends a number of post() events to multiple
 // receivers, which count the received events.
-TEST(Condvar, ParallelMasked) {
+TEST(CondvarFunction, ParallelMasked) {
   shared_t shared_objects; /* shared data protected by
                               condvar and mutex */
 
@@ -391,7 +391,7 @@ void *test_condvar_separate(void *arg) {
 // receiver holds an own lock and condition variable,
 // and is notified by post() instead of broadcast.
 
-TEST(Condvar, ParallelSingleNotification) {
+TEST(CondvarFunction, ParallelSingleNotification) {
   shared_t shared_objects; /* shared data protected by
                               condvar and mutex */
 
@@ -653,7 +653,7 @@ void *test_condvar_wait(void *arg) {
 
 // this just sends a number of post() events to multiple
 // receivers, which count the received events.
-TEST(Condvar, ParallelWait) {
+TEST(CondvarFunction, ParallelWait) {
   shared_wait_t shared_objects; /* shared data protected by
                               condvar and mutex */
 

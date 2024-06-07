@@ -139,7 +139,7 @@ void *test_semaphore(void *p_params) {
 // first case: receiver is already waiting,
 // and will be blocked in wait() when post() happens.
 
-TEST(Semaphore, DirectWait) {
+TEST(SemaphoreFunction, DirectWait) {
   const uint64_t MAX_LAG_REALTIME_NSEC = 70000;
   const uint64_t MAX_LAG_BATCH_NSEC = 250000;
 
@@ -295,7 +295,7 @@ TEST(Semaphore, DirectWait) {
 // is called. This requires that such a delay
 // does not cause the event to be lost.
 
-TEST(Semaphore, RandomizedDelay) {
+TEST(SemaphoreFunction, RandomizedDelay) {
   const uint64_t MAX_LAG_REALTIME_NSEC = 50000;
   const uint64_t MAX_LAG_BATCH_NSEC = 100000;
 
@@ -531,7 +531,7 @@ void *test_semaphore_count(void *p_params) {
 
 // this just sends a number of post() events to multiple
 // receivers, which count the received events.
-TEST(Semaphore, ParallelCount) {
+TEST(SemaphoreFunction, ParallelCount) {
   pthread_t thread_ids[NTHREADS];
   ;
   thread_param_count_t params[NTHREADS]; /* shared data protected by
@@ -653,7 +653,7 @@ void *test_semaphore_timedwait(void *p_params) {
 
 // this just sends a number of post() events to multiple
 // receivers, which count the received events.
-TEST(Semaphore, TimedCount) {
+TEST(SemaphoreFunction, TimedCount) {
   pthread_t thread_ids[NTHREADS];
   ;
   thread_param_count_t params[NTHREADS]; /* shared data protected by
@@ -821,7 +821,7 @@ void *test_semaphore_trywait(void *p_params) {
 
 // this just sends a number of post() events to multiple
 // receivers, which count the received events.
-TEST(Semaphore, TryCount) {
+TEST(SemaphoreFunction, TryCount) {
   pthread_t thread_ids[NTHREADS];
   ;
   thread_param_try_t params[NTHREADS]; /* shared data protected by

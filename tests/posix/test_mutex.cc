@@ -202,7 +202,7 @@ TEST(MutexFunction, MultithreadingPlusRandomizedWait) {
       << "multi-threaded counter test failed";
 }
 
-TEST(MutexDetect, TryLock) {
+TEST(MutexFunction, TryLock) {
   osal_mutex_t my_mutex;
   osal_retval_t orv;
 
@@ -229,7 +229,7 @@ TEST(MutexDetect, TryLock) {
   ASSERT_EQ(orv, OSAL_OK) << "osal_mutex_destroy() failed";
 }
 
-TEST(MutexSane, TestRelock) {
+TEST(MutexDetect, TestRelock) {
   osal_mutex_t my_mutex;
   osal_mutex_attr_t attr;
   osal_retval_t orv = {};
@@ -268,7 +268,7 @@ void *lock_thread(void *p_params) {
   return nullptr;
 }
 
-TEST(MutexSane, OwnerDead1) {
+TEST(MutexDetect, OwnerDead1) {
   osal_mutex_t my_mutex;
   osal_mutex_attr_t attr;
   osal_retval_t orv = {};
@@ -298,7 +298,7 @@ TEST(MutexSane, OwnerDead1) {
   EXPECT_EQ(orv, 0) << "Could not destroy mutex";
 }
 
-TEST(MutexSane, OwnerDead2) {
+TEST(MutexDetect, OwnerDead2) {
   osal_mutex_t my_mutex;
   osal_mutex_attr_t attr;
   osal_retval_t orv = {};
@@ -329,7 +329,7 @@ TEST(MutexSane, OwnerDead2) {
   EXPECT_EQ(orv, 0) << "Could not destroy mutex";
 }
 
-TEST(MutexSane, InheritPar) {
+TEST(MutexFunction, InheritPar) {
   osal_mutex_t my_mutex;
   osal_mutex_attr_t attr;
   osal_retval_t orv = {};
@@ -349,7 +349,7 @@ TEST(MutexSane, InheritPar) {
   EXPECT_EQ(orv, 0) << "Could not destroy  priority-inheritance mutex";
 }
 
-TEST(MutexSane, ProtectPar) {
+TEST(MutexFunction, ProtectPar) {
   osal_mutex_t my_mutex;
   osal_mutex_attr_t attr;
   osal_retval_t orv = {};
@@ -372,7 +372,7 @@ TEST(MutexSane, ProtectPar) {
   EXPECT_EQ(orv, 0) << "Could not destroy mutex";
 }
 
-TEST(MutexSane, TestRecursive) {
+TEST(MutexFunction, TestRecursive) {
   osal_mutex_t my_mutex;
   osal_mutex_attr_t attr;
   osal_retval_t orv = {};

@@ -215,7 +215,7 @@ void *run_L(shared_t *p_shared) {
   return nullptr;
 }
 
-TEST(MutexFunc, TestNoPriorityInheritance) {
+TEST(MutexFunction, TestNoPriorityInheritance) {
   shared_t shared = {};
 
   osal_task_t task_H;
@@ -291,7 +291,7 @@ TEST(MutexFunc, TestNoPriorityInheritance) {
   EXPECT_GT(shared.time_delta, 5.0) << ("no priority inversion provoked");
 }
 
-TEST(MutexFunc, TestPriorityInheritance) {
+TEST(MutexFunction, TestPriorityInheritance) {
   shared_t shared = {};
 
   osal_task_t task_H;
@@ -438,7 +438,7 @@ TEST(MutexFunc, TestPriorityCeiling) {
   EXPECT_LT(shared.time_delta, 5.0) << (" priority adjustment failed");
 }
 
-TEST(MutexFunc, TestPriorityError) {
+TEST(MutexDetect, TestPriorityError) {
   /* test whether a priority that is too high is detected
      in the priority ceiling protocol (PROTOCOL_PROTECT). */
   osal_mutex_t mutexE;

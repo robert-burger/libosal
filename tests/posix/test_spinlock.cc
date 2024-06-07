@@ -9,7 +9,7 @@ namespace test_spinlock {
 
 using testutils::wait_nanoseconds;
 
-TEST(SpinlockSane, SingleThreadedNoRelease) {
+TEST(SpinlockFunction, SingleThreadedNoRelease) {
   osal_spinlock_t my_spinlock;
   osal_spinlock_init(&my_spinlock, nullptr);
   osal_spinlock_lock(&my_spinlock);
@@ -28,7 +28,7 @@ TEST(SpinlockSane, SingleThreadedNoRelease) {
                                     "is totally wrong");
 }
 
-TEST(SpinlockSane, SingleThreadedWithRelease) {
+TEST(SpinlockFunction, SingleThreadedWithRelease) {
   osal_spinlock_t my_spinlock;
   osal_spinlock_init(&my_spinlock, nullptr);
   const int loopcount = 100;
@@ -97,7 +97,7 @@ void *test_random(void *p_params) {
   return nullptr;
 }
 
-TEST(SpinlockMultithreading, Parallel) {
+TEST(SpinlockFunction, ParallelMultithreading) {
   const ulong N_THREADS = 100;
   const uint LOOPCOUNT = 100000;
 

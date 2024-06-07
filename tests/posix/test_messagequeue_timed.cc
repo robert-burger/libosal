@@ -121,7 +121,7 @@ void *run_consumer(void *p_params) {
   return nullptr;
 }
 
-TEST(MessageQueue, TimeoutsDelayedSend) {
+TEST(MessageQueueFunction, TimeoutsDelayedSend) {
 
   int rv;
   osal_retval_t orv;
@@ -209,7 +209,7 @@ TEST(MessageQueue, TimeoutsDelayedSend) {
       << "wait count 0 expected for receiving";
 }
 
-TEST(MessageQueue, TimeoutsDelayedRecv) {
+TEST(MessageQueueFunction, TimeoutsDelayedRecv) {
 
   int rv;
   osal_retval_t orv;

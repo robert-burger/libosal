@@ -89,7 +89,7 @@ osal_retval_t checksum_memory() {
   return orv;
 }
 
-TEST(Sharedmemory, RandomWrites) {
+TEST(SharedmemoryFunction, RandomWrites) {
 
   int rv;
   osal_retval_t orv;
@@ -305,7 +305,7 @@ osal_retval_t checksum_memory_restrict() {
   return orv;
 }
 
-TEST(Sharedmemory, RandomWriteRestrict) {
+TEST(SharedmemoryFunction, RandomWriteRestrict) {
 
   int rv;
   osal_retval_t orv;
@@ -449,7 +449,7 @@ namespace test_sharedmemory_errors {
 const char *SHM_NAME3 = "/shm_test3";
 const char *PATH_SHM_NAME3 = "/dev/shm/shm_test3";
 
-TEST(Sharedmemory, TestTruncateError) {
+TEST(SharedmemoryDetect, TestTruncateError) {
 
   osal_retval_t orv;
   osal_shm_t shm;
@@ -484,7 +484,7 @@ TEST(Sharedmemory, TestTruncateError) {
   unlink(PATH_SHM_NAME3);
 }
 
-TEST(Sharedmemory, TestExistError) {
+TEST(SharedmemoryDetect, TestExistError) {
 
   osal_retval_t orv;
   osal_shm_t shm1;
@@ -520,7 +520,7 @@ TEST(Sharedmemory, TestExistError) {
   unlink(PATH_SHM_NAME3);
 }
 
-TEST(Sharedmemory, TestInvalidName) {
+TEST(SharedmemoryError, TestInvalidName) {
 
   osal_retval_t orv;
   osal_shm_t shm;
@@ -542,7 +542,7 @@ TEST(Sharedmemory, TestInvalidName) {
       << "could not open shared memory in parent";
 }
 
-TEST(Sharedmemory, TestTooLongName) {
+TEST(SharedmemoryError, TestTooLongName) {
 
   osal_retval_t orv;
   osal_shm_t shm;
@@ -570,7 +570,7 @@ TEST(Sharedmemory, TestTooLongName) {
       << "could not open shared memory in parent";
 }
 
-TEST(Sharedmemory, TestTooManyFiles) {
+TEST(SharedmemoryError, TestTooManyFiles) {
 
   osal_retval_t orv;
   int rv;
@@ -611,7 +611,7 @@ TEST(Sharedmemory, TestTooManyFiles) {
 
 namespace test_mmap {
 
-TEST(Sharedmemory, TestProtExec) {
+TEST(SharedmemoryConfig, TestProtExec) {
 
   const char *SHM_NAME7 = "shm_test7";
   const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
@@ -645,7 +645,7 @@ TEST(Sharedmemory, TestProtExec) {
   unlink(PATH_SHM_NAME7);
 }
 
-TEST(Sharedmemory, TestProtNone) {
+TEST(SharedmemoryConfig, TestProtNone) {
 
   const char *SHM_NAME7 = "shm_test7";
   const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
@@ -679,7 +679,7 @@ TEST(Sharedmemory, TestProtNone) {
   unlink(PATH_SHM_NAME7);
 }
 
-TEST(Sharedmemory, TestProtPrivate) {
+TEST(SharedmemoryConfig, TestProtPrivate) {
 
   const char *SHM_NAME7 = "shm_test7";
   const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
@@ -713,7 +713,7 @@ TEST(Sharedmemory, TestProtPrivate) {
   unlink(PATH_SHM_NAME7);
 }
 
-TEST(Sharedmemory, TestMMAPWorks) {
+TEST(SharedmemoryFunction, TestMMAPWorks) {
 
   const char *SHM_NAME7 = "shm_test7";
   const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
@@ -746,7 +746,7 @@ TEST(Sharedmemory, TestMMAPWorks) {
   unlink(PATH_SHM_NAME7);
 }
 
-TEST(Sharedmemory, TestPermDenied) {
+TEST(SharedmemoryDetect, TestPermDenied) {
 
   const char *SHM_NAME7 = "shm_test7";
   const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
@@ -779,7 +779,7 @@ TEST(Sharedmemory, TestPermDenied) {
   unlink(PATH_SHM_NAME7);
 }
 
-TEST(Sharedmemory, TestMmapSizeLimit) {
+TEST(SharedmemoryDetect, TestMmapSizeLimit) {
 
   const char *SHM_NAME7 = "shm_test7";
   const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";
@@ -835,7 +835,7 @@ TEST(Sharedmemory, TestMmapSizeLimit) {
   unlink(PATH_SHM_NAME7);
 }
 
-TEST(Sharedmemory, TestBadDescriptor) {
+TEST(SharedmemoryError, TestBadDescriptor) {
 
   const char *SHM_NAME7 = "shm_test7";
   const char *PATH_SHM_NAME7 = "/dev/shm/shmd_test7";

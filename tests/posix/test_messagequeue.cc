@@ -213,7 +213,7 @@ void *run_consumer(void *p_params) {
   return nullptr;
 }
 
-TEST(MessageQueue, MultiSendMultiReceive) {
+TEST(MessageQueueFunction, MultiSendMultiReceive) {
 
   int rv;
   osal_retval_t orv;
@@ -517,7 +517,7 @@ void *run_rconsumer(void *p_params) {
   return nullptr;
 }
 
-TEST(MessageQueue, ReadonlyWriteonly) {
+TEST(MessageQueueFunction, ReadonlyWriteonly) {
 
   int rv;
   osal_retval_t orv;
@@ -674,7 +674,7 @@ TEST(MessageQueue, ReadonlyWriteonly) {
 } // namespace readonly_writeonly
 
 namespace test_invalidparams {
-TEST(MessageQueue, InvalidParamsAccess) {
+TEST(MessageQueueDetect, InvalidParamsAccess) {
 
   int rv;
   osal_retval_t orv;
@@ -737,7 +737,7 @@ TEST(MessageQueue, InvalidParamsAccess) {
       << "osal_mq_open() succeeded wrongly";
 }
 
-TEST(MessageQueue, InvalidParamValues) {
+TEST(MessageQueueError, InvalidMessageSize) {
 
   osal_retval_t orv;
   osal_mq_t fqueue;
@@ -763,7 +763,7 @@ TEST(MessageQueue, InvalidParamValues) {
       << "osal_mq_open() failed to check invalid message size";
 }
 
-TEST(MessageQueue, NonExistingName) {
+TEST(MessageQueueError, NonExistingName) {
 
   osal_retval_t orv;
   osal_mq_t fqueue;
@@ -789,7 +789,7 @@ TEST(MessageQueue, NonExistingName) {
       << "osal_mq_open() failed to check non-existant mq name";
 }
 
-TEST(MessageQueue, OverlyLongName) {
+TEST(MessageQueueError, OverlyLongName) {
 
   osal_retval_t orv;
   osal_mq_t fqueue;
@@ -823,7 +823,7 @@ TEST(MessageQueue, OverlyLongName) {
       << "osal_mq_open() failed to check overly long mq name";
 }
 
-TEST(MessageQueue, ExceedingSizeLimit) {
+TEST(MessageQueueError, ExceedingSizeLimit) {
 
   osal_retval_t orv;
   osal_mq_t fqueue;
@@ -853,7 +853,7 @@ TEST(MessageQueue, ExceedingSizeLimit) {
 
 namespace test_maxresources {
 
-TEST(MessageQueue, TestMessageNumber) {
+TEST(MessageQueueError, TestMessageNumber) {
 
   int rv;
   osal_retval_t orv;
@@ -892,7 +892,7 @@ TEST(MessageQueue, TestMessageNumber) {
   ASSERT_EQ(rv, 0) << "setrlimit failed";
 }
 
-TEST(MessageQueue, TestFileLimit) {
+TEST(MessageQueueError, TestFileLimit) {
 
   int rv;
   osal_retval_t orv;
@@ -931,7 +931,7 @@ TEST(MessageQueue, TestFileLimit) {
   ASSERT_EQ(rv, 0) << "setrlimit failed";
 }
 
-TEST(MessageQueue, TestFileSize) {
+TEST(MessageQueueError, TestFileSize) {
 
   int rv;
   osal_retval_t orv;
@@ -981,7 +981,7 @@ TEST(MessageQueue, TestFileSize) {
   }
 }
 
-TEST(MessageQueue, TestDataSize) {
+TEST(MessageQueueError, TestDataSize) {
 
   int rv;
   osal_retval_t orv;
@@ -1024,7 +1024,7 @@ TEST(MessageQueue, TestDataSize) {
   ASSERT_EQ(rv, 0) << "setrlimit failed";
 }
 
-TEST(MessageQueue, TestInvalidDescriptor) {
+TEST(MessageQueueError, TestInvalidDescriptor) {
 
   osal_retval_t orv;
   osal_mq_t mqueue;
@@ -1039,7 +1039,7 @@ TEST(MessageQueue, TestInvalidDescriptor) {
   EXPECT_EQ(orv, OSAL_ERR_INVALID_PARAM) << "osal_mq_close() failed";
 }
 
-TEST(MessageQueue, TestMaxNumQueues) {
+TEST(MessageQueueError, TestMaxNumQueues) {
 
   osal_retval_t orv;
 
@@ -1079,7 +1079,7 @@ TEST(MessageQueue, TestMaxNumQueues) {
 
 namespace test_send_errors {
 
-TEST(MessageQueue, TestSendErrors) {
+TEST(MessageQueueError, TestSendErrors) {
 
   // int rv;
   osal_retval_t orv;
@@ -1142,7 +1142,7 @@ TEST(MessageQueue, TestSendErrors) {
 
 namespace test_receive_errors {
 
-TEST(MessageQueue, TestReceiveErrors) {
+TEST(MessageQueueDetect, TestReceiveErrors) {
 
   // int rv;
   osal_retval_t orv;
