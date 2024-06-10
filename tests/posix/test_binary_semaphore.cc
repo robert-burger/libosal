@@ -142,7 +142,7 @@ void *test_semaphore(void *p_params) {
 // first case: receiver is already waiting,
 // and will be blocked in wait() when post() happens.
 
-TEST(Semaphore, DirectWait) {
+TEST(BinarySemaphoreFunction, DirectWait) {
   const uint64_t MAX_LAG_REALTIME_NSEC = 70000;
   const uint64_t MAX_LAG_BATCH_NSEC = 250000;
 
@@ -299,7 +299,7 @@ TEST(Semaphore, DirectWait) {
 // is called. This requires that such a delay
 // in wait()ing does not cause the event to be lost.
 
-TEST(Semaphore, RandomizedDelay) {
+TEST(BinarySemaphoreFunction, RandomizedDelay) {
   const uint64_t MAX_LAG_REALTIME_NSEC = 50000;
   const uint64_t MAX_LAG_BATCH_NSEC = 100000;
 
@@ -540,7 +540,7 @@ void *test_semaphore_count(void *p_params) {
 
 // this just sends a number of post() events to multiple
 // receivers, which count the received events.
-TEST(Semaphore, ParallelCount) {
+TEST(BinarySemaphoreFunction, ParallelCount) {
   pthread_t thread_ids[NTHREADS];
   ;
   thread_param_count_t params[NTHREADS]; /* shared data protected by
@@ -673,7 +673,7 @@ void *test_semaphore_count(void *p_params) {
 
 // this just sends a number of post() events to multiple
 // receivers, which count the received events.
-TEST(Semaphore, ParallelSynchronizedCount) {
+TEST(BinarySemaphoreFunction, ParallelSynchronizedCount) {
   pthread_t thread_ids[NTHREADS];
   ;
   thread_param_count_t params[NTHREADS]; /* shared data protected by
@@ -799,7 +799,7 @@ TEST(Semaphore, ParallelSynchronizedCount) {
 // receivers, which count the received events.
 // here, events are posted so that we expect that
 // some are lost.
-TEST(Semaphore, ParallelLossyCount) {
+TEST(BinarySemaphoreFunction, ParallelLossyCount) {
   pthread_t thread_ids[NTHREADS];
   ;
   thread_param_count_t params[NTHREADS]; /* shared data protected by
@@ -991,7 +991,7 @@ void *test_semaphore_timedwait(void *p_params) {
 
 // this just sends a number of post() events to multiple
 // receivers, which count the received events.
-TEST(Semaphore, TimedCount) {
+TEST(BinarySemaphoreFunction, TimedCount) {
   pthread_t thread_ids[NTHREADS];
   ;
   thread_param_count_t params[NTHREADS]; /* shared data protected by
@@ -1159,7 +1159,7 @@ void *test_semaphore_trywait(void *p_params) {
 
 // this just sends a number of post() events to multiple
 // receivers, which count the received events.
-TEST(Semaphore, TryCount) {
+TEST(BinarySemaphoreFunction, TryCount) {
   pthread_t thread_ids[NTHREADS];
   ;
   thread_param_try_t params[NTHREADS]; /* shared data protected by

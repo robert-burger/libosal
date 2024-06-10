@@ -19,10 +19,6 @@ using testutils::wait_nanoseconds;
    time (in order to increase chance of concurrent access), get the
    mutex, pause a bit more, increase the coutner, and return the
    mutex.
-
-   The rationale of the test is that if the mutex would not
-   protect shared data properly, we would have some missing
-   counts due to race conditions.
 */
 typedef struct {
   int thread_id;
@@ -70,7 +66,7 @@ void *test_random(void *p_params) {
   return nullptr;
 }
 
-TEST(TasksMultithreading, Parallel) {
+TEST(TasksMultithreadingFunction, Parallel) {
   const ulong N_THREADS = 100;
   const uint LOOPCOUNT = 100000;
 
@@ -122,7 +118,7 @@ TEST(TasksMultithreading, Parallel) {
       << "multi-threaded counter test failed";
 }
 
-TEST(TasksMultithreading, RandomizedPlusWait) {
+TEST(TasksMultithreadingFunction, RandomizedPlusWait) {
   const ulong N_THREADS = 8;
   const uint LOOPCOUNT = 10000;
   const uint MAX_WAIT_TIME_NSEC = 500;
@@ -205,7 +201,7 @@ void *test_cancel(void *p_thread_params) {
   return nullptr;
 }
 
-TEST(TasksMultithreading, TaskCancel) {
+TEST(TasksMultithreadingFunction, TaskCancel) {
 
   osal_task_t thread_id;
   thread_cancel_param_t thread_params;
@@ -293,7 +289,7 @@ void *test_suspend(void *p_thread_params) {
   return nullptr;
 }
 
-TEST(TasksMultithreading, TaskSuspend) {
+TEST(TasksMultithreadingFunction, TaskSuspend) {
 
   osal_task_t thread_id;
   thread_suspend_param_t thread_params;
@@ -388,7 +384,7 @@ void *test_attrs(void *p_thread_params) {
   return nullptr;
 }
 
-TEST(TasksMultithreading, TaskAttributes) {
+TEST(TasksMultithreadingConfig, TaskAttributes) {
 
   osal_task_t thread_id;
   thread_attrs_param_t thread_params;
@@ -476,7 +472,7 @@ TEST(TasksMultithreading, TaskAttributes) {
 
 #if 0
 // replaced by test above
-TEST(TasksMultithreading, SuspendResume) {
+TEST(TasksMultithreadingFunction, SuspendResume) {
 
   osal_task_t thread_id;
   thread_attrs_param_t thread_params;
