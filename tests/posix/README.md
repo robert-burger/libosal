@@ -2,7 +2,7 @@
 
 ## Environment Variables
 
-There are two variables which affect how tests are run:
+There are several variables which affect how tests are run:
 
 1. Checking basic latency bounds.
 
@@ -16,13 +16,22 @@ the system determines whether it runs under the FIFO
 real-time scheduler, which can be set using the chrt command.
 
 In this case, the latency-critical tests will use an mlockall() system
-call to lock memory and disable paging.
+call to lock memory and disable paging. These latency are not intended
+to be used on CI or on a build server, since they can fail randomly
+depending on system load.
 
+2. Switches for unstable tests
 
-These tests are not intended to be used on CI or on a build
-server, since they can fail randomly depending on system load.
+These tests are not included by default in automated runs,
+since they do not run reliable on a standard system.
 
-2. Verbose progress reports
+:TEST_FILESIZE: Tests message queues for detecting a file size user limit error
+
+:CHECK_TRYWAIT: run SemaphoreFunction::TryCount test checking for missed events
+
+:CHECK_SUSPEND: run suspend / resume test (might require manual SIGCONT signal)
+
+3. Verbose progress reports
 
 Set VERBOSE=1 to get verbose progress reports. These might be
 useful if some tests time out or hang due to errors.
@@ -56,4 +65,40 @@ in your browser.
 
 * [Overview on Test Documentation](doc/Overview.rst)
 
-* [Mutex](doc/Mutex.rst)
+Synchronization Mechanisms
+--------------------------
+
+* `Mutexes <doc/Mutex.rst>`_
+* `Condition Variables <doc/Condition_Variables.rst>`_
+* `Binary Semaphores <doc/Binary_Semaphore.rst?>`_
+* `Counting Semaphores <doc/Counting_Semaphore.rst>`_
+* `Spin Locks <doc/Spinlock.rst>`_
+
+  
+Task Management / Threads
+-------------------------
+
+* `Task creation and configuration <doc/Tasks.rst>`_
+
+
+Communication Mechanisms / Inter-Process Communication
+------------------------------------------------------
+
+* `Message Queues <doc/MessageQueue.rst>`_
+* `Shared Memory Segments <doc/SharedMemory.rst>`_
+
+
+Timers
+------
+
+* `Timers <doc/Timer.rst>`_
+
+
+Debugging Facilities
+--------------------
+
+* `Console IO <doc/IO.rst>`_
+* `Tracing <doc/Trace.rst>`_
+* `Shared Memory textual I/O <doc/SHM_IO.rst>`_
+
+
