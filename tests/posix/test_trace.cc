@@ -10,7 +10,7 @@ namespace test_trace {
 
 using testutils::wait_nanoseconds;
 
-TEST(Trace, SingleThreaded) {
+TEST(TraceFunction, SingleThreaded) {
   const osal_uint32_t count = 5000;
   const osal_uint32_t trsize = 2 * count;
   osal_retval_t orv;

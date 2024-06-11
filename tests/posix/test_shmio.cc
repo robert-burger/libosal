@@ -6,7 +6,7 @@
 
 namespace test_shmio {
 
-TEST(IO, shmio) {
+TEST(SHMIOFunction, SimpleMessage) {
   const char TEST_MESSAGE[] = "abcd\n";
 
   unlink("/dev/shm/shm_io");

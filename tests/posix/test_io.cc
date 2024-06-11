@@ -5,7 +5,7 @@
 
 namespace test_io {
 
-TEST(IO, PrintF) {
+TEST(IOFunction, PrintF) {
 
   osal_retval_t orv = osal_printf("Hello World!\n");
 
@@ -20,7 +20,7 @@ TEST(IO, PrintF) {
 
   EXPECT_EQ(orv, 0) << " osal_printf(..., 100) did not return zero";
 }
-TEST(IO, PutS) {
+TEST(IOFunction, PutS) {
 
   osal_retval_t orv = osal_puts("abc");
 
@@ -37,7 +37,7 @@ osal_int32_t test_func(const char *format, const char *args, ...) {
   return orv;
 }
 
-TEST(IO, vfprintf) {
+TEST(IOFunction, vfprintf) {
   osal_int32_t orv = test_func("test: %s, %s\n", "argument1", "argument2");
 
   EXPECT_EQ(orv, 31) << " osal_vfprintf() did not return zero";

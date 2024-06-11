@@ -99,7 +99,7 @@ void check_wait_times(vector<osal_uint64_t> &req_wait_times, bool runs_realtime,
   }
 }
 
-TEST(TimerExpired, SaneSingleThreaded) {
+TEST(TimerExpiredFunction, SingleThreaded) {
   const bool runs_realtime = is_realtime();
 
   // we allow no negative time tifference,
@@ -134,7 +134,7 @@ void *check_wait_times_mt(void *vparams) {
   return nullptr;
 }
 
-TEST(TimerExpired, SaneMultiThreaded) {
+TEST(TimerExpiredFunction, MultiThreaded) {
   const bool runs_realtime = is_realtime();
 
   // we allow no negative time tifference,
@@ -228,7 +228,7 @@ void check_sleep_times(vector<osal_uint64_t> &req_wait_times,
   }
 }
 
-TEST(TimerSleep, SaneSingleThreaded) {
+TEST(TimerSleepFunction, SingleThreaded) {
   const bool runs_realtime = is_realtime();
 
   // we allow no negative time tifference,
@@ -264,7 +264,7 @@ void *check_sleep_times_mt(void *vparams) {
   return nullptr;
 }
 
-TEST(TimerSleep, SaneMultiThreaded) {
+TEST(TimerSleepFunction, MultiThreaded) {
   const bool runs_realtime = is_realtime();
 
   // we allow no negative time tifference,
@@ -368,7 +368,7 @@ void check_sleep_until(vector<osal_uint64_t> &req_wait_times,
   }
 }
 
-TEST(TimerSleepUntil, SaneSingleThreaded) {
+TEST(TimerSleepUntilFunction, SingleThreaded) {
   const bool runs_realtime = is_realtime();
 
   // we allow no negative time tifference,
@@ -400,7 +400,7 @@ void *check_sleep_until_mt(void *vparams) {
   return nullptr;
 }
 
-TEST(TimerSleepUntil, SaneMultiThreaded) {
+TEST(TimerSleepUntilFunction, MultiThreaded) {
   const bool runs_realtime = is_realtime();
 
   // we allow no negative time tifference,
@@ -458,7 +458,7 @@ TEST(TimerSleepUntil, SaneMultiThreaded) {
   }
 }
 
-TEST(Timer, BusyWait) {
+TEST(TimerFunction, BusyWait) {
   const osal_uint64_t now = osal_timer_gettime_nsec();
   const osal_uint64_t delta = 500000000;
   const osal_uint64_t test_time_nsec = now + delta;
