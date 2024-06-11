@@ -67,7 +67,7 @@ MessageQueueFunction, TestInterruptSend
 Checks for detection of a signal during osal_mq_send.
 
 MessageQueueFunction, TestInterruptTimedSend
-------------------------------------
+--------------------------------------------
 
 Checks for detection of signal during interrupted
 timed send (osal_mq_timedsend)
@@ -116,7 +116,7 @@ a 10000 characters long name.
 
 
 MessageQueueError, ExceedingSizeLimit
---------------------------------
+-------------------------------------
 
 Detects attempt to configure a message queue wich exceeds
 the message size limit.
@@ -168,7 +168,7 @@ the configured maximum message size.
 
 
 MessageQueueDetect, TestReceiveErrors
-------------------------------------
+-------------------------------------
 
 Detects time-outs during message receive, an invalid deadline,  a
 buffer size that is too small or too large,

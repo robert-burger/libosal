@@ -58,7 +58,7 @@ Tests function of the recursive mutex, which allows for repeated
 locking from the same thread.
 
 Error Detection in Simple Mutexes
-*********************************
+=================================
 
 Note that for the standard pthreads implementaion, many error cases
 cannot be tested since these errors invoke undefined behavior,
