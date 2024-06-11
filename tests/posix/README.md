@@ -20,16 +20,16 @@ call to lock memory and disable paging. These latency are not intended
 to be used on CI or on a build server, since they can fail randomly
 depending on system load.
 
-2. Switches for unstable tests
+2. Envvar Switches for unstable tests
 
 These tests are not included by default in automated runs,
 since they do not run reliable on a standard system.
 
-* **TEST_FILESIZE** Tests message queues for detecting a file size user limit error
+* **TEST_FILESIZE=1** Tests message queues for detecting a file size user limit error
 
-* **CHECK_TRYWAIT** run SemaphoreFunction::TryCount test checking for missed events
+* **CHECK_TRYWAIT=1** run SemaphoreFunction::TryCount test checking for missed events
 
-* **CHECK_SUSPEND** run suspend / resume test (might require manual SIGCONT signal)
+* **CHECK_SUSPEND=1** run suspend / resume test (might require manual SIGCONT signal)
 
 3. Verbose progress reports
 
@@ -78,27 +78,27 @@ Synchronization Mechanisms
 Task Management / Threads
 -------------------------
 
-* `Task creation and configuration <doc/Tasks.rst>`_
+* [Task creation and configuration](doc/Tasks.rst)
 
 
 Communication Mechanisms / Inter-Process Communication
 ------------------------------------------------------
 
-* `Message Queues <doc/MessageQueue.rst>`_
-* `Shared Memory Segments <doc/SharedMemory.rst>`_
+* [Message Queues](doc/MessageQueue.rst)
+* [Shared Memory Segments](doc/SharedMemory.rst)
 
 
 Timers
 ------
 
-* `Timers <doc/Timer.rst>`_
+* [Timers](doc/Timer.rst)
 
 
 Debugging Facilities
 --------------------
 
-* `Console IO <doc/IO.rst>`_
-* `Tracing <doc/Trace.rst>`_
-* `Shared Memory textual I/O <doc/SHM_IO.rst>`_
+* [Console IO](doc/IO.rst)
+* [Tracing](doc/Trace.rst)
+* [Shared Memory textual I/O](doc/SHM_IO.rst)
 
 
