@@ -25,11 +25,11 @@ depending on system load.
 These tests are not included by default in automated runs,
 since they do not run reliable on a standard system.
 
-:TEST_FILESIZE: Tests message queues for detecting a file size user limit error
+* **TEST_FILESIZE** Tests message queues for detecting a file size user limit error
 
-:CHECK_TRYWAIT: run SemaphoreFunction::TryCount test checking for missed events
+* **CHECK_TRYWAIT** run SemaphoreFunction::TryCount test checking for missed events
 
-:CHECK_SUSPEND: run suspend / resume test (might require manual SIGCONT signal)
+* **CHECK_SUSPEND** run suspend / resume test (might require manual SIGCONT signal)
 
 3. Verbose progress reports
 
@@ -68,11 +68,11 @@ in your browser.
 Synchronization Mechanisms
 --------------------------
 
-* `Mutexes <doc/Mutex.rst>`_
-* `Condition Variables <doc/Condition_Variables.rst>`_
-* `Binary Semaphores <doc/Binary_Semaphore.rst?>`_
-* `Counting Semaphores <doc/Counting_Semaphore.rst>`_
-* `Spin Locks <doc/Spinlock.rst>`_
+* [Mutexes](doc/Mutex.rst)
+* [Condition Variables](doc/Condition_Variables.rst)
+* [Binary Semaphores](doc/Binary_Semaphore.rst)
+* [Counting Semaphores](doc/Counting_Semaphore.rst)
+* [Spin Locks](doc/Spinlock.rst)
 
   
 Task Management / Threads

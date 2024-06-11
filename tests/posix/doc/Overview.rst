@@ -31,7 +31,7 @@ Synchronization Mechanisms
 
 * `Mutexes <Mutex.rst>`_
 * `Condition Variables <Condition_Variables.rst>`_
-* `Binary Semaphores <Binary_Semaphore.rst?>`_
+* `Binary Semaphores <Binary_Semaphore.rst>`_
 * `Counting Semaphores <Counting_Semaphore.rst>`_
 * `Spin Locks <Spinlock.rst>`_
 
