@@ -49,7 +49,8 @@ Messaging with active Signal Handlers
 =====================================
 
 These tests are done with active signal
-handlers which cause interrupt return codes
+handlers which, if a signal is received during wait,
+causes interrupt return codes
 from the implementation messaging functions.
 
 Usually, the messaging primitives *do not* return
@@ -173,18 +174,6 @@ MessageQueueDetect, TestReceiveErrors
 Detects time-outs during message receive, an invalid deadline,  a
 buffer size that is too small or too large,
 or an invalid file descriptor.
-
-
-
-
-
-
-
-
-
-
-Tests with Signals
-==================
 
 
 
