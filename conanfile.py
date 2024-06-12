@@ -1,8 +1,7 @@
 from conan import ConanFile
 from conan import tools
-from conan.tools.files import mkdir, chdir
+from conan.tools.files import mkdir, chdir, copy
 from conan.tools.gnu import Autotools, AutotoolsToolchain
-import re
 import os
 
 class MainProject(ConanFile):
@@ -74,7 +73,18 @@ class MainProject(ConanFile):
     def package(self):
         autotools = Autotools(self)
         autotools.install()
-
+        
+        if self.options.coverage:
+            src = os.path.join(self.build_folder,
+                               "tests",
+                               "posix",
+                               "coverage")
+            dst = os.path.join(self.package_folder,
+                               "doc",
+                               "coverage")
+            
+            copy(self, "*.html", src, dst)
+            
     def package_info(self):
         self.cpp_info.includedirs = ['include']
         self.cpp_info.libs = ["osal"]
