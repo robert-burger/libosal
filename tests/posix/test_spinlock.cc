@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "libosal/osal.h"
+#include "libosal/spinlock.h"
 #include "test_utils.h"
 
 namespace test_spinlock {

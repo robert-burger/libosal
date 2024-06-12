@@ -1,3 +1,4 @@
+#include "libosal/binary_semaphore.h"
 #include "libosal/osal.h"
 #include "libosal/timer.h"
 #include "test_utils.h"

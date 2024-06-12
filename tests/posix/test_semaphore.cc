@@ -1,4 +1,5 @@
 #include "libosal/osal.h"
+#include "libosal/semaphore.h"
 #include "libosal/timer.h"
 #include "test_utils.h"
 #include "gtest/gtest.h"

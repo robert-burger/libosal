@@ -3,6 +3,7 @@
 #include <pthread.h>
 #include <vector>
 
+#include "libosal/mutex.h"
 #include "libosal/osal.h"
 #include "test_utils.h"
 
