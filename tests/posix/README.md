@@ -74,9 +74,10 @@ From the project root folder, use:
 ````bash
 make clean
 make CFLAGS="--coverage -O0"
+make check CFLAGS="--coverage -O0"
 ````
 
-To generate colorful HTML output using gcovr, run
+To generate colorful HTML output using gcovr after that, run
 
 ````bash
 cd tests/posix
