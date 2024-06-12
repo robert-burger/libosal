@@ -1,8 +1,34 @@
 # Tests for the POSIX implementation of libosal
 
-## Environment Variables
+## How to run tests
 
-There are several variables which affect how tests are run:
+````bash
+make check CFLAGS="-Wall -Wextra"
+````
+
+for stricter error checking with GCC, use
+
+````bash
+make check CFLAGS="-Wall -Wextra -Werror -m64  -Wall -Wshadow \
+     -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes" 
+````
+
+The results end up in the `*.log` files in the .../posix folder.
+
+## Environment Variable Switches for running extra Tests
+
+Because part of these tests run against non-deterministic
+multi-threaded code, some test cases are not deterministic and are not
+guaranteed to succeed even for a correct implementation. For example,
+a loaded system might miss semaphore notifications, and some tests of
+error cases will depend on system limits. Also, operations which will
+have guaranteed (but usually system-dependend) maximum latency limits
+on real-time systems can fail on desktop systems.
+
+To allow for automated testing, such test cases are not run by
+default, but can be activated by setting environment variables.
+
+There are several variables which affect whether these tests are run:
 
 1. Checking basic latency bounds.
 
@@ -11,38 +37,39 @@ latencies. These are intended as sanity tests, not for performance
 tuning. However adapted variants of the tests might
 be useful for performace tuning.
 
-Under Linux, maximum latencies are adjusted depending on whether
-the system determines whether it runs under the FIFO
-real-time scheduler, which can be set using the chrt command.
+Under Linux, maximum latencies are adjusted depending on whether the
+system determines whether it runs under the FIFO real-time scheduler,
+which on RMC desktops can be set using the `chrt` command.
 
 In this case, the latency-critical tests will use an mlockall() system
-call to lock memory and disable paging. These latency are not intended
-to be used on CI or on a build server, since they can fail randomly
-depending on system load.
+call to lock memory and disable paging. 
 
-2. Envvar Switches for unstable tests
+2. Envvar Switches for non-deterministic or unstable tests
 
 These tests are not included by default in automated runs,
-since they do not run reliable on a standard system.
+since they do not necessarily run reliable on a standard system.
 
-* **TEST_FILESIZE=1** Tests message queues for detecting a file size user limit error
+* **TEST_FILESIZE=1** Tests message queues for detecting a file size resource limit error
 
-* **CHECK_TRYWAIT=1** run SemaphoreFunction::TryCount test checking for missed events
+* **CHECK_TRYWAIT=1** run SemaphoreFunction::TryCount test, which checks for missed events
 
-* **CHECK_SUSPEND=1** run suspend / resume test (might require manual SIGCONT signal)
+* **CHECK_SUSPEND=1** run suspend / resume test (might require manual SIGCONT 
+  signal or `"fg"` command in bash, if the signal is received by 
+  the test runner and stops it)
 
 3. Verbose progress reports
 
 Set VERBOSE=1 to get verbose progress reports. These might be
-useful if some tests time out or hang due to errors.
+useful for error analysis if some tests time out or hang due 
+to errors. Also, some latency results are printed.
 
 
 ## Coverage Analysis
 
-Coverage analysis is generated during the test.
+Coverage analysis data can be generated during the test.
 
-This analysis requires extra cflags when compiling,
-use, from the project root folder:
+This analysis requires extra cflags when compiling.
+From the project root folder, use:
 
 ````bash
 make clean
@@ -56,10 +83,14 @@ cd tests/posix
 ./run-gcovr.sh
 ````
 
-(or include the equivalent line in the conan build script).
+(or include the equivalent line in the conan 
+build script).
 
 Then, open libosal/tests/posix/coverage/details.html
 in your browser.
+
+Coverage analysis reports are not included in the default
+build in order to keep build dependencies smaller.
 
 ## Documentation of individual Tests
 
