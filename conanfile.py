@@ -61,9 +61,9 @@ class MainProject(ConanFile):
         autotools.autoreconf()
         autotools.configure(args=args)
         autotools.make()
-        autotools.make(target="check")
 
         if self.options.coverage:
+            autotools.make(target="check")
             mkdir(self, "tests/posix/coverage")
             with chdir(self, "tests/posix"):
                 self.run("gcovr -v --decisions --html-details coverage/details.html -r . \
