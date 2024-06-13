@@ -26,7 +26,11 @@ class MainProject(ConanFile):
     
     def generate(self):
         tc = AutotoolsToolchain(self)
-        tc.autoreconf_args = [ "--install", ]
+        tc.autoreconf_args = [ "--install", ]        
+        if self.settings.os == "pikeos":
+            tc.update_configure_args({
+                "--host": "%s-%s" % (self.settings.arch, self.settings.os),  # update flag '--host=my-gnu-triplet
+            })
         tc.generate()
 
     def build(self):
