@@ -21,6 +21,7 @@ make
 sudo make install
 ```
 
+
 This will build and install a static as well as a dynamic library. For use in other project you can you the generated pkg-config file to retreave cflags and linker flags.
 
 ## Build with CMake
@@ -33,3 +34,19 @@ cmake --build .
 # You can define a specific install path with e.g. cmake --install .  --prefix test
 cmake --install . 
 ```
+
+## Tests
+
+On POSIX, run
+
+```
+make check
+```
+
+See tests/posix/README.md for details.
+
+For Cissy/Conan, you can also set the option "coverage"
+to produce coverage analysis in HTML format for the 
+POSIX implementation.
+
+

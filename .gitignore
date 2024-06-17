@@ -1,5 +1,7 @@
+*~
 *.lo
 *.o
+*.pc
 .deps
 .dirstamp
 m4/libtool.m4
@@ -35,3 +37,14 @@ cppcheck-addon-ctu-file-list
 
 
 build
+src/tools/logger/lec_logger
+test-driver
+check_mutex
+check_sema
+check_timer
+check_spinlock
+check_tasks
+check_shmio
+*.gcno
+
+

@@ -1,0 +1,17 @@
+*.log
+*.trs
+*.gcov
+*.gcda
+*.gcno
+check_timer
+check_sema
+check_mutex
+check_binarysema
+check_condvar
+check_messagequeue
+check_sharedmemory
+check_trace
+check_io
+hash-sum-pid*.asc
+check_mqsignals
+/coverage

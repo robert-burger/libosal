@@ -71,6 +71,9 @@ osal_retval_t osal_mq_open(osal_mq_t *mq, const osal_char_t *name,  const osal_m
         if (attr->oflags & OSAL_MQ_ATTR__OFLAG__CREAT) {
             oflags |= O_CREAT;
         }
+        if (attr->oflags & OSAL_MQ_ATTR__OFLAG__EXCL) {
+            oflags |= O_EXCL;
+        }
 
         mode = attr->mode;
 
@@ -145,6 +148,7 @@ osal_retval_t osal_mq_send(osal_mq_t *mq, const osal_char_t *msg, const osal_siz
         switch (errno) {
             case EAGAIN:    // The queue was full, and the O_NONBLOCK flag was set for the message queue description 
                             // referred to by mqdes.
+	      /* this error case will not happen, because O_NONBLOCK flag cannot be set currently*/
                 ret = OSAL_ERR_BUSY;
                 break;
             case EBADF:     // The descriptor specified in mqdes was invalid or not opened for writing.
@@ -155,6 +159,7 @@ osal_retval_t osal_mq_send(osal_mq_t *mq, const osal_char_t *msg, const osal_siz
                 break;
             case EINVAL:    // The call would have blocked, and abs_timeout was invalid, either because tv_sec 
                             // was less than zero, or because tv_nsec was less than zero or greater than 1000 million.
+	      /* this error case will not happen, because no timeout is passed to this function. */
                 ret = OSAL_ERR_INVALID_PARAM;
                 break;
             case EMSGSIZE:  // msg_len was greater than the mq_msgsize attribute of the message queue.
@@ -186,13 +191,13 @@ osal_retval_t osal_mq_timedsend(osal_mq_t *mq, const osal_char_t *msg, const osa
     assert(msg != NULL);
     assert(to != NULL);
 
-    osal_retval_t ret = OSAL_OK;
+    osal_retval_t ret = OSAL_ERR_INTERRUPTED;
 
     struct timespec ts;
     ts.tv_sec = to->sec;
     ts.tv_nsec = to->nsec;
 
-    while (ret != OSAL_ERR_TIMEOUT) {
+    while (ret == OSAL_ERR_INTERRUPTED) {
         int local_ret = mq_timedsend(mq->mq_desc, msg, msg_len, prio, &ts);
         if (local_ret == -1) {
             switch (errno) {
@@ -259,6 +264,8 @@ osal_retval_t osal_mq_receive(osal_mq_t *mq, osal_char_t *msg, const osal_size_t
                 break;
             case EINVAL:    // The call would have blocked, and abs_timeout was invalid, either because tv_sec 
                             // was less than zero, or because tv_nsec was less than zero or greater than 1000 million.
+	      /* this branch is never reached since the call does not use
+		 a timeout parameter. */
                 ret = OSAL_ERR_INVALID_PARAM;
                 break;
             case EMSGSIZE:  // msg_len was greater than the mq_msgsize attribute of the message queue.
@@ -289,13 +296,13 @@ osal_retval_t osal_mq_timedreceive(osal_mq_t *mq, osal_char_t *msg, const osal_s
     assert(msg != NULL);
     assert(to != NULL);
 
-    osal_retval_t ret = OSAL_OK;
+    osal_retval_t ret = OSAL_ERR_INTERRUPTED;
 
     struct timespec ts;
     ts.tv_sec = to->sec;
     ts.tv_nsec = to->nsec;
 
-    while (ret != OSAL_ERR_TIMEOUT) {
+    while (ret == OSAL_ERR_INTERRUPTED) {
         int local_ret = mq_timedreceive(mq->mq_desc, msg, msg_len, prio, &ts);
         if (local_ret == -1) {
             switch (errno) {

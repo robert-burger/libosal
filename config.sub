@@ -1498,7 +1498,7 @@ case $os in
 		os=dicos
 		;;
 	pikeos*)
-		os=pikeos
+        os=pikeos
 		;;
 	*)
 		# No normalization, but not necessarily accepted, that comes below.
@@ -1707,9 +1707,8 @@ case $os in
 	# Likewise for "kernel-abi"
 	eabi* | gnueabi*)
 		;;
-	# Likewise for "pikeos"
-	pikeos*)
-		;;
+    pikeos*)
+        ;;
 	# VxWorks passes extra cpu info in the 4th filed.
 	simlinux | simwindows | spe)
 		;;
