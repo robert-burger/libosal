@@ -1,12 +1,13 @@
 /**
- * \file osal.c
+ * \file win32/shm.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
  *
- * \date 29 Mar 2023
+ * \date 29 Feb 2024
  *
- * \brief OSAL init source.
+ * \brief OSAL shm header.
  *
+ * OSAL shm include header.
  */
 
 /*
@@ -27,18 +28,18 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <libosal/osal.h>
+#ifndef LIBOSAL_WIN32_SHM__H
+#define LIBOSAL_WIN32_SHM__H
 
-#ifdef LIBOSAL_BUILD_WIN32
-#define ATTR_CONSTRUCTOR_WEAK
-#else
-#define ATTR_CONSTRUCTOR_WEAK       __attribute__((constructor, weak)) 
-#endif
+#include "windows.h"
 
-//! Initialize OSAL internals.
-void ATTR_CONSTRUCTOR_WEAK osal_init(void) {
-}
+typedef struct osal_shm {
+    HANDLE map_file;
+    LPCTSTR buf;
 
-//! Destroy OSAL internals.
-void ATTR_CONSTRUCTOR_WEAK osal_destroy(void) {
-}
+    osal_size_t size;
+} osal_shm_t;
+
+#endif /* LIBOSAL_WIN32_SHM__H */
+
+
