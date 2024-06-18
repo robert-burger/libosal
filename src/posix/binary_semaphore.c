@@ -120,7 +120,7 @@ osal_retval_t osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem) {
     pthread_mutex_lock(&sem->posix_mtx);
 
     if (sem->value == 0) {
-        ret = OSAL_ERR_TIMEOUT;
+        ret = OSAL_ERR_BUSY;
     } else {
         sem->value = 0;
     }

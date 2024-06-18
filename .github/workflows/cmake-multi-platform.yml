@@ -6,7 +6,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "*" ]
 
 jobs:
   build:
@@ -65,7 +65,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DBUILD_FOR_PLATFORM=${{ matrix.build_for_platform }}
+        -DBUILD_FOR_PLATFORM="${{ matrix.build_for_platform }}"
         -S ${{ github.workspace }}
 
     - name: Build

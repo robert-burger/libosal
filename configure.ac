@@ -22,7 +22,11 @@ AX_PREFIX_CONFIG_H(include/libosal/config.h) # prep mylib/_config.h from it..
 
 # Checks for programs.
 AC_PROG_CC
+# we test the posix API with gtest, which requires C++
+AC_PROG_CXX
 AC_PROG_LIBTOOL
+
+LT_INIT
 
 case $target_os in
     mingw32*)
@@ -155,5 +159,5 @@ AC_TYPE_UINT32_T
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile src/Makefile src/tools/logger/Makefile libosal.pc])
+AC_CONFIG_FILES([Makefile src/Makefile src/tools/logger/Makefile src/tools/shmtest/Makefile tests/Makefile tests/posix/Makefile libosal.pc])
 AC_OUTPUT

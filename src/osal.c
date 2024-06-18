@@ -29,10 +29,16 @@
 
 #include <libosal/osal.h>
 
+#ifdef LIBOSAL_BUILD_WIN32
+#define ATTR_CONSTRUCTOR_WEAK
+#else
+#define ATTR_CONSTRUCTOR_WEAK       __attribute__((constructor, weak)) 
+#endif
+
 //! Initialize OSAL internals.
-void __attribute__((constructor, weak)) osal_init(void) {
+void ATTR_CONSTRUCTOR_WEAK osal_init(void) {
 }
 
 //! Destroy OSAL internals.
-void __attribute__((destructor, weak)) osal_destroy(void) {
+void ATTR_CONSTRUCTOR_WEAK osal_destroy(void) {
 }
