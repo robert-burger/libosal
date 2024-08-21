@@ -25,6 +25,7 @@ sudo make install
 This will build and install a static as well as a dynamic library. For use in other project you can you the generated pkg-config file to retreave cflags and linker flags.
 
 ## Build with CMake
+
 ```bash
 mkdir build
 cd build
@@ -35,7 +36,7 @@ cmake --build .
 cmake --install . 
 ```
 
-#### Configuration parameters
+### Configuration parameters
 
 | Parameter                            | Default | Description                                                               |
 |--------------------------------------|---------|---------------------------------------------------------------------------|
