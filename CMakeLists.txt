@@ -13,6 +13,7 @@ include(CMakePackageConfigHelpers)
 
 option(BUILD_FOR_PLATFORM "Set to WIN32, MINGW32, PIKEOS, POSIX, or VXWORKS" "")
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+option(BUILD_WITH_POSITION_INDEPENDENT_CODE "Build using fpic flag" OFF)
 
 if(BUILD_FOR_PLATFORM STREQUAL "POSIX")
     set(LIBOSAL_BUILD_POSIX 1)
@@ -151,7 +152,7 @@ target_include_directories(osal
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
         $<INSTALL_INTERFACE:include>)
-set_property(TARGET osal PROPERTY POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS})
+set_property(TARGET osal PROPERTY POSITION_INDEPENDENT_CODE ${BUILD_WITH_POSITION_INDEPENDENT_CODE})
 
 
 write_basic_package_version_file(
