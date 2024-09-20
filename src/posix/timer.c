@@ -38,13 +38,17 @@
 #include <assert.h>
 #include <errno.h>
 
+//! Global configuration option for the clock source used by the timer
+//! functions.
+static int global_clock_id = CLOCK_REALTIME;
+
 // sleep in nanoseconds
 void osal_sleep(osal_uint64_t nsec) {
     struct timespec ts = { (nsec / NSEC_PER_SEC), (nsec % NSEC_PER_SEC) };
     struct timespec rest;
     
     while (1) {
-        int ret = clock_nanosleep(LIBOSAL_CLOCK, 0, &ts, &rest);
+        int ret = clock_nanosleep(global_clock_id, 0, &ts, &rest);
         if (ret == 0) {
             break;
         }
@@ -62,7 +66,7 @@ osal_retval_t osal_sleep_until(osal_timer_t *timer) {
     struct timespec ts = { timer->sec, timer->nsec };
 
     do {
-        local_ret = clock_nanosleep(LIBOSAL_CLOCK, TIMER_ABSTIME, &ts, NULL);
+        local_ret = clock_nanosleep(global_clock_id, TIMER_ABSTIME, &ts, NULL);
     } while (local_ret == EINTR);
 
     if (local_ret == EINVAL) {
@@ -82,13 +86,16 @@ osal_retval_t osal_sleep_until_nsec(osal_uint64_t nsec) {
     return osal_sleep_until(&abs_to);
 }
 
+//! Sets globally the internal clock source
+void osal_timer_set_clock_source(int clock_id) { global_clock_id = clock_id; }
+
 //! gets timer 
 osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
     assert(timer != NULL);
     osal_retval_t ret = OSAL_OK;
 
     struct timespec ts;
-    if (clock_gettime(LIBOSAL_CLOCK, &ts) == -1) {
+    if (clock_gettime(global_clock_id, &ts) == -1) {
         perror("clock_gettime");
         ret = OSAL_ERR_UNAVAILABLE;
     } else {
@@ -117,7 +124,7 @@ void osal_timer_init(osal_timer_t *timer, osal_uint64_t timeout) {
     assert(timer != NULL);
 
     struct timespec ts;
-    if (clock_gettime(LIBOSAL_CLOCK, &ts) == -1) {
+    if (clock_gettime(global_clock_id, &ts) == -1) {
         perror("clock_gettime");
     }
 
