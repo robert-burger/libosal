@@ -59,6 +59,11 @@ void osal_sleep(osal_int64_t nsec) {
 //! Sets globally the internal clock source
 void osal_timer_set_clock_source(int clock_id) { global_clock_id = clock_id; }
 
+//! Returns the globally configured internal clock source
+int osal_timer_get_clock_source(){
+    return global_clock_id;
+}
+
 //! gets timer 
 int osal_timer_gettime(osal_timer_t *timer) {
     assert(timer != NULL);

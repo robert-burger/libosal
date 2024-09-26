@@ -63,7 +63,7 @@ osal_retval_t osal_condvar_init(osal_condvar_t *cv, const osal_condvar_attr_t *a
         // should only return ENOMEM
         ret = OSAL_ERR_OUT_OF_MEMORY;
     } else {
-        local_ret = pthread_condattr_setclock(&cond_attr, LIBOSAL_CLOCK);
+        local_ret = pthread_condattr_setclock(&cond_attr, osal_timer_get_clock_source());
         if (local_ret != 0) {
             // should only return EINVAL
             ret = OSAL_ERR_INVALID_PARAM;
