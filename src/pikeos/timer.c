@@ -55,6 +55,14 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
     return ret;
 }
 
+//! Sets globally the internal clock source. Unused for Pikeos
+void osal_timer_set_clock_source(int clock_id){}
+
+//! Returns the globally configured internal clock source. Unused for Pikeos
+int osal_timer_get_clock_source(){
+    return -1;
+}
+
 // gets time in nanoseconds
 osal_uint64_t osal_timer_gettime_nsec(void) {
     osal_uint64_t ret = p4_get_time();
