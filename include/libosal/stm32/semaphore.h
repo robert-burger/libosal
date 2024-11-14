@@ -1,13 +1,13 @@
 /**
- * \file stm32/mutex.h
+ * \file stm32/semaphore.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
  *
  * \date 07 Aug 2022
  *
- * \brief OSAL mutex header.
+ * \brief OSAL semaphore header.
  *
- * OSAL mutex include header.
+ * OSAL semaphore include header.
  */
 
 /*
@@ -28,15 +28,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef LIBOSAL_STM32_MUTEX__H
-#define LIBOSAL_STM32_MUTEX__H
+#ifndef LIBOSAL_STM32_SEMAPHORE__H
+#define LIBOSAL_STM32_SEMAPHORE__H
 
-//#include <p4ext_threads.h>
+//#include <semaphore.h>
 
-typedef struct osal_mutex {
-    //stm32_mutex_type stm32_mtx;
-} osal_mutex_t;
+typedef struct osal_semaphore {
+//    sem_t posix_sem;
+} osal_semaphore_t;
 
-#endif /* LIBOSAL_STM32_MUTEX__H */
-
+#endif /* LIBOSAL_POSIX_SEMAPHORE__H */
 
