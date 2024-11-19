@@ -2,6 +2,7 @@
  * \file posix/binary_semaphore.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
+ * \author Marcel Beausencourt <marcel.beausencourt@dlr.de>
  *
  * \date 07 Aug 2022
  *
@@ -28,8 +29,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef LIBOSAL_POSIX_BINARY_SEMAPHORE__H
-#define LIBOSAL_POSIX_BINARY_SEMAPHORE__H
+#ifndef LIBOSAL_STM32_BINARY_SEMAPHORE__H
+#define LIBOSAL_STM32_BINARY_SEMAPHORE__H
 
 #include <pthread.h>
 
