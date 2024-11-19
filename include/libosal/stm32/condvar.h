@@ -28,8 +28,8 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef LIBOSAL_POSIX_CONDVAR__H
-#define LIBOSAL_POSIX_CONDVAR__H
+#ifndef LIBOSAL_STM32_CONDVAR__H
+#define LIBOSAL_STM32_CONDVAR__H
 
 #include <pthread.h>
 
