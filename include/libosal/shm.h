@@ -46,6 +46,10 @@
 #include <libosal/pikeos/shm.h>
 #endif
 
+#ifdef LIBOSAL_BUILD_WIN32
+#include <libosal/win32/shm.h>
+#endif
+
 /** \defgroup shm_group Shared memory
  *
  * Shared memory module
