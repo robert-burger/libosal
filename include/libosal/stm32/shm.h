@@ -1,13 +1,13 @@
 /**
- * \file posix/condvar.h
+ * \file STM32/shm.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
  *
- * \date 19 Nov 2024
+ * \date 07 Aug 2022
  *
- * \brief OSAL condvar header.
+ * \brief OSAL shm header.
  *
- * OSAL condvar include header.
+ * OSAL shm include header.
  */
 
 /*
@@ -28,14 +28,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef LIBOSAL_STM32_CONDVAR__H
-#define LIBOSAL_STM32_CONDVAR__H
+#ifndef LIBOSAL_STM32_SHM__H
+#define LIBOSAL_STM32_SHM__H
 
-#include <pthread.h>
+typedef struct osal_shm {
+    int fd;
+    osal_size_t size;
+} osal_shm_t;
 
-typedef struct osal_condvar {
-    pthread_cond_t posix_cond;
-} osal_condvar_t;
-
-#endif /* LIBOSAL_POSIX_CONDVAR__H */
+#endif /* LIBOSAL_STM32_SHM__H */
 

@@ -1,13 +1,13 @@
 /**
- * \file posix/condvar.h
+ * \file posix/io.c
  *
  * \author Robert Burger <robert.burger@dlr.de>
  *
- * \date 19 Nov 2024
+ * \date 07 Sep 2022
  *
- * \brief OSAL condvar header.
+ * \brief OSAL io posix source.
  *
- * OSAL condvar include header.
+ * OSAL io posix source.
  */
 
 /*
@@ -27,15 +27,32 @@
  * along with libosal; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+#ifdef HAVE_CONFIG_H
+#include <libosal/config.h>
+#endif
 
-#ifndef LIBOSAL_STM32_CONDVAR__H
-#define LIBOSAL_STM32_CONDVAR__H
+#include <libosal/osal.h>
+#include <libosal/io.h>
 
-#include <pthread.h>
+#include <assert.h>
+        
+// cppcheck-suppress misra-c2012-21.6
+#include <stdio.h>
 
-typedef struct osal_condvar {
-    pthread_cond_t posix_cond;
-} osal_condvar_t;
+//! \brief Write message to stdout
+/*!
+ * \param[in]   msg     Message to be printed.
+ *
+ * \return OK or ERROR_CODE.
+ */
+osal_retval_t osal_puts(const osal_char_t *msg) {
+    assert(msg != NULL);
+    // insert HAL UART Transmit
+    fputs((const char *)msg, stdout);
+    return OSAL_OK;
+}
 
-#endif /* LIBOSAL_POSIX_CONDVAR__H */
 
+osal_int32_t osal_vfprintf(osal_file_t *stream, const osal_char_t *format, osal_va_list_t ap) {
+    return vfprintf((FILE *)stream, (char *)format, ap);
+}

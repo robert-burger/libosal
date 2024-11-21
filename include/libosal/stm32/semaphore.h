@@ -34,8 +34,8 @@
 //#include <semaphore.h>
 
 typedef struct osal_semaphore {
-//    sem_t posix_sem;
+//    sem_t stm32_sem;
 } osal_semaphore_t;
 
-#endif /* LIBOSAL_POSIX_SEMAPHORE__H */
+#endif /* LIBOSAL_STM32_SEMAPHORE__H */
 

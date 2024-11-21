@@ -34,7 +34,7 @@
 //#include <pthread.h>
 
 typedef struct osal_spinlock {
-//    pthread_spinlock_t posix_sl;
+//    pthread_spinlock_t stm32_sl;
 } osal_spinlock_t;
 
 #endif /* LIBOSAL_STM32_SPINLOCK__H */

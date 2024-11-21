@@ -48,43 +48,43 @@ osal_retval_t osal_mutex_init(osal_mutex_t *mtx, const osal_mutex_attr_t *attr) 
     P4_prio_t ceil_prio = 0u;
 #endif
 
-    P4_uint32_t flags = 0u;
-    if (attr != NULL) {
-        if ((*attr & OSAL_MUTEX_ATTR__PROCESS_SHARED) != 0u) {
-            flags |= P4_MUTEX_SHARED;
-        }
-
-        if ((*attr & OSAL_MUTEX_ATTR__ROBUST) != 0u) {
-            flags |= P4_MUTEX_ROBUST;
-        }
-
-        if ((*attr & OSAL_MUTEX_ATTR__TYPE__MASK) == OSAL_MUTEX_ATTR__TYPE__RECURSIVE) {
-            flags |= P4_MUTEX_RECURSIVE;
-        }
-
-#if (LIBOSAL_HAVE_P4EXT_THREADS_H == 1) && (LIBOSAL_HAVE_P4_MUTEX_INIT_EXT == 1)
-        if ((*attr & OSAL_MUTEX_ATTR__PROTOCOL__MASK) == OSAL_MUTEX_ATTR__PROTOCOL__INHERIT) {
-            flags |= P4_MUTEX_PRIO_INHERIT;
-        }
-
-        if ((*attr & OSAL_MUTEX_ATTR__PRIOCEILING__MASK) != 0u) {
-            flags |= P4_MUTEX_PRIO_CEILING;
-            ceil_prio = (*attr & OSAL_MUTEX_ATTR__PRIOCEILING__MASK) >> OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT;
-        }
-#endif
-    }
+//    P4_uint32_t flags = 0u;
+//    if (attr != NULL) {
+//        if ((*attr & OSAL_MUTEX_ATTR__PROCESS_SHARED) != 0u) {
+//            flags |= P4_MUTEX_SHARED;
+//        }
+//
+//        if ((*attr & OSAL_MUTEX_ATTR__ROBUST) != 0u) {
+//            flags |= P4_MUTEX_ROBUST;
+//        }
+//
+//        if ((*attr & OSAL_MUTEX_ATTR__TYPE__MASK) == OSAL_MUTEX_ATTR__TYPE__RECURSIVE) {
+//            flags |= P4_MUTEX_RECURSIVE;
+//        }
+//
+//#if (LIBOSAL_HAVE_P4EXT_THREADS_H == 1) && (LIBOSAL_HAVE_P4_MUTEX_INIT_EXT == 1)
+//        if ((*attr & OSAL_MUTEX_ATTR__PROTOCOL__MASK) == OSAL_MUTEX_ATTR__PROTOCOL__INHERIT) {
+//            flags |= P4_MUTEX_PRIO_INHERIT;
+//        }
+//
+//        if ((*attr & OSAL_MUTEX_ATTR__PRIOCEILING__MASK) != 0u) {
+//            flags |= P4_MUTEX_PRIO_CEILING;
+//            ceil_prio = (*attr & OSAL_MUTEX_ATTR__PRIOCEILING__MASK) >> OSAL_MUTEX_ATTR__PRIOCEILING__SHIFT;
+//        }
+//#endif
+//    }
 
     osal_retval_t ret = OSAL_OK;
 
-#if (LIBOSAL_HAVE_P4EXT_THREADS_H == 1) && (LIBOSAL_HAVE_P4_MUTEX_INIT_EXT == 1)
-    if (ceil_prio == 0u) {
-        p4_mutex_init(&mtx->stm32_mtx, flags);
-    } else {
-        p4_mutex_init_ext(&mtx->stm32_mtx, flags, ceil_prio);
-    }
-#else
-    p4_mutex_init(&mtx->stm32_mtx, flags);
-#endif
+//#if (LIBOSAL_HAVE_P4EXT_THREADS_H == 1) && (LIBOSAL_HAVE_P4_MUTEX_INIT_EXT == 1)
+//    if (ceil_prio == 0u) {
+//        p4_mutex_init(&mtx->stm32_mtx, flags);
+//    } else {
+//        p4_mutex_init_ext(&mtx->stm32_mtx, flags, ceil_prio);
+//    }
+//#else
+//    p4_mutex_init(&mtx->stm32_mtx, flags);
+//#endif
 
     return ret;
 }
@@ -99,46 +99,46 @@ osal_retval_t osal_mutex_lock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     osal_retval_t ret = OSAL_OK;
-    int local_ret = p4_mutex_lock(&mtx->stm32_mtx, P4_TIMEOUT_NULL);
-    if (local_ret != P4_E_OK) {
-        switch (local_ret) {
-            case P4_E_STATE:        // if the caller already owns the mutex (recursive 
-                                    // locking attempt on non-recursive mutex).
-                ret = OSAL_ERR_BUSY;
-                break;
-            case P4_E_LIMIT:        // if the maximum recursion level P4_MUTEX_MAX_RECURSION 
-                                    // is reached. / if the maximum number of robust mutexes 
-                                    // is reached.
-                ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
-                break;
-            case P4_E_TIMEOUT:      // if the specified timeout has expired before the lock 
-                                    // was acquired by the caller.
-                ret = OSAL_ERR_TIMEOUT;
-                break;
-            case P4_E_BADTIMEOUT:   // if the specified timeout is invalid or in the past.
-            case P4_E_BADUID:       // if mutex references invalid waiting threads.
-            case P4_E_INVAL:        // if mutex is NULL or does not point to a valid address 
-                                    // or exceeds the caller’s virtual address space.
-                ret = OSAL_ERR_INVALID_PARAM;
-                break;
-            case P4_E_PAGEFAULT:    // if mutex is not fully mapped in the caller’s virtual 
-                                    // address space.
-            case P4_E_CANCEL:       // if the mutex is cancelable (flag P4_MUTEX_CANCELABLE 
-                                    // is set), and the function was canceled by another thread, 
-                                    // the calling thread was moved to another time partition, 
-                                    // or the thread was migrated to another CPU.
-            case P4_E_ABORT:        // if the previous lock owner of the robust mutex mutex died. 
-                                    // Note that at most
-            case P4_ULOCK_LIMIT:    // threads waiting for a robust mutex are woken up when the 
-                                    // lock owner dies.
-            case P4_E_NOABILITY:    // if the mutex is shareable (P4_MUTEX_SHARED is used), 
-                                    // but the task of the calling thread does not have the 
-                                    // ability P4_AB_ULOCK_SHARED enabled.
-            default:
-                ret = OSAL_ERR_UNAVAILABLE;
-                break;
-        }
-    }
+//    int local_ret = p4_mutex_lock(&mtx->stm32_mtx, P4_TIMEOUT_NULL);
+//    if (local_ret != P4_E_OK) {
+//        switch (local_ret) {
+//            case P4_E_STATE:        // if the caller already owns the mutex (recursive
+//                                    // locking attempt on non-recursive mutex).
+//                ret = OSAL_ERR_BUSY;
+//                break;
+//            case P4_E_LIMIT:        // if the maximum recursion level P4_MUTEX_MAX_RECURSION
+//                                    // is reached. / if the maximum number of robust mutexes
+//                                    // is reached.
+//                ret = OSAL_ERR_SYSTEM_LIMIT_REACHED;
+//                break;
+//            case P4_E_TIMEOUT:      // if the specified timeout has expired before the lock
+//                                    // was acquired by the caller.
+//                ret = OSAL_ERR_TIMEOUT;
+//                break;
+//            case P4_E_BADTIMEOUT:   // if the specified timeout is invalid or in the past.
+//            case P4_E_BADUID:       // if mutex references invalid waiting threads.
+//            case P4_E_INVAL:        // if mutex is NULL or does not point to a valid address
+//                                    // or exceeds the caller’s virtual address space.
+//                ret = OSAL_ERR_INVALID_PARAM;
+//                break;
+//            case P4_E_PAGEFAULT:    // if mutex is not fully mapped in the caller’s virtual
+//                                    // address space.
+//            case P4_E_CANCEL:       // if the mutex is cancelable (flag P4_MUTEX_CANCELABLE
+//                                    // is set), and the function was canceled by another thread,
+//                                    // the calling thread was moved to another time partition,
+//                                    // or the thread was migrated to another CPU.
+//            case P4_E_ABORT:        // if the previous lock owner of the robust mutex mutex died.
+//                                    // Note that at most
+//            case P4_ULOCK_LIMIT:    // threads waiting for a robust mutex are woken up when the
+//                                    // lock owner dies.
+//            case P4_E_NOABILITY:    // if the mutex is shareable (P4_MUTEX_SHARED is used),
+//                                    // but the task of the calling thread does not have the
+//                                    // ability P4_AB_ULOCK_SHARED enabled.
+//            default:
+//                ret = OSAL_ERR_UNAVAILABLE;
+//                break;
+//        }
+//    }
 
     return ret;
 }
@@ -153,9 +153,9 @@ osal_retval_t osal_mutex_trylock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     osal_retval_t ret = OSAL_OK;
-    int local_ret = p4_mutex_trylock(&mtx->stm32_mtx);
-    if (local_ret != 0) {
-    }
+//    int local_ret = p4_mutex_trylock(&mtx->stm32_mtx);
+//    if (local_ret != 0) {
+//    }
 
     return ret;
 }
@@ -170,14 +170,14 @@ osal_retval_t osal_mutex_unlock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     osal_retval_t ret = OSAL_OK;
-    int local_ret = p4_mutex_unlock(&mtx->stm32_mtx);
-    if (local_ret != P4_E_OK) {
-        if (local_ret == P4_E_STATE) {  /* specifically check for this error code */
-            ret = OSAL_ERR_MUTEX_IS_LOCKED;
-        } else {                        /* generic error code */
-            ret = OSAL_ERR_OPERATION_FAILED;
-        }
-    }
+//    int local_ret = p4_mutex_unlock(&mtx->stm32_mtx);
+//    if (local_ret != P4_E_OK) {
+//        if (local_ret == P4_E_STATE) {  /* specifically check for this error code */
+//            ret = OSAL_ERR_MUTEX_IS_LOCKED;
+//        } else {                        /* generic error code */
+//            ret = OSAL_ERR_OPERATION_FAILED;
+//        }
+//    }
 
     return ret;
 }
