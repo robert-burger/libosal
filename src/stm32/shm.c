@@ -36,10 +36,6 @@
 
 #include <assert.h>
 
-#ifdef LIBOSAL_HAVE_SYS_MMAN_H
-#include <sys/mman.h>
-#endif
-
 #include <sys/types.h>
 #include <sys/stat.h>        /* For mode constants */
 #include <fcntl.h>           /* For O_* constants */

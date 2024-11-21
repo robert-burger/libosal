@@ -79,15 +79,15 @@ osal_retval_t osal_binary_semaphore_post(osal_binary_semaphore_t *sem) {
 osal_retval_t osal_binary_semaphore_wait(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
-    pthread_mutex_lock(&sem->posix_mtx);
-
-    while (!sem->value) {
-        pthread_cond_wait(&sem->posix_cond, &sem->posix_mtx);
-    }
-
-    sem->value = 0;
-    
-    pthread_mutex_unlock(&sem->posix_mtx);
+//    pthread_mutex_lock(&sem->posix_mtx);
+//
+//    while (!sem->value) {
+//        pthread_cond_wait(&sem->posix_cond, &sem->posix_mtx);
+//    }
+//
+//    sem->value = 0;
+//
+//    pthread_mutex_unlock(&sem->posix_mtx);
     return OSAL_OK;
 }
 
@@ -127,30 +127,30 @@ osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, cons
 
     osal_retval_t ret = OSAL_OK;
 
-    if (to != NULL) {
-        struct timespec ts;
-        ts.tv_sec = to->sec;
-        ts.tv_nsec = to->nsec;
-
-        pthread_mutex_lock(&sem->posix_mtx);
-        while (!sem->value) {
-            int local_ret = pthread_cond_timedwait(&sem->posix_cond, &sem->posix_mtx, &ts);
-            if (local_ret == ETIMEDOUT) {
-                ret = OSAL_ERR_TIMEOUT;
-                break;
-            }
-        }
-
-        if (ret == OSAL_OK) {        
-            sem->value = 0;
-        }
-
-        pthread_mutex_unlock(&sem->posix_mtx);
-    } else {
-        if (sem->value == 0) {
-            ret = OSAL_ERR_TIMEOUT;
-        }
-    }
+//    if (to != NULL) {
+//        struct timespec ts;
+//        ts.tv_sec = to->sec;
+//        ts.tv_nsec = to->nsec;
+//
+//        pthread_mutex_lock(&sem->posix_mtx);
+//        while (!sem->value) {
+//            int local_ret = pthread_cond_timedwait(&sem->posix_cond, &sem->posix_mtx, &ts);
+//            if (local_ret == ETIMEDOUT) {
+//                ret = OSAL_ERR_TIMEOUT;
+//                break;
+//            }
+//        }
+//
+//        if (ret == OSAL_OK) {
+//            sem->value = 0;
+//        }
+//
+//        pthread_mutex_unlock(&sem->posix_mtx);
+//    } else {
+//        if (sem->value == 0) {
+//            ret = OSAL_ERR_TIMEOUT;
+//        }
+//    }
 
     return ret;
 }
