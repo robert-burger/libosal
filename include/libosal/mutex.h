@@ -58,6 +58,11 @@
 #include <libosal/stm32/mutex.h>
 #endif
 
+#if LIBOSAL_BUILD_STM32 == 1
+#include <libosal/stm32/mutex.h>
+#endif
+
+
 /** \defgroup mutex_group Mutex
  * The mutexes are mutual exclusion locks which are commonly used to protect 
  * shared memory structures from concurrent access.

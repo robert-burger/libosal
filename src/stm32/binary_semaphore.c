@@ -53,7 +53,8 @@ osal_retval_t osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osa
     assert(sem != NULL);
 
     (void)attr;
-    (void)sem;
+
+    sem->value = 0;
 
     return OSAL_OK;
 }
@@ -66,7 +67,9 @@ osal_retval_t osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osa
  */
 osal_retval_t osal_binary_semaphore_post(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
-    (void)sem;
+
+    sem->value++;
+
     return OSAL_OK;
 }
 
@@ -80,13 +83,13 @@ osal_retval_t osal_binary_semaphore_wait(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
 //    pthread_mutex_lock(&sem->posix_mtx);
-//
-//    while (!sem->value) {
+
+    while (!sem->value) {
 //        pthread_cond_wait(&sem->posix_cond, &sem->posix_mtx);
-//    }
-//
-//    sem->value = 0;
-//
+    }
+
+    sem->value = 0;
+
 //    pthread_mutex_unlock(&sem->posix_mtx);
     return OSAL_OK;
 }
@@ -101,16 +104,16 @@ osal_retval_t osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
     osal_retval_t ret = OSAL_OK;
-
-    pthread_mutex_lock(&sem->posix_mtx);
+//
+//    pthread_mutex_lock(&sem->posix_mtx);
 
     if (sem->value == 0) {
         ret = OSAL_ERR_BUSY;
     } else {
         sem->value = 0;
     }
-
-    pthread_mutex_unlock(&sem->posix_mtx);
+//
+//    pthread_mutex_unlock(&sem->posix_mtx);
     
     return ret;
 }
@@ -164,8 +167,8 @@ osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, cons
 osal_retval_t osal_binary_semaphore_destroy(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
-    pthread_mutex_destroy(&sem->posix_mtx);
-    pthread_cond_destroy(&sem->posix_cond);
+//    pthread_mutex_destroy(&sem->posix_mtx);
+//    pthread_cond_destroy(&sem->posix_cond);
 
     return OSAL_OK;
 }
