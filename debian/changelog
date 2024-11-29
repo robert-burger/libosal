@@ -1,46 +1,241 @@
-libosal (0.0.3) stable; urgency=medium
+libosal (0.0.3) unstable; urgency=low
 
-  * install of pkg-config file
-  * readded config.sub
-  * added pkgconfigdir
-  * changed to config.sub
-  * removed install of second pkgconfig dir
-  * Install binaries
-  * updated config.sub
-  * fixed uneeded assertion
-  * fixed logger name, duplicate with system binary name
-  * fixed linked library by pkg-config file
-  * fixed install directive for deb build
-  * updated debian control file
-  * fixed unused parameters
-  * fixed case not handled in switch
-  * fixed comparision signed and unsigned
-  * fixed not having p4_mutex_init_ext
-  * removed preprocessor warning
-  * added pikeos4.2 builds
-  * change conan_config_repo_branch
-  * fix: build for pikeos4.2
-  * add: missing io header for pikeos
-  * add: osal_trace_time func
-  * add: trace get_last_time func
-  * add: trace relative analyze func
-  * fixed trace pos
-  * fixed trace pos
-  * fixed trace buffer
-  * switched conan branch to 'develop'
-  * osal_trace_point now returns traced time
-  * fixed relative trace analyze func
-  * removed pikeos4.2-armv7hf-gcc5.5, it's only a link to pikeos4.2-armv7hf-gcc5
-  * fixed trace analyze func
-  * add: busy_wait function to avoid sleeping for next tick
-  * Update io.c
-  * update to conan2 syntax
   * only build on default linux profiles for now
+  * update to conan2 syntax
+  * Update io.c
+  * add: busy_wait function to avoid sleeping for next tick
+  * fixed trace analyze func
+  * removed pikeos4.2-armv7hf-gcc5.5, it's only a link to pikeos4.2-armv7hf-gcc5
+  * fixed relative trace analyze func
+  * osal_trace_point now returns traced time
+  * switched conan branch to 'develop'
+  * fixed trace buffer
+  * fixed trace pos
+  * fixed trace pos
+  * add: trace relative analyze func
+  * add: trace get_last_time func
+  * add: osal_trace_time func
+  * add: missing io header for pikeos
+  * fix: build for pikeos4.2
+  * change conan_config_repo_branch
+  * added pikeos4.2 builds
 
- -- Robert Burger <robert.burger@dlr.de>  Wed, 07 Feb 2024 08:35:44 +0100
+ -- Robert Burger <robert.burger@dlr.de>  Wed, 7 Feb 2024 08:27:31 +0100
 
-libosal (0.0.2-1) unstable; urgency=medium
+libosal (0.0.2) unstable; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Merge branch 'release/0.0.2' of rmc-github.robotic.dlr.de:common/libosal into release/0.0.2
+  * removed preprocessor warning
+  * fixed not having p4_mutex_init_ext
+  * fixed comparision signed and unsigned
+  * fixed case not handled in switch
+  * fixed unused parameters
+  * updated debian control file
+  * fixed install directive for deb build
+  * fixed linked library by pkg-config file
+  * fixed logger name, duplicate with system binary name
+  * fixed uneeded assertion
+  * updated config.sub
+  * Install binaries
+  * removed install of second pkgconfig dir
+  * changed to config.sub
+  * added pkgconfigdir
+  * readded config.sub
+  * install of pkg-config file
+  * generate pkg-config file
+  * fixed printf warning not a string literal
+  * not ignoring return value of ftruncate
+  * ignoring return value of ftruncate
+  * fixed doxygen warnings
+  * Merge branch 'release/0.0.2'
+  * fixed main doc page
+  * testing doc main page
+  * more doc
+  * fixed git.config...
+  * fixed parameter doc
+  * fixed parameter doc
+  * moved 'git config user....' lines
+  * doc trace struct
+  * again more doc
+  * more doc
+  * semaphore return values, some doc
+  * condition variable return values and doc
+  * generating index.html
+  * added doxygen style
+  * rm submodule
+  * removed submodule for doxygen design
+  * creating doxygen doc by jenkins
+  * return value on osal_sleep_until
+  * working on doxygen doc
+  * added doxygen config file
+  * revert last changes, trace is portable between os'
+  * only release trace.h in posix case
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * added timer desc
+  * Update README.md
+  * Update README.md
+  * added LGPL-V3 license
+  * added trace implementation
+  * added wip trace stuff
+  * fixed return value of sem_trywait
+  * windows fix on affinity
+  * fixed min/max prio for policy
+  * added some task helper to set priority, affinity and scheduling policy, added defines for policy
+  * fix closing bracket
+  * only set affinity if > 0, fixes #4
+  * added return values for mutex_trylock on pikeos, #1
+  * added osal_microsleep macro, #1
+  * added osal_init and osal_destroy, #1
+  * implemented osal_task_join for pikeos, #1
+  * added task state defines and added impl to get task state on pikeos
+  * added return values for osal_semaphore_timedwait on pikeos, regarding #1
+  * added return values for posix osal_semaphore_timedwait
+  * changes osal_printf comment, regarding #1
+  * Merge branch 'release/0.0.1'
+  * fixed vxworks binary sem return value
+  * add vxworks shm header
+  * added define to CLOCK_XXX and use clock_nanosleep
 
- -- Robert Burger <robert.burger@dlr.de>  Tue, 30 May 2023 06:09:28 +0200
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 11 Aug 2023 12:36:37 +0200
+
+libosal (0.0.1) unstable; urgency=low
+
+  * add: missing mq header
+  * fix: osal_timer_gettime_nsec calcution now done with integer datatype
+  * fix: don't set task priority to 0 on pikeos
+  * Merge branch 'release/0.0.1' of rmc-github.robotic.dlr.de:common/libosal into release/0.0.1
+  * change: pikeos uses thread creation wrapper to ensure thread is started before return
+  * fix: passing thread attribute on pikeos
+  * don't build logger on win mingw32
+  * add mingw flag
+  * fix: pikeos build with shm-logging funcs
+  * Merge branch 'release/0.0.1-shm-logger' into release/0.0.1
+  * Merge branch 'release/0.0.1-shm-logger' into release/0.0.1
+  * Merge branch 'release/0.0.1' into release/0.0.1-shm-logger
+  * changed: timer datatypes to unsigned and added osal_sleep_until_nsec
+  * Merge branch 'release/0.0.1' of rmc-github.robotic.dlr.de:common/libosal into release/0.0.1
+  * change: do not release libtool la file
+  * fix: changed timespec_sub to static linkage
+  * change: osal_io_shm init
+  * fix: logger pikeos build
+  * add: missing files for logger
+  * add: some tests to print directly to a shared memory buffer instead of stdout
+  * add: install of missing posix header
+  * add: osal_sleep_until func
+  * add: message queue close func
+  * add: send and receive mq funcs
+  * fix: mingw build
+  * add: mq stuff
+  * fix: pikeos shm_open sig
+  * change: add attributes to shm_map
+  * fix: build on mingw missing shm_open
+  * impl: shm_open on posix
+  * fix: win32 datatypes
+  * add: visual studio project files
+  * Merge branch 'release/0.0.1' of rmc-github.robotic.dlr.de:common/libosal into release/0.0.1
+  * add: win32 binary sem implementation
+  * fix: build system
+  * Merge branch 'main' into release/0.0.1
+  * add: win32 semaphore implementation
+  * add: win32 headers and mutex stuff
+  * add: win32 mutex source test
+  * fix: linker flags
+  * add: -no-undefined
+  * fix: mingw compiles
+  * add: missing include for mingw
+  * Update README.md
+  * Create README.md
+  * add: posix shm source
+  * add: posix shm header
+  * add true and false defines
+  * fix: argument of osal_shm_map
+  * fix: return values now osal_retval_t, minor changes
+  * add: initial shm version of shm
+  * change: improved flags creating mutexes and conditions
+  * fix: pikeos condvar timeout
+  * fixed pikeos timeouts
+  * semaphore timeout for pikeos
+  * removed debug print
+  * add: timer funcs for pikeos
+  * change: descrtiption
+  * fix: misra compliance
+  * fix: types to precise types
+  * add: off_t type
+  * add: osal_printf func
+  * fix: some misra compliance stuff
+  * fix: returned error if sem_post failed!
+  * add: missing queue header
+  * small pikeos fixes
+  * removed vxworks build, currently not working on jenkins
+  * fix: const parameter
+  * add: pikeos binary semaphore
+  * fix: retvals in posix stuff
+  * add: pikeos semaphore impl
+  * add: osl15.4 and vxw7 build
+  * fix: pikeos builds now
+  * add: missing pikeos semaphore header
+  * add: pikeos mutex header
+  * try to fix ssize_t typedef for pikeos
+  * try to fix ssize_t typedef for pikeos
+  * try to fix ssize_t typedef for pikeos
+  * add pikeos to am_conditional
+  * add: build of pikeos source files
+  * exporting config.sub for conan
+  * fix: indenting
+  * remove forcing autoreconf all files obsolete
+  * try to add pikeos to config.sub
+  * add debug print
+  * using develop conan config repo branch
+  * add compiliation of source file
+  * add more ignores
+  * add missing files
+  * add: vxworks mutex
+  * add: pikeos build
+  * add: condition variable impl for posix
+  * add: pikeos task funcs
+  * add: task call for setting/getting task attributes
+  * add: some more task funcs merged from rcu_sw_osal
+  * change: wrapped comments
+  * del: removed test code
+  * add: jenkinsfile
+  * add: rmc build files
+  * fix: setting thread attributes and clock
+  * add: include of types
+  * change: setting pthread name with prctl
+  * fix: return values of vxworks mutex
+  * add: pikeos mutex source
+  * fix: return value of posix binary_semaphore
+  * change: some misra
+  * add: comment header added
+  * add: spinlock
+  * fix: some posix thread return values
+  * add: pikeos main source
+  * add: git ignores
+  * fix: posix mutex return values
+  * add: some more vxworks stuff
+  * add: some vxworks headers
+  * add: trywait to bin semaphore
+  * change: posix thread spawn wrapper to set prio and affinity
+  * fix: add missing include
+  * fix: return value of sem_timedwait
+  * add: extern C ...
+  * change: add initial val to semaphore
+  * add: counting semaphore impl
+  * add signed size type
+  * add: timer stuff
+  * add: conanfile
+  * change: added more headers and task impl
+  * add: license header
+  * add: more headers
+  * add: initial commit
+
+ -- Robert Burger <robert.burger@dlr.de>  Mon, 20 Feb 2023 11:10:14 +0100
+

@@ -2,9 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([libosal], 
-        m4_esyscmd_s([cat project.properties | grep VERSION    | cut -d'=' -f2 | xargs printf "%s"]), 
-        [Robert Burger <robert.burger@dlr.de>])
+AC_INIT([libosal], m4_esyscmd_s([cat project.properties | grep VERSION    | cut -d'=' -f2 | xargs printf "%s"]), [Robert Burger <robert.burger@dlr.de>])
 
 AC_CANONICAL_TARGET
 
@@ -104,7 +102,7 @@ AM_CONDITIONAL([BUILD_POSIX], [ test x$BUILD_POSIX = xtrue])
 AM_CONDITIONAL([BUILD_MINGW32], [ test x$BUILD_MINGW32 = xtrue]) 
 AM_CONDITIONAL([BUILD_VXWORKS], [ test x$BUILD_VXWORKS = xtrue]) 
 AM_CONDITIONAL([BUILD_PIKEOS], [ test x$BUILD_PIKEOS = xtrue]) 
-AM_CONDITIONAL([BUILD_WIN32], [ text x$BUILD_WIN32 = xtrue])
+AM_CONDITIONAL([BUILD_WIN32], [ test x$BUILD_WIN32 = xtrue])
 
 # Checks for libraries.
 
