@@ -22,7 +22,10 @@ function logentry() {
 }
 
 git tag --sort "-version:refname" | grep -v beta | grep -v rev | grep "$RE_VERSION" | (
-        read version; while read previous; do
+        read version; 
+
+        logentry $version master
+        while read previous; do
                 logentry $previous $version
                 version="$previous"
         done
