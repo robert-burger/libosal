@@ -37,6 +37,10 @@
 
 #include <tickLib.h>
 
+//! Global configuration option for the clock source used by the timer
+//! functions.
+static int global_clock_id = CLOCK_MONOTONIC;
+
 // sleep in nanoseconds
 void osal_sleep(osal_int64_t nsec) {
     struct timespec ts = { (nsec / NSEC_PER_SEC), (nsec % NSEC_PER_SEC) };
@@ -52,13 +56,21 @@ void osal_sleep(osal_int64_t nsec) {
     }
 }
 
+//! Sets globally the internal clock source
+void osal_timer_set_clock_source(int clock_id) { global_clock_id = clock_id; }
+
+//! Returns the globally configured internal clock source
+int osal_timer_get_clock_source(){
+    return global_clock_id;
+}
+
 //! gets timer 
 int osal_timer_gettime(osal_timer_t *timer) {
     assert(timer != NULL);
     int ret = OSAL_OK;
 
     struct timespec ts;
-    if (clock_gettime(CLOCK_MONOTONIC, &ts) == -1) {
+    if (clock_gettime(global_clock_id, &ts) == -1) {
         perror("clock_gettime");
         ret = OSAL_ERR_UNAVAILABLE;
     } else {
@@ -87,7 +99,7 @@ void osal_timer_init(osal_timer_t *timer, osal_int64_t timeout) {
     assert(timer != NULL);
 
     struct timespec ts;
-    if (clock_gettime(CLOCK_MONOTONIC, &ts) == -1) {
+    if (clock_gettime(global_clock_id, &ts) == -1) {
         perror("clock_gettime");
     }
 
