@@ -1,3 +1,227 @@
+libosal (0.0.4) unstable; urgency=low
+
+  * Merge branch 'master' of rmc-github.robotic.dlr.de:common/libosal
+  * fix: AC_INIT on one line
+  * debian: changelog update
+  * debian: dev package install artifacts
+  * debian: removed qilt format
+  * debian: version from git tag
+  * add: git to debian changelog script
+  * fix: typo in configure test for win32
+  * add: debian build
+  * Merge pull request #7 from nix-jo/fix/posix-messagequeue
+  * Merge branch 'master' into fix/posix-messagequeue
+  * Merge branch 'master' of github.com:robert-burger/libosal
+  * Merge pull request #9 from common/feat/posix-tests
+  * fix: pikeos build
+  * Merge branch 'feat/posix-tests' of rmc-github.robotic.dlr.de:common/libosal into feat/posix-tests
+  * move check to coverage case
+  * Merge branch 'master' into feat/posix-tests
+  * doc: complete instruction
+  * chore: add explicit header includes to some tests
+  * chore: add coverage output to build output
+  * test/doc: improve description
+  * Doc: Add note on tests for POSIX.
+  * chore: add conan option to include coverage analysis in html format
+  * doc: message queue tests / formatting
+  * doc: reST format fixes
+  * doc: links
+  * doc: Test overview
+  * update tests overview
+  * tests: add description of tests and overview
+  * doc: tests
+  * test/doc: document counting semaphore
+  * doc: tests (WIP)
+  * test: remove dead  code
+  * doc: formatting of test description
+  * doc: start documentation of tests
+  * test: factor out test
+  * test: factor out test
+  * test: factor out test
+  * test: factor out testcase
+  * test: factor out testcase
+  * factor out test
+  * doc: improve wording
+  * fix: typos
+  * style: remove dead code
+  * style: tidy up code, reactivate assertions
+  * tests: check return value
+  * test: omit duplicated test
+  * test: task suspend / resume
+  * chore: add unit tests to conanfile
+  * test: exclude flaky test from automatic inclusion
+  * test: add setting task name
+  * style: remove dead code
+  * test: priority ceiling protocol
+  * test: match code to documentation
+  * doc: explain test
+  * test: add verbose flag to priority inversion test
+  * test: fix priority inheritance test
+  * test: WIP priority inverston test
+  * test: priority inversion
+  * add check for recursive mutex
+  * Merge branch 'feat/posix-tests' of rmc-github.robotic.dlr.de:nix-jo/libosal into feat/posix-tests
+  * test: recursive attribute
+  * test: dead mutex with mutex_trylock
+  * test: priority inheritance parameters
+  * add owner-dead test
+  * test: add deadlock test for error-checking mutex
+  * add tests with invalid mmap parameters
+  * test against erronoueous paremeters
+  * test: exercise different flags
+  * re-apply revert
+  * Merge branch 'fix/posix-semaphores' into feat/posix-tests
+  * revert change to return value check of binary semaphore
+  * move call to before free of data
+  * test: disable brittle test
+  * ignore more errors in gcovr parsing
+  * fix dependency path
+  * Update mq.h
+  * Update mq.h
+  * doc: comment on unreachable code
+  * fix: termination condition
+  * add missing attribute
+  * doc: fix typo
+  * fix: retrieve result from errno
+  * fix: no-wait case
+  * doc: add missing parameter description
+  * Merge remote-tracking branch 'origin/offline-tests' into feat/posix-tests
+  * add timedreceive tests
+  * fix: non-terminating loop condition in case of parameter errors
+  * separate message queue interrupt tests inti own process
+  * test: interrupted mq_send
+  * test: add utility function for timers
+  * increase coverage for tests
+  * fix: typo
+  * fix: termination condition for timedsend
+  * fix non-compiling test
+  * test: size limit on message queue
+  * test: against overly long mq name
+  * test: for non-existing message queue name without O_CREAT
+  * test: mq_open for invalid parameter
+  * test: test for exclusive access
+  * fix: add missing O_EXCL flag
+  * test for correct failure due to lack of permission
+  * test: check with read and write flags
+  * chore: revert makefile to use global recipe
+  * test: test of trace functions
+  * test: add osal_mutex_trylock()
+  * test: osal_busy_wait()
+  * test: task attributes, suspend, resume
+  * test: getting / setting task attributes
+  * test: canceling thread
+  * test: use osal_task_delete()
+  * test: delete previously created shared memory messages
+  * test: small test of shmio
+  * test: improve coverage for postic/io.c
+  * test: add rudimentary IO test
+  * style: make naming clearer
+  * fix: missing return value / lacking initialization
+  * fix: simplify and fix flaky test
+  * test: make thread start and termination less fussy
+  * fix: time arithmetic
+  * fix: correct subtraction
+  * style: make waiting for termination more robust
+  * fix: set correct file mode bits
+  * test: add test with random data for shared memory
+  * doc: add to test description
+  * test: tweak finicky tests
+  * test: add coverage analysis with HTML output
+  * test: temporarily disable hanging test
+  * chore: exclude generated coverage files
+  * test: add coverage report
+  * test: disable condvar non-broadcast test
+  * test: add test for message queue with timeout
+  * test: add check for messagequeue
+  * test/fix: message maximum number argument
+  * WIP: test messagequeue
+  * test: add test for task creation / destruction
+  * test: add spinlock test, identical to mutex
+  * test: add test for non-broadcast condition
+  * test: add test for condvar_timedwait
+  * style: tweak source formatting style
+  * chore: add auto-formatting on buffer save
+  * style: format source code (using clang-format)
+  * test: add test for condition variable
+  * add: missing shmtest tool
+  * fix: pikeos build
+  * fix: flags for task start on pikeos
+  * tests: tidy up makefile
+  * test: add test for binary semaphore
+  * fix: match return value to counting sema
+  * fix: compile errors on OSL144
+  * WIP: Tests for binary semaphore
+  * fix: fetch return code from errno
+  * fix: use errno for error code
+  * test: add environment switch to enable checks for latency
+  * make test for osal_semaphore_trywait pass
+  * test osal_semaphore_trywait
+  * test: fix test for timedwait, had a too difficult end condition
+  * update test plan
+  * doc/fix: add description of deadline parameter
+  * test: semaphore / timedwait
+  * test: add test for semaphore/timedwait
+  * test: fixed bug in counting semaphore test
+  * WIP: debugging parallel semaphors
+  * test: semaphore, two threads, random wait
+  * test: adjust wait time for real-time case
+  * add verbosity flag, increase loop count
+  * doc: comment why not using assertions
+  * extend tardiness margin
+  * fix symbol clashes
+  * add basic semaphore test
+  * test: semaphore test
+  * test: split out mutex test
+  * test: increase thread number
+  * test: test mutex without wait time
+  * test: add multi-threaded mutex test
+  * test: add optional diagnostic output
+  * test: basic mutex tests
+  * test: add basic mutex test, split tests
+  * test: factor out helpers for randomization
+  * fix typos, nominally missing header
+  * add more timer checks
+  * test: test timer in multiple threads, w/ randomized input
+  * update test doc
+  * add timer test
+  * test: add test harness for googletest/posix API
+  * add copy of googletest
+  * Merge pull request #3 from marcfir/master
+  * fix(CMake): Add libm depending on platform
+  * fix(CMake): Add missing link to libm
+  * Merge pull request #2 from robert-burger/robert-burger-patch-1
+  * fix: format string on win32
+  * fix: format string on win32
+  * fix: don't use '-z noexecstack' on win32
+  * removed: attribute constructor weak for win32 builds
+  * Merge branch 'robert-burger-patch-1' of github.com:robert-burger/libosal into robert-burger-patch-1
+  * add: win32 shm header
+  * Update template_config.h.in
+  * Update cmake-multi-platform.yml
+  * Update CMakeLists.txt
+  * Update cmake-multi-platform.yml
+  * add: project.properties and read VERSION in configure.ac and CMakeLists.txt
+  * Update cmake-multi-platform.yml
+  * Create cmake-multi-platform.yml
+  * Merge pull request #1 from marcfir/master
+  * Add CMake for building
+  * Merge branch 'master' of github.com:robert-burger/libosal
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Update README.md
+  * Merge pull request #5 from common/build-pikeos4
+  * build: enable pikeos4 again
+  * Update README.md
+  * change: doc
+  * removed pkg_config generator
+  * fixed: avoid regeneration of config.sub during autoreconf
+  * removed config.sub from ignores
+  * fixed debian package build
+  * updated debian changelog
+
+ -- Robert Burger <robert.burger@dlr.de>  Fri, 29 Nov 2024 08:02:15 +0100
+
 libosal (0.0.3) unstable; urgency=low
 
   * only build on default linux profiles for now
