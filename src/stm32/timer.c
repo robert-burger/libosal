@@ -42,6 +42,8 @@
 void osal_sleep(osal_uint64_t nsec) {
     struct timespec ts = { (nsec / NSEC_PER_SEC), (nsec % NSEC_PER_SEC) };
     struct timespec rest;
+    (void)rest;
+    (void)ts;
     
 //    while (1) {
 //        int ret = clock_nanosleep(LIBOSAL_CLOCK, 0, &ts, &rest);
@@ -116,7 +118,7 @@ osal_uint64_t osal_timer_gettime_nsec(void) {
 void osal_timer_init(osal_timer_t *timer, osal_uint64_t timeout) {
     assert(timer != NULL);
 
-    struct timespec ts;
+    struct timespec ts = { 0, 0 };
 //    if (clock_gettime(LIBOSAL_CLOCK, &ts) == -1) {
 //        perror("clock_gettime");
 //    }
