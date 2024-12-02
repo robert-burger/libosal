@@ -49,6 +49,7 @@ osal_retval_t osal_spinlock_init(osal_spinlock_t *mtx, const osal_spinlock_attr_
     int stm32_ret;
 
     (void)attr;
+    (void)stm32_ret;
 /*
     pthread_spinlockattr_t stm32_attr;
     pthread_spinlockattr_t *pstm32_attr = NULL;
