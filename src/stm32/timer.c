@@ -2,8 +2,9 @@
  * \file timer.c
  *
  * \author Robert Burger <robert.burger@dlr.de>
+ * \author Marcel Beausencourt <marcel.beausencourt@dlr.de>
  *
- * \date 07 Aug 2022
+ * \date 12 Dec 2024
  *
  * \brief OSAL stm32 timer source.
  *
@@ -37,6 +38,8 @@
 #include <time.h>
 #include <assert.h>
 #include <errno.h>
+
+#include "stm32h747xx.h"
 
 // sleep in nanoseconds
 void osal_sleep(osal_uint64_t nsec) {
@@ -89,13 +92,13 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
     assert(timer != NULL);
     osal_retval_t ret = OSAL_OK;
 
-//    struct timespec ts;
+    struct timespec ts;
 //    if (clock_gettime(LIBOSAL_CLOCK, &ts) == -1) {
 //        perror("clock_gettime");
 //        ret = OSAL_ERR_UNAVAILABLE;
 //    } else {
-//        timer->sec = ts.tv_sec;
-//        timer->nsec = ts.tv_nsec;
+        timer->sec = TIM4->CNT;
+        timer->nsec = (TIM2->CNT) * 5; //TIM2 is working at 200MHz --> 1 clock cycle = 5ns
 //    }
 
     return ret;
