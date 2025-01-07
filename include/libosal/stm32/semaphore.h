@@ -36,6 +36,7 @@
 
 typedef struct osal_semaphore {
 //    sem_t stm32_sem;
+	int cnt;
 } osal_semaphore_t;
 
 #endif /* LIBOSAL_STM32_SEMAPHORE__H */
