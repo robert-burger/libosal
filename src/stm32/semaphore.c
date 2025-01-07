@@ -29,8 +29,6 @@
  */
 
 #include <libosal/osal.h>
-#include <assert.h>
-#include <errno.h>
 
 //! \brief Initialize a semaphore.
 /*!
@@ -46,23 +44,7 @@ osal_retval_t osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_at
 
     osal_retval_t ret = OSAL_OK;
 
-//    int pshared = 0;
-//    int stm32_initval = initval;
-//    int local_ret;
-//    if (attr != NULL) {
-//        if (((*attr) & OSAL_SEMAPHORE_ATTR__PROCESS_SHARED) == OSAL_SEMAPHORE_ATTR__PROCESS_SHARED) {
-//            pshared = 1;
-//        }
-//    }
-//
-//    local_ret = sem_init(&sem->stm32_sem, pshared, stm32_initval);
-//    if (local_ret != 0) {
-//        if (local_ret == ENOSYS) {
-//            ret = OSAL_ERR_NOT_IMPLEMENTED;
-//        } else { // if (local_ret == EINVAL)
-//            ret = OSAL_ERR_INVALID_PARAM;
-//        }
-//    }
+    sem->cnt = initval;
 
     return ret;
 }
@@ -78,15 +60,7 @@ osal_retval_t osal_semaphore_post(osal_semaphore_t *sem) {
 
     osal_retval_t ret = OSAL_OK;
 
-//    int local_ret = sem_post(&sem->stm32_sem);
-//    if (local_ret != 0) {
-//        local_ret = errno;
-//        if (local_ret == EINVAL) {
-//            ret = OSAL_ERR_INVALID_PARAM;
-//        } else { // if (local_ret == EOVERFLOW)
-//            ret = OSAL_ERR_OPERATION_FAILED;
-//        }
-//    }
+    sem->cnt++;
 
     return ret;
 }
@@ -101,17 +75,12 @@ osal_retval_t osal_semaphore_wait(osal_semaphore_t *sem) {
     assert(sem != NULL);
 
     osal_retval_t ret = OSAL_OK;
-//    int local_ret;
-//
-//    local_ret = sem_wait(&sem->stm32_sem);
-//    if (local_ret != 0) {
-//        local_ret = errno;
-//        if (local_ret == EINTR) {
-//            ret = OSAL_ERR_INTERRUPTED;
-//        } else { // if (local_ret == EINVAL)
-//            ret = OSAL_ERR_INVALID_PARAM;
-//        }
-//    }
+
+    while (sem->cnt <= 0) {
+    	if (sem->cnt > 0) { break; }
+    }
+
+    sem->cnt--;
 
     return ret;
 }
@@ -126,17 +95,11 @@ osal_retval_t osal_semaphore_trywait(osal_semaphore_t *sem) {
     assert(sem != NULL);
     osal_retval_t ret = OSAL_OK;
 
-//    int local_ret = sem_trywait(&sem->stm32_sem);
-//    if (local_ret != 0) {
-//        local_ret = errno; /* Note: this is a special case for the semaphore
-//			    functions, the rest of pthreads behaves
-//			    differently */
-//        if (local_ret == EAGAIN) {
-//            ret = OSAL_ERR_BUSY;
-//        } else {
-//            ret = OSAL_ERR_OPERATION_FAILED;
-//        }
-//    }
+    if (sem->cnt > 0) {
+		sem->cnt--;
+	} else {
+		ret = OSAL_ERR_UNAVAILABLE;
+	}
 
     return ret;
 }
@@ -154,26 +117,18 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
 
     osal_retval_t ret = OSAL_OK;
 
-//    struct timespec ts;
-//    ts.tv_sec = to->sec;
-//    ts.tv_nsec = to->nsec;
-//
-//    while (ret == OSAL_OK) {
-//        int local_ret = sem_timedwait(&sem->stm32_sem, &ts);
-//        int local_errno = errno;
-//
-//        if (local_ret == 0) {
-//            break;
-//        } else if (local_errno == EINTR) {
-//            // continue while loop here
-//        } else if (local_errno == EINVAL) {
-//            ret = OSAL_ERR_INVALID_PARAM;
-//        } else if (local_errno == ETIMEDOUT) {
-//            ret = OSAL_ERR_TIMEOUT;
-//        } else {
-//            ret = OSAL_ERR_OPERATION_FAILED;
-//        }
-//    }
+    while (sem->cnt <= 0) {
+    	if (sem->cnt > 0) { break; }
+
+    	if (osal_timer_expired((osal_timer_t *)to) == OSAL_ERR_TIMEOUT) {
+    		ret = OSAL_ERR_TIMEOUT;
+    		break;
+    	}
+    }
+
+    if (ret == OSAL_OK) {
+    	sem->cnt--;
+    }
 
     return ret;
 }
@@ -186,16 +141,9 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
  */
 osal_retval_t osal_semaphore_destroy(osal_semaphore_t *sem) {
     assert(sem != NULL);
-    
+
     osal_retval_t ret = OSAL_OK;
-//    int local_ret;
-//
-//    local_ret = sem_destroy(&sem->stm32_sem);
-//    if (local_ret != 0) {
-//        // should only return EINVAL !
-//        ret = OSAL_ERR_INVALID_PARAM;
-//    }
-    
+
     return ret;
 }
 
