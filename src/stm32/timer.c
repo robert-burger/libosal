@@ -32,49 +32,22 @@
 #include <libosal/osal.h>
 #include <libosal/timer.h>
 
-// cppcheck-suppress misra-c2012-21.6
-#include <stdio.h>
-// cppcheck-suppress misra-c2012-21.10
-#include <time.h>
-#include <assert.h>
-#include <errno.h>
-
 #include "stm32h747xx.h"
 
 // sleep in nanoseconds
 void osal_sleep(osal_uint64_t nsec) {
-    struct timespec ts = { (nsec / NSEC_PER_SEC), (nsec % NSEC_PER_SEC) };
-    struct timespec rest;
-    (void)rest;
-    (void)ts;
-    
-//    while (1) {
-//        int ret = clock_nanosleep(LIBOSAL_CLOCK, 0, &ts, &rest);
-//        if (ret == 0) {
-//            break;
-//        }
-//
-//        ts = rest;
-//    }
+	osal_timer_t timeout;
+	osal_timer_init(&timeout, nsec);
+	osal_sleep_until(&timeout);
 }
 
 // Sleep until timer expired.
 osal_retval_t osal_sleep_until(osal_timer_t *timer) {
     assert(timer != NULL);
     osal_retval_t ret = OSAL_OK;
-//    int local_ret;
-//
-//    struct timespec ts = { timer->sec, timer->nsec };
-//
-//    do {
-//        local_ret = clock_nanosleep(LIBOSAL_CLOCK, TIMER_ABSTIME, &ts, NULL);
-//    } while (local_ret == EINTR);
-//
-//    if (local_ret == EINVAL) {
-//        ret = OSAL_ERR_INVALID_PARAM;
-//    } else if (local_ret != 0) {
-//        ret = OSAL_ERR_OPERATION_FAILED;
-//    }
+
+    while (osal_timer_expired(timer) != OSAL_ERR_TIMEOUT)
+    	;
 
     return ret;
 }
@@ -92,14 +65,8 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
     assert(timer != NULL);
     osal_retval_t ret = OSAL_OK;
 
-    struct timespec ts;
-//    if (clock_gettime(LIBOSAL_CLOCK, &ts) == -1) {
-//        perror("clock_gettime");
-//        ret = OSAL_ERR_UNAVAILABLE;
-//    } else {
-        timer->sec = TIM4->CNT;
-        timer->nsec = (TIM2->CNT) * 5; //TIM2 is working at 200MHz --> 1 clock cycle = 5ns
-//    }
+	timer->sec = TIM4->CNT;
+	timer->nsec = (TIM2->CNT) * 5; //TIM2 is working at 200MHz --> 1 clock cycle = 5ns
 
     return ret;
 }
@@ -121,16 +88,10 @@ osal_uint64_t osal_timer_gettime_nsec(void) {
 void osal_timer_init(osal_timer_t *timer, osal_uint64_t timeout) {
     assert(timer != NULL);
 
-    struct timespec ts = { 0, 0 };
-//    if (clock_gettime(LIBOSAL_CLOCK, &ts) == -1) {
-//        perror("clock_gettime");
-//    }
-
     osal_timer_t a;
     osal_timer_t b;
-    a.sec = ts.tv_sec;
-    a.nsec = ts.tv_nsec;
 
+    osal_timer_gettime(&a);
     b.sec = (timeout / NSEC_PER_SEC);
     b.nsec = (timeout % NSEC_PER_SEC);
 
