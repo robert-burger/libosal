@@ -130,6 +130,13 @@ osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, cons
 
     osal_retval_t ret = OSAL_OK;
 
+    while (!sem->value) {
+    	if (osal_timer_expired((osal_timer_t *)to) == OSAL_ERR_TIMEOUT) {
+    		ret = OSAL_ERR_TIMEOUT;
+    		break;
+    	}
+    }
+
 //    if (to != NULL) {
 //        struct timespec ts;
 //        ts.tv_sec = to->sec;
