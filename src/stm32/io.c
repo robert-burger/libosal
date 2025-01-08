@@ -39,6 +39,12 @@
 // cppcheck-suppress misra-c2012-21.6
 #include <stdio.h>
 
+#include "usart.h"
+
+// atomic block for write UART
+#define ATOMIC_BLOCK for( uint32_t __cond = 1, __prim = __get_PRIMASK(); __cond != 0 ? __disable_irq() : 0, __cond != 0; __prim == 0 ? __enable_irq() : 0, __cond = 0 )
+
+
 //! \brief Write message to stdout
 /*!
  * \param[in]   msg     Message to be printed.
@@ -47,7 +53,11 @@
  */
 osal_retval_t osal_puts(const osal_char_t *msg) {
     assert(msg != NULL);
+    ATOMIC_BLOCK
+	{
     // insert HAL UART Transmit
+	HAL_UART_Transmit(&huart1, msg, strlen(&msg[0]), 10);
+	}
     fputs((const char *)msg, stdout);
     return OSAL_OK;
 }
