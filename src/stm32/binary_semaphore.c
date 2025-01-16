@@ -84,7 +84,7 @@ osal_retval_t osal_binary_semaphore_wait(osal_binary_semaphore_t *sem) {
 
 //    pthread_mutex_lock(&sem->posix_mtx);
 
-    while (!sem->value) {
+    while (!(*(volatile int *)&(sem->value))) {
 //        pthread_cond_wait(&sem->posix_cond, &sem->posix_mtx);
     }
 
@@ -130,7 +130,7 @@ osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, cons
 
     osal_retval_t ret = OSAL_OK;
 
-    while (!sem->value) {
+    while (!(*(volatile int *)&(sem->value))) {
     	if (osal_timer_expired((osal_timer_t *)to) == OSAL_ERR_TIMEOUT) {
     		ret = OSAL_ERR_TIMEOUT;
     		break;
