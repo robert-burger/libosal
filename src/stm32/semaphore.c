@@ -76,7 +76,7 @@ osal_retval_t osal_semaphore_wait(osal_semaphore_t *sem) {
 
     osal_retval_t ret = OSAL_OK;
 
-    while (sem->cnt <= 0) {
+    while (*((volatile int *)&(sem->cnt)) <= 0) {
     	if (sem->cnt > 0) { break; }
     }
 
@@ -95,7 +95,7 @@ osal_retval_t osal_semaphore_trywait(osal_semaphore_t *sem) {
     assert(sem != NULL);
     osal_retval_t ret = OSAL_OK;
 
-    if (sem->cnt > 0) {
+    if (*((volatile int *)&(sem->cnt)) > 0) {
 		sem->cnt--;
 	} else {
 		ret = OSAL_ERR_UNAVAILABLE;
@@ -117,7 +117,7 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
 
     osal_retval_t ret = OSAL_OK;
 
-    while (sem->cnt <= 0) {
+    while (*((volatile int *)&(sem->cnt)) <= 0) {
     	if (sem->cnt > 0) { break; }
 
     	if (osal_timer_expired((osal_timer_t *)to) == OSAL_ERR_TIMEOUT) {
