@@ -82,6 +82,10 @@ osal_retval_t osal_trace_alloc(osal_trace_t **trace, osal_uint32_t cnt) {
             ret = OSAL_ERR_OUT_OF_MEMORY;
             goto error_exit;
         }
+
+        memset((*trace)->time_in_ns[0], 0, sizeof(osal_uint64_t) * cnt);
+        memset((*trace)->time_in_ns[1], 0, sizeof(osal_uint64_t) * cnt);
+        memset((*trace)->tmp, 0, sizeof(osal_uint64_t) * cnt);
     }
 
     return ret;
