@@ -89,6 +89,8 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
 
     if ((attr != NULL) && (attr->priority > 0)) {
         tattr.prio = attr->priority;
+    } else {
+        tattr.prio = 1; // avoid assigning high priority
     }
 
     hdl->tid = P4EXT_THR_NUM_INVALID;
