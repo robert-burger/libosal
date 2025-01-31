@@ -153,7 +153,7 @@ void osal_timer_set_clock_source(int clock_id);
  *
  * \return  Currently configured clock id of the clock source.
  */
-int osal_timer_get_clock_source();
+int osal_timer_get_clock_source(void);
 
 //! Gets filled timer struct with current time.
 /*!

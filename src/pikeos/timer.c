@@ -56,10 +56,12 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
 }
 
 //! Sets globally the internal clock source. Unused for Pikeos
-void osal_timer_set_clock_source(int clock_id){}
+void osal_timer_set_clock_source(int clock_id) {
+    (void)clock_id;
+}
 
 //! Returns the globally configured internal clock source. Unused for Pikeos
-int osal_timer_get_clock_source(){
+int osal_timer_get_clock_source(void) {
     return -1;
 }
 
