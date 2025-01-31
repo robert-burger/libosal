@@ -106,13 +106,24 @@ osal_retval_t osal_sleep_until(osal_timer_t *timer) {
 // Sleep until current time equals nsec value expired
 osal_retval_t osal_sleep_until_nsec(osal_uint64_t nsec) {
     osal_retval_t ret = OSAL_OK;
-    P4_e_t local_ret = p4_sleep(P4_TIMEOUT_ABS(nsec));
+    P4_timeout_t to = P4_TIMEOUT_ABS(nsec);
 
-    if (local_ret != 0) {
-        ret = OSAL_ERR_OPERATION_FAILED;
+    while (1) {
+        P4_e_t local_ret = p4_sleep(to);
+
+        if (local_ret == P4_E_OK) {
+            break; // time reached
+        }
+
+        if (local_ret == P4_E_BADTIMEOUT) {
+            ret = OSAL_ERR_OPERATION_FAILED;
+            break;
+        }
+
+        // P4_E_CANCEL
+        // in this case try to sleep further on ...
     }
 
     return ret;
-
 }
 
