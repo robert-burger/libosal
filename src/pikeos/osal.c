@@ -29,6 +29,11 @@
  */
 
 #include <libosal/osal.h>
+#include <libosal/io.h>
+
+#include <vm.h>
+
+#if 0 // i think this only works on pikeos > 5
 
 //! Initialize OSAL internals.
 void __attribute__((constructor)) osal_init(void) {
@@ -46,13 +51,12 @@ void __attribute__((constructor)) osal_init(void) {
     result = p4ext_thr_num_alloc(&thrno);
     if (result != P4_E_OK) {
         osal_printf("Failed to allocate thread number for ANIS: %d %s\n", result, p4_strerror(result));
-        return OSAL_ERR_OPERATION_FAILED;
+    } else {
+        result = anis_init("anisfp", thrno);
     }
 
-    result = anis_init("anisfp", thrno);
     if (result < 0) {
         osal_printf("ANIS init error: %d %s\n", result, p4_strerror(result));
-        return OSAL_ERR_OPERATION_FAILED;
     }
 }
 
@@ -60,4 +64,6 @@ void __attribute__((constructor)) osal_init(void) {
 void __attribute__((destructor)) osal_destroy(void) {
     vm_shutdown(VM_RESPART_MYSELF);
 }
+
+#endif
 
