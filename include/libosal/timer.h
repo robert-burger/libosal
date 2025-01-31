@@ -140,6 +140,21 @@ osal_retval_t osal_sleep_until_nsec(osal_uint64_t nsec);
  */
 osal_retval_t osal_busy_wait_until_nsec(osal_uint64_t nsec);
 
+//! Globally sets the internal clock source used by the timer functions.
+/*!
+ *
+ * \param[in] clock_id    Clock id of the clock source according to the <time.h>
+ *                        header of your plattform like CLOKC_REALTIME.
+ */
+void osal_timer_set_clock_source(int clock_id);
+
+//! Returns the internal clock source used by the timer functions.
+/*!
+ *
+ * \return  Currently configured clock id of the clock source.
+ */
+int osal_timer_get_clock_source();
+
 //! Gets filled timer struct with current time.
 /*!
  * This function fills given \p timer structure with current time.
