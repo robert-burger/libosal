@@ -33,7 +33,7 @@
 #include <libosal/timer.h>
 #include <assert.h>
 
-#include "stm32h745xx.h"
+#include "stm32h7xx.h"
 
 // sleep in nanoseconds
 void osal_sleep(osal_uint64_t nsec) {
