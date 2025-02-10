@@ -30,15 +30,6 @@
 
 #include <libosal/osal.h>
 #include <assert.h>
-#include <errno.h>
-#include <time.h>
-
-#define timespec_add(tvp, sec, nsec) { \
-    (tvp)->tv_nsec += (nsec); \
-    (tvp)->tv_sec += (sec); \
-    if ((tvp)->tv_nsec > (long int)1E9) { \
-        (tvp)->tv_nsec -= (long int)1E9; \
-        (tvp)->tv_sec++; } }
 
 //! \brief Initialize a binary_semaphore.
 /*!
@@ -53,8 +44,7 @@ osal_retval_t osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osa
     assert(sem != NULL);
 
     (void)attr;
-
-    sem->value = 0;
+    __atomic_clear(&sem->value, __ATOMIC_RELAXED);
 
     return OSAL_OK;
 }
@@ -68,7 +58,12 @@ osal_retval_t osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osa
 osal_retval_t osal_binary_semaphore_post(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
-    sem->value++;
+    DECLARE_CRITICAL_SECTION();
+    ENTER_CRITICAL_SECTION();
+
+    __atomic_test_and_set(&sem->value, __ATOMIC_ACQUIRE);
+
+    LEAVE_CRITICAL_SECTION();
 
     return OSAL_OK;
 }
@@ -82,15 +77,15 @@ osal_retval_t osal_binary_semaphore_post(osal_binary_semaphore_t *sem) {
 osal_retval_t osal_binary_semaphore_wait(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
-//    pthread_mutex_lock(&sem->posix_mtx);
+    DECLARE_CRITICAL_SECTION();
+    ENTER_CRITICAL_SECTION();
 
-    while (!(*(volatile int *)&(sem->value))) {
-//        pthread_cond_wait(&sem->posix_cond, &sem->posix_mtx);
+    while (__atomic_exchange_n(&sem->value, 0, __ATOMIC_RELAXED) == 0) {
+        ;
     }
 
-    sem->value = 0;
+    LEAVE_CRITICAL_SECTION();
 
-//    pthread_mutex_unlock(&sem->posix_mtx);
     return OSAL_OK;
 }
 
@@ -104,16 +99,17 @@ osal_retval_t osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
 
     osal_retval_t ret = OSAL_OK;
-//
-//    pthread_mutex_lock(&sem->posix_mtx);
 
-    if (sem->value == 0) {
+    DECLARE_CRITICAL_SECTION();
+    ENTER_CRITICAL_SECTION();
+
+    int old_value = __atomic_exchange_n(&sem->value, 0, __ATOMIC_RELAXED);
+
+    LEAVE_CRITICAL_SECTION();
+
+    if (old_value == 0) {
         ret = OSAL_ERR_BUSY;
-    } else {
-        sem->value = 0;
     }
-//
-//    pthread_mutex_unlock(&sem->posix_mtx);
     
     return ret;
 }
@@ -129,38 +125,21 @@ osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, cons
     assert(sem != NULL);
 
     osal_retval_t ret = OSAL_OK;
+    int old_value;
 
-    while (!(*(volatile int *)&(sem->value))) {
-    	if (osal_timer_expired((osal_timer_t *)to) == OSAL_ERR_TIMEOUT) {
-    		ret = OSAL_ERR_TIMEOUT;
-    		break;
-    	}
-    }
+    do {
+        if (osal_timer_expired((osal_timer_t *)to) == OSAL_ERR_TIMEOUT) {
+            ret = OSAL_ERR_TIMEOUT;
+            break;
+        }
 
-//    if (to != NULL) {
-//        struct timespec ts;
-//        ts.tv_sec = to->sec;
-//        ts.tv_nsec = to->nsec;
-//
-//        pthread_mutex_lock(&sem->posix_mtx);
-//        while (!sem->value) {
-//            int local_ret = pthread_cond_timedwait(&sem->posix_cond, &sem->posix_mtx, &ts);
-//            if (local_ret == ETIMEDOUT) {
-//                ret = OSAL_ERR_TIMEOUT;
-//                break;
-//            }
-//        }
-//
-//        if (ret == OSAL_OK) {
-//            sem->value = 0;
-//        }
-//
-//        pthread_mutex_unlock(&sem->posix_mtx);
-//    } else {
-//        if (sem->value == 0) {
-//            ret = OSAL_ERR_TIMEOUT;
-//        }
-//    }
+        DECLARE_CRITICAL_SECTION();
+        ENTER_CRITICAL_SECTION();
+
+        old_value = __atomic_exchange_n(&sem->value, 0, __ATOMIC_RELAXED);
+
+        LEAVE_CRITICAL_SECTION();
+    } while (old_value == 0);
 
     return ret;
 }
@@ -173,9 +152,6 @@ osal_retval_t osal_binary_semaphore_timedwait(osal_binary_semaphore_t *sem, cons
  */
 osal_retval_t osal_binary_semaphore_destroy(osal_binary_semaphore_t *sem) {
     assert(sem != NULL);
-
-//    pthread_mutex_destroy(&sem->posix_mtx);
-//    pthread_cond_destroy(&sem->posix_cond);
 
     return OSAL_OK;
 }

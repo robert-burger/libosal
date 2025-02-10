@@ -29,6 +29,7 @@
  */
 
 #include <libosal/osal.h>
+#include <assert.h>
 
 //! \brief Initialize a semaphore.
 /*!
@@ -43,8 +44,7 @@ osal_retval_t osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_at
     assert(sem != NULL);
 
     osal_retval_t ret = OSAL_OK;
-
-    sem->cnt = initval;
+    __atomic_store_n(&sem->cnt, initval, __ATOMIC_RELAXED);
 
     return ret;
 }
@@ -60,7 +60,7 @@ osal_retval_t osal_semaphore_post(osal_semaphore_t *sem) {
 
     osal_retval_t ret = OSAL_OK;
 
-    sem->cnt++;
+    (void)__atomic_add_fetch(&sem->cnt, 1, __ATOMIC_RELAXED);
 
     return ret;
 }
@@ -76,11 +76,11 @@ osal_retval_t osal_semaphore_wait(osal_semaphore_t *sem) {
 
     osal_retval_t ret = OSAL_OK;
 
-    while (*((volatile int *)&(sem->cnt)) <= 0) {
-    	if (sem->cnt > 0) { break; }
+    while (__atomic_load_n(&sem->cnt, __ATOMIC_ACQUIRE) == 0) {
+        ;
     }
 
-    sem->cnt--;
+    (void)__atomic_fetch_sub(&sem->cnt, 1, __ATOMIC_RELEASE);
 
     return ret;
 }
@@ -95,8 +95,8 @@ osal_retval_t osal_semaphore_trywait(osal_semaphore_t *sem) {
     assert(sem != NULL);
     osal_retval_t ret = OSAL_OK;
 
-    if (*((volatile int *)&(sem->cnt)) > 0) {
-		sem->cnt--;
+    if (__atomic_load_n(&sem->cnt, __ATOMIC_ACQUIRE) > 0) {
+        (void)__atomic_fetch_sub(&sem->cnt, 1, __ATOMIC_RELEASE);
 	} else {
 		ret = OSAL_ERR_UNAVAILABLE;
 	}
@@ -117,9 +117,7 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
 
     osal_retval_t ret = OSAL_OK;
 
-    while (*((volatile int *)&(sem->cnt)) <= 0) {
-    	if (sem->cnt > 0) { break; }
-
+    while (__atomic_load_n(&sem->cnt, __ATOMIC_ACQUIRE) == 0) {
     	if (osal_timer_expired((osal_timer_t *)to) == OSAL_ERR_TIMEOUT) {
     		ret = OSAL_ERR_TIMEOUT;
     		break;
@@ -127,7 +125,7 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
     }
 
     if (ret == OSAL_OK) {
-    	sem->cnt--;
+        (void)__atomic_fetch_sub(&sem->cnt, 1, __ATOMIC_RELEASE);
     }
 
     return ret;
