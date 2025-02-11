@@ -49,7 +49,7 @@
  */
 osal_retval_t osal_puts(const osal_char_t *msg) {
     assert(msg != NULL);
-    HAL_UART_Transmit(&huart3, (const uint8_t *)msg, strlen(&msg[0]), 10);
+    HAL_UART_Transmit(&huart1, (const uint8_t *)msg, strlen(&msg[0]), 10);
     return OSAL_OK;
 }
 
