@@ -31,14 +31,15 @@
 
 #include <libosal/osal.h>
 #include <libosal/timer.h>
+#include <assert.h>
 
-#include "stm32h747xx.h"
+#include "stm32h7xx.h"
 
 // sleep in nanoseconds
 void osal_sleep(osal_uint64_t nsec) {
-	osal_timer_t timeout;
-	osal_timer_init(&timeout, nsec);
-	osal_sleep_until(&timeout);
+    osal_timer_t timeout;
+    osal_timer_init(&timeout, nsec);
+    osal_sleep_until(&timeout);
 }
 
 // Sleep until timer expired.
@@ -47,7 +48,7 @@ osal_retval_t osal_sleep_until(osal_timer_t *timer) {
     osal_retval_t ret = OSAL_OK;
 
     while (osal_timer_expired(timer) != OSAL_ERR_TIMEOUT)
-    	;
+        ;
 
     return ret;
 }
@@ -65,8 +66,13 @@ osal_retval_t osal_timer_gettime(osal_timer_t *timer) {
     assert(timer != NULL);
     osal_retval_t ret = OSAL_OK;
 
-	timer->sec = TIM4->CNT;
-	timer->nsec = (TIM2->CNT) * 5; //TIM2 is working at 200MHz --> 1 clock cycle = 5ns
+    DECLARE_CRITICAL_SECTION();
+    ENTER_CRITICAL_SECTION();
+
+    timer->sec = TIM4->CNT;
+    timer->nsec = (TIM2->CNT) * 5; //TIM2 is working at 200MHz --> 1 clock cycle = 5ns
+
+    LEAVE_CRITICAL_SECTION();
 
     return ret;
 }

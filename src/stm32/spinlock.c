@@ -119,8 +119,9 @@ osal_retval_t osal_spinlock_init(osal_spinlock_t *mtx, const osal_spinlock_attr_
 osal_retval_t osal_spinlock_lock(osal_spinlock_t *mtx) {
     assert(mtx != NULL);
 
-    osal_retval_t ret;
+    osal_retval_t ret = OSAL_OK;
     int stm32_ret;
+    (void )stm32_ret;
 
 //    stm32_ret = pthread_spin_lock(&mtx->stm32_sl);
 //    if (stm32_ret != 0) {
@@ -155,7 +156,7 @@ osal_retval_t osal_spinlock_lock(osal_spinlock_t *mtx) {
 osal_retval_t osal_spinlock_unlock(osal_spinlock_t *mtx) {
     assert(mtx != NULL);
 
-    osal_retval_t ret;
+    osal_retval_t ret = OSAL_OK;
 //    int stm32_ret;
 //
 //    stm32_ret = pthread_spin_unlock(&mtx->stm32_sl);
