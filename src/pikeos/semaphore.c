@@ -45,9 +45,8 @@ osal_retval_t osal_semaphore_init(osal_semaphore_t *sem, const osal_semaphore_at
     assert(sem != NULL);
 
     (void)attr;
-    (void)initval;
 
-    p4_sem_init(&sem->pikeos_sem, 0, 0);
+    p4_sem_init(&sem->pikeos_sem, initval, 0);
 
     return OSAL_OK;
 }
