@@ -99,7 +99,7 @@ osal_retval_t osal_mutex_lock(osal_mutex_t *mtx) {
     assert(mtx != NULL);
 
     osal_retval_t ret = OSAL_OK;
-    int local_ret = p4_mutex_lock(&mtx->pikeos_mtx, P4_TIMEOUT_NULL);
+    int local_ret = p4_mutex_lock(&mtx->pikeos_mtx, P4_TIMEOUT_INFINITE);
     if (local_ret != P4_E_OK) {
         switch (local_ret) {
             case P4_E_STATE:        // if the caller already owns the mutex (recursive 
