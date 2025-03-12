@@ -60,7 +60,9 @@ osal_retval_t osal_binary_semaphore_init(osal_binary_semaphore_t *sem, const osa
     pthread_condattr_init(&cond_attr);
     pthread_condattr_setclock(&cond_attr, osal_timer_get_clock_source());
 
-    pthread_mutex_init(&sem->posix_mtx, NULL);
+    pthread_mutexattr_t posix_attr;
+    pthread_mutexattr_setprotocol(&posix_attr, PTHREAD_PRIO_INHERIT);
+    pthread_mutex_init(&sem->posix_mtx, &posix_attr);
     pthread_cond_init(&sem->posix_cond, &cond_attr);
     return OSAL_OK;
 }
