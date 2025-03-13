@@ -49,10 +49,10 @@
  */
 osal_retval_t osal_puts(const osal_char_t *msg) {
     assert(msg != NULL);
-    DECLARE_CRITICAL_SECTION();
-    ENTER_CRITICAL_SECTION();
-    	HAL_UART_Transmit(&huart1, (const uint8_t *)msg, strlen(&msg[0]), 10);
-    LEAVE_CRITICAL_SECTION();
+//    DECLARE_CRITICAL_SECTION();
+//    ENTER_CRITICAL_SECTION();
+	HAL_UART_Transmit(&huart1, (const uint8_t *)msg, strlen(&msg[0]), 1000);
+//    LEAVE_CRITICAL_SECTION();
     return OSAL_OK;
 }
 
