@@ -100,16 +100,20 @@ osal_retval_t osal_binary_semaphore_trywait(osal_binary_semaphore_t *sem) {
 
     osal_retval_t ret = OSAL_OK;
 
-    DECLARE_CRITICAL_SECTION();
-    ENTER_CRITICAL_SECTION();
+//    if (sem->value == 0) {
+//    	ret = OSAL_ERR_BUSY;
+//    } else {
+		DECLARE_CRITICAL_SECTION();
+		ENTER_CRITICAL_SECTION();
 
-    int old_value = __atomic_exchange_n(&sem->value, 0, __ATOMIC_RELAXED);
+		int old_value = __atomic_exchange_n(&sem->value, 0, __ATOMIC_RELAXED);
 
-    LEAVE_CRITICAL_SECTION();
+		LEAVE_CRITICAL_SECTION();
 
-    if (old_value == 0) {
-        ret = OSAL_ERR_BUSY;
-    }
+		if (old_value == 0) {
+			ret = OSAL_ERR_BUSY;
+		}
+//    }
     
     return ret;
 }
