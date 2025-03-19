@@ -69,8 +69,14 @@ static void *posix_task_wrapper(void *args) {
             osal_retval_t local_ret = osal_task_set_policy(NULL, user_attr->policy);
             if (local_ret != OSAL_OK) {
                 switch (local_ret) {
+                    case OSAL_ERR_PERMISSION_DENIED:
+                        fprintf(stderr, "unknown error occured setting policy to %d: PERMISSION DENIED\n", user_attr->policy);
+                        break;
+                    case OSAL_ERR_OPERATION_FAILED:
+                        fprintf(stderr, "unknown error occured setting policy to %d: OPERATION FAILED\n", user_attr->policy);
+                        break;
                     default:
-                        fprintf(stderr, "unknown error occured setting policy: %d\n", local_ret);
+                        fprintf(stderr, "unknown error occured setting policy to %d: %d\n", user_attr->policy, local_ret);
                         break;
                 }
             }
@@ -94,7 +100,17 @@ static void *posix_task_wrapper(void *args) {
         }
 
         if (user_attr->affinity > 0u) {
-            (void)osal_task_set_affinity(NULL, user_attr->affinity);
+            osal_retval_t local_ret = osal_task_set_affinity(NULL, user_attr->affinity);
+            if (local_ret != OSAL_OK) {
+                switch (local_ret) {
+                    case OSAL_ERR_INVALID_PARAM:
+                        fprintf(stderr, "unknown error occured setting affinity to %d: INVALID PARAMETER\n", user_attr->affinity);
+                        break;
+                    default:
+                        fprintf(stderr, "unknown error occured setting affinity to %d: %d\n", user_attr->affinity, local_ret);
+                        break;
+                }
+            }
         }
 
 #if LIBOSAL_HAVE_SYS_PRCTL_H == 1
@@ -529,8 +545,7 @@ osal_retval_t osal_task_set_affinity(osal_task_t *hdl,
 
         int local_ret = pthread_setaffinity_np(tid, sizeof(cpu_set_t), &cpuset);
         if (local_ret != 0) {
-            (void)osal_printf("libosal: pthread_setaffinity_np(%p, %#x): %d %s\n", 
-                    (void *)tid, affinity, ret, strerror(local_ret));
+            ret = OSAL_ERR_INVALID_PARAM;
         }
 #endif
     }
