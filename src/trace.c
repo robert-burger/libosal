@@ -241,12 +241,12 @@ void osal_trace_analyze_min_max(osal_trace_t *trace, osal_uint64_t *avg, osal_ui
         (*avg) += trace->tmp[i];
 
         if (i == 0) {
-            if (!!min_val) { *min_val = trace->tmp[i]; }
-            if (!!max_val) { *max_val = trace->tmp[i]; }
+            if (min_val) { *min_val = trace->tmp[i]; }
+            if (max_val) { *max_val = trace->tmp[i]; }
         }
 
-        if (!!min_val && (*min_val > trace->tmp[i])) { *min_val = trace->tmp[i]; }
-        if (!!max_val && (*max_val > trace->tmp[i])) { *max_val = trace->tmp[i]; }
+        if (min_val && (*min_val > trace->tmp[i])) { *min_val = trace->tmp[i]; }
+        if (max_val && (*max_val < trace->tmp[i])) { *max_val = trace->tmp[i]; }
     }
 
     (*avg) /= (trace->cnt - 1u);
@@ -305,12 +305,12 @@ void osal_trace_analyze_rel_min_max(osal_trace_t *trace, osal_uint64_t *avg, osa
         (*avg) += trace->time_in_ns[act_buffer][i];
         
         if (i == 0) {
-            if (!!min_val) { *min_val = trace->tmp[i]; }
-            if (!!max_val) { *max_val = trace->tmp[i]; }
+            if (min_val) { *min_val = trace->tmp[i]; }
+            if (max_val) { *max_val = trace->tmp[i]; }
         }
 
-        if (!!min_val && (*min_val > trace->tmp[i])) { *min_val = trace->tmp[i]; }
-        if (!!max_val && (*max_val > trace->tmp[i])) { *max_val = trace->tmp[i]; }
+        if (min_val && (*min_val > trace->tmp[i])) { *min_val = trace->tmp[i]; }
+        if (max_val && (*max_val < trace->tmp[i])) { *max_val = trace->tmp[i]; }
     }
 
     (*avg) /= trace->cnt;
