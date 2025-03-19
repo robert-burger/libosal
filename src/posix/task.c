@@ -66,11 +66,31 @@ static void *posix_task_wrapper(void *args) {
 
     if (user_attr != NULL) {
         if (user_attr->policy != 0u) {
-            (void)osal_task_set_policy(NULL, user_attr->policy);
+            osal_retval_t local_ret = osal_task_set_policy(NULL, user_attr->policy);
+            if (local_ret != OSAL_OK) {
+                switch (local_ret) {
+                    default:
+                        fprintf(stderr, "unknown error occured setting policy: %d\n", local_ret);
+                        break;
+                }
+            }
         }
 
         if (user_attr->priority != 0u) {
-            (void)osal_task_set_priority(NULL, user_attr->priority);
+            osal_retval_t local_ret = osal_task_set_priority(NULL, user_attr->priority);
+            if (local_ret != OSAL_OK) {
+                switch (local_ret) {
+                    case OSAL_ERR_PERMISSION_DENIED:
+                        fprintf(stderr, "unknown error occured setting priority to %d: PERMISSION DENIED\n", user_attr->priority);
+                        break;
+                    case OSAL_ERR_OPERATION_FAILED:
+                        fprintf(stderr, "unknown error occured setting priority to %d: OPERATION FAILED\n", user_attr->priority);
+                        break;
+                    default:
+                        fprintf(stderr, "unknown error occured setting priority to %d: %d\n", user_attr->priority, local_ret);
+                        break;
+                }
+            }
         }
 
         if (user_attr->affinity > 0u) {
