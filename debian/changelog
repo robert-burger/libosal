@@ -1,11 +1,45 @@
+libosal (0.0.6) unstable; urgency=low
+
+  * fix: extendend tracing to also return min_val and max_val relative
+  * fix: extendend tracing to also return min_val and max_val
+  * add: extenden tracing to also return min_val and max_val
+  * fix: more error prints in posix task wrapper
+  * fix: printing errors in posix task wrapper
+  * fix (posix): setting priority inheritance for binary_semaphore mutex
+  * fix: use infinite timeout for lock
+  * fix: init value of semaphore was ignored
+  * fix: pikeos -> skipping osal.c, 4.2 does not need this
+  * fix: pikeos compilation
+  * Merge branch 'master' of github.com:robert-burger/libosal
+  * fix: pikeos -> re-sleep when p4_sleep returned P4_E_CANCEL
+  * fix: starting task priority at 1 and not with 0
+  * Merge branch 'master' of github.com:robert-burger/libosal
+  * Merge pull request #5 from marcfir/feat/timerconfig
+  * feat: add osal_timer_get_clock_source() and replace all LIBOSAL_CLOCK constants
+  * feat: make timer clock source configurable
+  * Merge pull request #4 from marcfir/master
+  * doc: clean markdown
+  * feat(CMake): Configure fpic
+
+ -- Robert Burger <robert.burger@dlr.de>  Wed, 19 Mar 2025 14:51:32 +0100
+
 libosal (0.0.5) unstable; urgency=low
 
+  * update: debian changelog for 0.0.5
   * Merge branch 'master' of rmc-github.robotic.dlr.de:common/libosal
   * bump: 0.0.5
   * fix: debian rules
   * add: git changelog gen script
 
- -- Robert Burger <robert.burger@dlr.de>  Sat, 30 Nov 2024 09:44:53 +0100
+ -- Robert Burger <robert.burger@dlr.de>  Sat, 30 Nov 2024 09:45:25 +0100
+
+libosal (0.0.4-deb0) unstable; urgency=low
+
+  * 0.0.4 debian release
+  * fix: URL in pkg-config
+  * fix: debian rules
+
+ -- Robert Burger <robert.burger@dlr.de>  Mon, 2 Dec 2024 06:42:14 +0100
 
 libosal (0.0.4) unstable; urgency=low
 
