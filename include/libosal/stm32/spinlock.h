@@ -2,8 +2,9 @@
  * \file stm32/spinlock.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
+ * \author Marcel Beausencourt <marcel.beausencourt@dlr.de>
  *
- * \date 07 Aug 2022
+ * \date 26 Nov 2024
  *
  * \brief OSAL spinlock header.
  *
@@ -31,10 +32,7 @@
 #ifndef LIBOSAL_STM32_SPINLOCK__H
 #define LIBOSAL_STM32_SPINLOCK__H
 
-//#include <pthread.h>
-
 typedef struct osal_spinlock {
-//    pthread_spinlock_t posix_sl;
 } osal_spinlock_t;
 
 #endif /* LIBOSAL_STM32_SPINLOCK__H */

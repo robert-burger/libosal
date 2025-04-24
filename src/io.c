@@ -28,8 +28,10 @@
  * along with libosal; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
+#ifdef HAVE_CONFIG_H
 #include <libosal/config.h>
+#endif
+
 #include <libosal/osal.h>
 #include <libosal/io.h>
 #include <libosal/shm.h>
@@ -151,7 +153,7 @@ osal_retval_t osal_io_shm_setup(const osal_char_t *shm_name, const osal_size_t m
 osal_retval_t osal_printf(const osal_char_t *fmt, ...) {
     assert(fmt != NULL);
 
-    char buf[512];
+    char buf[530];
 
     // cppcheck-suppress misra-c2012-17.1
     va_list va;
@@ -160,7 +162,7 @@ osal_retval_t osal_printf(const osal_char_t *fmt, ...) {
     // cppcheck-suppress misra-c2012-17.1
     va_start(va, fmt);
 
-    (void)vsnprintf(buf, 512, fmt, va);
+    (void)vsnprintf(buf, sizeof(buf), fmt, va);
     
     // cppcheck-suppress misra-c2012-17.1
     va_end(va);

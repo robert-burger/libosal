@@ -1,19 +1,14 @@
 /**
- * \file posix/binary_semaphore.h
+ * \file STM32/shm.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
-<<<<<<< HEAD
- *
- * \date 07 Aug 2022
-=======
  * \author Marcel Beausencourt <marcel.beausencourt@dlr.de>
  *
  * \date 26 Nov 2024
->>>>>>> feat/stm32
  *
- * \brief OSAL binary_semaphore header.
+ * \brief OSAL shm header.
  *
- * OSAL binary_semaphore include header.
+ * OSAL shm include header.
  */
 
 /*
@@ -34,12 +29,13 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef LIBOSAL_STM32_BINARY_SEMAPHORE__H
-#define LIBOSAL_STM32_BINARY_SEMAPHORE__H
+#ifndef LIBOSAL_STM32_SHM__H
+#define LIBOSAL_STM32_SHM__H
 
-typedef struct osal_binary_semaphore {
-    int value;
-} osal_binary_semaphore_t;
+typedef struct osal_shm {
+    int fd;
+    osal_size_t size;
+} osal_shm_t;
 
-#endif /* LIBOSAL_STM32_BINARY_SEMAPHORE__H */
+#endif /* LIBOSAL_STM32_SHM__H */
 

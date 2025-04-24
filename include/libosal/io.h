@@ -32,7 +32,10 @@
 #ifndef LIBOSAL_IO__H
 #define LIBOSAL_IO__H
 
+#ifdef HAVE_CONFIG_H
 #include <libosal/config.h>
+#endif
+
 #include <libosal/types.h>
 #include <libosal/timer.h>
 

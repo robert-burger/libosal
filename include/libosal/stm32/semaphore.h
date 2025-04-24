@@ -2,8 +2,9 @@
  * \file stm32/semaphore.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
+ * \author Marcel Beausencourt <marcel.beausencourt@dlr.de>
  *
- * \date 07 Aug 2022
+ * \date 26 Nov 2024
  *
  * \brief OSAL semaphore header.
  *
@@ -31,11 +32,9 @@
 #ifndef LIBOSAL_STM32_SEMAPHORE__H
 #define LIBOSAL_STM32_SEMAPHORE__H
 
-//#include <semaphore.h>
-
 typedef struct osal_semaphore {
-//    sem_t posix_sem;
+	int cnt;
 } osal_semaphore_t;
 
-#endif /* LIBOSAL_POSIX_SEMAPHORE__H */
+#endif /* LIBOSAL_STM32_SEMAPHORE__H */
 

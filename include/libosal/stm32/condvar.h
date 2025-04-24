@@ -2,8 +2,9 @@
  * \file posix/condvar.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
+ * \author Marcel Beausencourt <marcel.beausencourt@dlr.de>
  *
- * \date 07 Aug 2022
+ * \date 26 Nov 2024
  *
  * \brief OSAL condvar header.
  *
@@ -37,5 +38,5 @@ typedef struct osal_condvar {
     pthread_cond_t posix_cond;
 } osal_condvar_t;
 
-#endif /* LIBOSAL_POSIX_CONDVAR__H */
+#endif /* LIBOSAL_STM32_CONDVAR__H */
 

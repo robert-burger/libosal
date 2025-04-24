@@ -49,6 +49,9 @@
 #define OSAL_ERR_INTERRUPTED            -15     //!< \brief Error function call was interrupted.
 #define OSAL_ERR_MUTEX_IS_LOCKED        -16     //!< \brief Error mutex is locked.
 
+#ifdef HAVE_CONFIG_H
+#include <libosal/config.h>
+#endif
 #include <libosal/types.h>
 #include <libosal/task.h>
 #include <libosal/mutex.h>
@@ -57,6 +60,9 @@
 #include <libosal/binary_semaphore.h>
 #include <libosal/timer.h>
 #include <libosal/condvar.h>
+#ifdef LIBOSAL_BUILD_STM32
+#include <libosal/stm32/osal.h>
+#endif
 
 //! Initialize OSAL internals.
 void osal_init(void);

@@ -31,7 +31,10 @@
 #ifndef LIBOSAL_SHM__H
 #define LIBOSAL_SHM__H
 
+#ifdef HAVE_CONFIG_H
 #include <libosal/config.h>
+#endif
+
 #include <libosal/types.h>
 
 #ifdef LIBOSAL_BUILD_POSIX
@@ -48,6 +51,10 @@
 
 #ifdef LIBOSAL_BUILD_WIN32
 #include <libosal/win32/shm.h>
+#endif
+
+#ifdef LIBOSAL_BUILD_STM32
+#include <libosal/stm32/shm.h>
 #endif
 
 /** \defgroup shm_group Shared memory

@@ -2,8 +2,9 @@
  * \file stm32/task.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
+ * \author Marcel Beausencourt <marcel.beausencourt@dlr.de>
  *
- * \date 07 Aug 2022
+ * \date 26 Nov 2024
  *
  * \brief OSAL binary_semaphore header.
  *
@@ -31,10 +32,7 @@
 #ifndef LIBOSAL_STM32_TASK__H
 #define LIBOSAL_STM32_TASK__H
 
-//#include <pthread.h>
-
 typedef struct osal_task {
-    //pthread_t tid;
 } osal_task_t;
 
 #endif /* LIBOSAL_STM32_TASK__H */

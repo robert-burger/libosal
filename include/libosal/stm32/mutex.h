@@ -2,8 +2,9 @@
  * \file stm32/mutex.h
  *
  * \author Robert Burger <robert.burger@dlr.de>
+ * \author Marcel Beausencourt <marcel.beausencourt@dlr.de>
  *
- * \date 07 Aug 2022
+ * \date 26 Nov 2024
  *
  * \brief OSAL mutex header.
  *
@@ -31,12 +32,8 @@
 #ifndef LIBOSAL_STM32_MUTEX__H
 #define LIBOSAL_STM32_MUTEX__H
 
-//#include <p4ext_threads.h>
-
 typedef struct osal_mutex {
-    //stm32_mutex_type stm32_mtx;
 } osal_mutex_t;
 
 #endif /* LIBOSAL_STM32_MUTEX__H */
-
 
