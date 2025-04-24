@@ -31,7 +31,10 @@
 #ifndef LIBOSAL_MQ__H
 #define LIBOSAL_MQ__H
 
+#ifdef HAVE_CONFIG_H
 #include <libosal/config.h>
+#endif
+
 #include <libosal/types.h>
 #include <libosal/timer.h>
 
@@ -45,6 +48,10 @@
 
 #ifdef LIBOSAL_BUILD_PIKEOS
 #include <libosal/pikeos/mq.h>
+#endif
+
+#ifdef LIBOSAL_BUILD_STM32
+#include <libosal/stm32/mq.h>
 #endif
 
 /** \defgroup mq_group Message queue
