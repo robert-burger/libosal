@@ -127,6 +127,7 @@ check_include_files("sys/types.h" LIBOSAL_HAVE_SYS_TYPES_H)
 check_include_files("unistd.h" LIBOSAL_HAVE_UNISTD_H)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/template_config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/libosal/config.h)
+add_compile_definitions(HAVE_CONFIG_H)
 
 set(SRC_OSAL 
     src/io.c
