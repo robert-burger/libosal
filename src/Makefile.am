@@ -10,7 +10,7 @@ includewin32dir = $(prefix)/include/libosal/win32
 lib_LTLIBRARIES = libosal.la
 
 include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
-				  $(top_srcdir)/include/libosal/config.h \
+				  $(top_builddir)/include/libosal/config.h \
 				  $(top_srcdir)/include/libosal/types.h \
 				  $(top_srcdir)/include/libosal/mutex.h \
 				  $(top_srcdir)/include/libosal/task.h \
@@ -112,7 +112,7 @@ libosal_la_SOURCES += win32/semaphore.c
 
 endif
 
-libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror $(ADD_CFLAGS) -I$(top_srcdir)/include
+libosal_la_CFLAGS	= -std=gnu99 -Wall -Werror $(ADD_CFLAGS) -I$(top_srcdir)/include -I$(top_builddir)/include
 libosal_la_LDFLAGS	= -Wall -Werror $(AM_LDFLAGS) $(ADD_LIBS)
 libosal_la_LIBS     = -lm $(ADD_LIBS)
 
