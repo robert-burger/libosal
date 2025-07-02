@@ -40,7 +40,7 @@
 
 //! Global configuration option for the clock source used by the timer
 //! functions.
-static int global_clock_id = CLOCK_REALTIME;
+int global_clock_id = CLOCK_REALTIME;
 
 // sleep in nanoseconds
 void osal_sleep(osal_uint64_t nsec) {
