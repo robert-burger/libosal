@@ -35,4 +35,6 @@
 #define LIBOSAL_CLOCK_MONOTONIC     CLOCK_MONOTONIC
 #define LIBOSAL_CLOCK_REALTIME      CLOCK_REALTIME
 
+extern int global_clock_id;
+
 #endif /* LIBOSAL_POSIX_TIMER__H */

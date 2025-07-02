@@ -155,8 +155,29 @@ osal_retval_t osal_semaphore_timedwait(osal_semaphore_t *sem, const osal_timer_t
     osal_retval_t ret = OSAL_OK;
 
     struct timespec ts;
-    ts.tv_sec = to->sec;
-    ts.tv_nsec = to->nsec;
+
+    if (global_clock_id == CLOCK_REALTIME) {
+        ts.tv_sec = to->sec;
+        ts.tv_nsec = to->nsec;
+    } else {
+        // need to convert because sem_timedwait needs absolute timeout based on CLOCK_REALTIME
+        osal_uint64_t to_nsec = osal_timer_to_nsec(to),
+                      act_nsec = osal_timer_gettime_nsec();
+
+        if (act_nsec > to_nsec) {
+            // timeout already in the past
+            ret = OSAL_ERR_TIMEOUT;            
+        } else {
+            clock_gettime(CLOCK_REALTIME, &ts);
+            ts.tv_sec += (to_nsec - act_nsec) / NSEC_PER_SEC;
+            ts.tv_nsec += (to_nsec - act_nsec) % NSEC_PER_SEC;
+
+            if (ts.tv_nsec > NSEC_PER_SEC) {
+                ts.tv_nsec -= NSEC_PER_SEC;
+                ts.tv_sec++;
+            }
+        }
+    }
 
     while (ret == OSAL_OK) {
         int local_ret = sem_timedwait(&sem->posix_sem, &ts);
