@@ -148,6 +148,7 @@ add_library(osal ${SRC_OSAL})
 if(BUILD_FOR_PLATFORM STREQUAL "POSIX")
 target_link_libraries(osal m)
 endif()
+target_compile_definitions(osal PUBLIC HAVE_CONFIG_H=1)
 target_include_directories(osal 
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
