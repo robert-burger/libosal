@@ -1,0 +1,22 @@
+name: Build on Tag
+
+on:
+  push:
+    tags:
+      - '*'  # reagiert auf alle Tags
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up build
+        run: echo "Building tag ${{ github.ref }}"
+
+      # Beispiel: Build-Befehl ausführen
+      - name: Compile
+        run: |
+          make  # oder dein Build-Befehl
