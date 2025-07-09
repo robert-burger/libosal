@@ -4,7 +4,9 @@ on:
   push:
     tags:
       - '*'  # reagiert auf alle Tags
-
+    branches:
+      - 'ci/*'
+      
 jobs:
   build:
     runs-on: ubuntu-latest
