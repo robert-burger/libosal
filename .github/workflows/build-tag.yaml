@@ -2,8 +2,6 @@ name: Build on Tag
 
 on:
   push:
-    tags:
-      - '*'  # reagiert auf alle Tags
     branches:
       - 'ci/*'
       
