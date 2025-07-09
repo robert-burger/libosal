@@ -1,0 +1,43 @@
+name: Build DEB Package
+
+on:
+  push:
+    branches:
+      - feat/tag_build
+  pull_request:
+    branches:
+      - feat/tag_build
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential devscripts debhelper autotools-dev fakeroot
+
+      - name: Prepare autotools
+        run: |
+          # Nur falls nicht schon vorhanden (optional)
+          autoreconf -fi
+
+      - name: Build .deb package
+        run: |
+          # baue mit dpkg-buildpackage (ohne signieren)
+          dpkg-buildpackage -us -uc
+
+      - name: Collect .deb artifact
+        run: |
+          mkdir -p artifacts
+          mv ../*.deb artifacts/
+
+      - name: Upload .deb package
+        uses: actions/upload-artifact@v4
+        with:
+          name: libosal-deb
+          path: artifacts/*.deb
