@@ -11,6 +11,9 @@ on:
 jobs:
   build-deb:
     runs-on: ubuntu-latest
+   
+    env:
+      DEB_BUILD_OPTIONS: nocheck  # or whatever options you need
 
     steps:
       - name: Checkout source
