@@ -2,7 +2,7 @@ builds:
 - context: conan
   configurations:
   - any:
-    coverage: True
+      coverage: True
   - imports:
     - linux_defaults_build_profile
   - debian11-x86_64
