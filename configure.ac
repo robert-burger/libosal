@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([libosal], [0.1.0], [Robert Burger <robert.burger@dlr.de>])
+AC_INIT([libosal], [0.0.6-rev0-59-gc918511], [Robert Burger <robert.burger@dlr.de>])
 
 AC_CANONICAL_TARGET
 
