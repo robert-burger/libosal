@@ -44,3 +44,9 @@ jobs:
         with:
           name: libosal-deb
           path: artifacts/*.deb
+          
+      - name: Install Cloudsmith CLI
+        run: pip install --upgrade cloudsmith-cli
+      
+      - name: Upload .deb to Cloudsmith
+        run: cloudsmith push deb robert-burger-AdLL/libosal artifacts/libosal.deb --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
