@@ -86,10 +86,24 @@ jobs:
         with:
           name: libosal-deb-${{ steps.sanitize.outputs.sanitized_image }}
           path: artifacts/*.deb
+
+      - name: Push
+        id: push
+        uses: cloudsmith-io/action@master
+        with:
+          api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
+          command: "push"
+          format: "deb"
+          owner: "cloudsmith"
+          repo: "actions"
+          distro: "{{ martrix.os }}"
+          release: "{{ matrix.version }}"
+          republish: "true" # needed ONLY if version is not changing
+          file: "artifacts/libosal-*.deb"
           
-      - name: Install Cloudsmith CLI
-        run: pip install --break-system-packages --upgrade cloudsmith-cli
-      
-      - name: Upload .deb to Cloudsmith
-        run: |
-          find artifacts --not --regex  ".*/dgbsym/.*" -exec cloudsmith push deb --republish robert-burger-AdLL/libosal/${{ matrix.os }}/${{ matrix.version }} {} --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
+          #      - name: Install Cloudsmith CLI
+          #        run: pip install --break-system-packages --upgrade cloudsmith-cli
+          #      
+          #      - name: Upload .deb to Cloudsmith
+          #        run: |
+          #          find artifacts --not --regex  ".*/dgbsym/.*" -exec cloudsmith push deb --republish robert-burger-AdLL/libosal/${{ matrix.os }}/${{ matrix.version }} {} --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
