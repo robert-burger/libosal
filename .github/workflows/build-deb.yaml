@@ -20,12 +20,20 @@ jobs:
         include:
           - distro: debian-bookworm
             image: debian:bookworm
+            os: debian
+            version: bookworm
           - distro: debian-bullseye
             image: debian:bullseye
+            os: debian
+            version: bullseye
           - distro: ubuntu-24.04
             image: ubuntu:24.04
+            os: ubuntu
+            version: noble
           - distro: ubuntu-22.04
             image: ubuntu:22.04
+            os: ubuntu
+            version: jammy
     container:
       image: ${{ matrix.image }}
     steps:
@@ -52,9 +60,6 @@ jobs:
         env:
           GITHUB_REF_NAME: ${{ github.ref_name }}
           
-      - name: update debian changelog
-        run: bash ./git2debchangelog.sh > debian/changelog
-
       - name: Prepare autotools
         run: |
           # Nur falls nicht schon vorhanden (optional)
@@ -86,4 +91,4 @@ jobs:
         run: pip install --upgrade cloudsmith-cli
       
       - name: Upload .deb to Cloudsmith
-        run: cloudsmith push deb --republish robert-burger-AdLL/libosal/ubuntu/noble artifacts/libosal_0.0.6_amd64.deb --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
+        run: cloudsmith push deb --republish robert-burger-AdLL/libosal/${{ matrix.os }}/${{ matrix.version }} artifacts/*.deb --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
