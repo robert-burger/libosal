@@ -134,17 +134,17 @@ jobs:
           fi
       
           JSON_PAYLOAD=$(cat <<EOF
-            {
-              "package_file": "$IDENTIFIER",
-              "name": "libosal",
-              "version": "1.0.0~pre1.1",
-              "summary": "testebuild",
-              "description": "Uploaded via GitHub Actions with OS metadata",
-              "os": "debian",
-              "os_release": "bullseye",
-              "arch": "amd64"
-            }
-            EOF
+          {
+            "package_file": "$IDENTIFIER",
+            "name": "libosal",
+            "version": "1.0.0~pre1.1",
+            "summary": "testebuild",
+            "description": "Uploaded via GitHub Actions with OS metadata",
+            "os": "debian",
+            "os_release": "bullseye",
+            "arch": "amd64"
+          }
+          EOF
           )
           echo "Request JSON Payload:"
           echo "$JSON_PAYLOAD"
