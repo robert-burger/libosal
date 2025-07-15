@@ -152,7 +152,7 @@ jobs:
           HTTP_CODE=$(curl -s -w "%{http_code}" \
             -H "Authorization: token $API_KEY" \
             -H "Content-Type: application/json" \
-            -X POST "https://api.cloudsmith.io/v1/packages/${OWNER}/${REPO}/upload/raw/" \
+            -X POST "https://api.cloudsmith.io/v1/packages/${OWNER}/${REPO}/upload/raw/?replace=1" \
             -d "$JSON_PAYLOAD" \
             -o response_body.txt)
       
