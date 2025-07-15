@@ -100,6 +100,7 @@ jobs:
           release: "{{ matrix.version }}"
           republish: "true" # needed ONLY if version is not changing
           file: "artifacts/libosal-*.deb"
+          executable: "false" # Add this to use pip instead
           
           #      - name: Install Cloudsmith CLI
           #        run: pip install --break-system-packages --upgrade cloudsmith-cli
