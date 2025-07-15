@@ -93,18 +93,6 @@ jobs:
         run: |
           echo "Files in workspace:"
           find *
-  
-      - name: Upload to Cloudsmith
-        env:
-          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-        run: |
-          curl -1 -L -X POST "https://upload.cloudsmith.io/api/v1/packages/robert-burger-AdLL/libosal/" \
-            -H "Authorization: Bearer $CLOUDSMITH_API_KEY" \
-            -F "package=artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb" \
-            -F "name=libosal-${{ steps.sanitize.outputs.sanitized_image }}" \
-            -F "version=${{ steps.sanitize.outputs.sanitized_image }}" \
-            -F "distribution={{ matrix.os }}" \
-            -F "release={{ matrix.version }}"
 
       - name: Upload binary to Cloudsmith (Step 1 PUT)
         id: step1
