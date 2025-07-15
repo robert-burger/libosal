@@ -156,7 +156,7 @@ jobs:
             "summary": "testebuild",
             "description": "Uploaded via GitHub Actions with OS metadata",
             "os": "${{ matrix.os }}",
-            "os_release": "${{ matrix.version }}",
+            "release": "${{ matrix.version }}",
             "arch": "amd64"
           }
           EOF
