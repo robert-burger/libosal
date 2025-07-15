@@ -92,7 +92,7 @@ jobs:
       - name: Ensure package is present
         run: |
           echo "Files in workspace:"
-          ls -la
+          find *
   
       - name: Upload to Cloudsmith
         env:
