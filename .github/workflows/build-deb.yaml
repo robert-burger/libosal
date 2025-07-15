@@ -114,7 +114,7 @@ jobs:
           VERSION=$(dpkg-parsechangelog | sed -n 's/^Version: //p')
           OWNER="robert-burger-AdLL"
           REPO="libosal"
-          FILENAME="artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal_$version_amd64.deb"
+          FILENAME="artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal_${VERSION}_amd64.deb"
           TARGET_FILENAME="libosal-${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb"
   
           echo "Uploading via PUT..."
