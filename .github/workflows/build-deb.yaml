@@ -40,7 +40,7 @@ jobs:
       - name: Install build dependencies
         run: |
           apt-get update
-          apt-get install -y build-essential devscripts debhelper autotools-dev fakeroot sed git python3-pip
+          apt-get install -y build-essential devscripts debhelper autotools-dev fakeroot sed git python3-pip curl
       
       - name: Checkout source
         uses: actions/checkout@v4
@@ -77,30 +77,44 @@ jobs:
       
       - name: Set sanitized image name
         id: sanitize
-        run: echo "sanitized_image=$(echo "$IMAGE" | tr '/:' '--')" >> $GITHUB_OUTPUT
+        run: |
+          version=$(dpkg-parsechangelog | sed -n 's/^Version: //p')
+          echo "sanitized_image=$(echo "$version" | tr '/:' '--')" >> $GITHUB_OUTPUT
         env:
           IMAGE: ${{ matrix.image }}
 
       - name: Upload .deb package
         uses: actions/upload-artifact@v4
         with:
-          name: libosal-deb-${{ steps.sanitize.outputs.sanitized_image }}
+          name: libosal-${{ steps.sanitize.outputs.sanitized_image }}
           path: artifacts/*.deb
 
-      - name: Push
-        id: push
-        uses: cloudsmith-io/action@master
-        with:
-          api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
-          command: "push"
-          format: "deb"
-          owner: "cloudsmith"
-          repo: "actions"
-          distro: "{{ martrix.os }}"
-          release: "{{ matrix.version }}"
-          republish: "true" # needed ONLY if version is not changing
-          file: "artifacts/libosal-*.deb"
-          use-executable: "false" # Add this to use pip instead
+      - name: Upload to Cloudsmith
+        env:
+          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+        run: |
+          curl -1 -L -X POST "https://api.cloudsmith.io/v1/packages/robert-burger-AdLL/libosal/upload/" \
+            -H "Authorization: Bearer $CLOUDSMITH_API_KEY" \
+            -F "package=@out/your-package_1.0.0_amd64.deb" \
+            -F "name=your-package" \
+            -F "version=1.0.0" \
+            -F "distribution={{ matrix.os }}" \
+            -F "release={{ matrix.version }}"
+
+          #- name: Push
+          #  id: push
+          #  uses: cloudsmith-io/action@master
+          #  with:
+          #    api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
+          #    command: "push"
+          #    format: "deb"
+          #    owner: "cloudsmith"
+          #    repo: "actions"
+          #    distro: "{{ martrix.os }}"
+          #    release: "{{ matrix.version }}"
+          #    republish: "true" # needed ONLY if version is not changing
+          #    file: "artifacts/libosal-*.deb"
+          #    use-executable: "false" # Add this to use pip instead
           
           #      - name: Install Cloudsmith CLI
           #        run: pip install --break-system-packages --upgrade cloudsmith-cli
