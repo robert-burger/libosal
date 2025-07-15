@@ -86,7 +86,7 @@ jobs:
       - name: Upload .deb package
         uses: actions/upload-artifact@v4
         with:
-          name: libosal-${{ steps.sanitize.outputs.sanitized_image }}
+          name: libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb
           path: artifacts/*.deb
 
       - name: Upload to Cloudsmith
@@ -95,9 +95,9 @@ jobs:
         run: |
           curl -1 -L -X POST "https://api.cloudsmith.io/v1/packages/robert-burger-AdLL/libosal/upload/" \
             -H "Authorization: Bearer $CLOUDSMITH_API_KEY" \
-            -F "package=@out/your-package_1.0.0_amd64.deb" \
+            -F "package=artifacts/libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb" \
             -F "name=your-package" \
-            -F "version=1.0.0" \
+            -F "version=${{ steps.sanitize.outputs.sanitized_image }}" \
             -F "distribution={{ matrix.os }}" \
             -F "release={{ matrix.version }}"
 
