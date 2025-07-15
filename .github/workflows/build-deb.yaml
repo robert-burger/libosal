@@ -138,17 +138,18 @@ jobs:
             -H "Content-Type: application/json" \
             -X POST "https://api.cloudsmith.io/v1/packages/${OWNER}/${REPO}/upload/raw/" \
             -d @- <<EOF
-{
-  "package_file": "$IDENTIFIER",
-  "name": "libosal",
-  "version": "1.0.0~pre1.1",
-  "summary": "testebuild",
-  "description": "Uploaded via GitHub Actions with OS metadata",
-  "os": "${{ matrix.os }}",
-  "os_release": "${{ matrix.version }}",
-  "arch": "amd64"
-}
-EOF
+          {
+            "package_file": "$IDENTIFIER",
+            "name": "libosal",
+            "version": "1.0.0~pre1.1",
+            "summary": "testebuild",
+            "description": "Uploaded via GitHub Actions with OS metadata",
+            "os": "${{ matrix.os }}",
+            "os_release": "${{ matrix.version }}",
+            "arch": "amd64"
+          }
+          EOF
+
           #- name: Push
           #  id: push
           #  uses: cloudsmith-io/action@master
