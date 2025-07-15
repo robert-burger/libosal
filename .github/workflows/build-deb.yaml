@@ -89,6 +89,11 @@ jobs:
           name: libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb
           path: artifacts/${{ matrix.os }}/${{ matrix.version }}/*.deb
 
+      - name: Ensure package is present
+        run: |
+          echo "Files in workspace:"
+          ls -la
+  
       - name: Upload to Cloudsmith
         env:
           CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
@@ -108,7 +113,7 @@ jobs:
         run: |
           OWNER="robert-burger-AdLL"
           REPO="libosal"
-          FILENAME="artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb"
+          FILENAME="artifacts/libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb"
           TARGET_FILENAME="libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb"
   
           echo "Uploading via PUT..."
