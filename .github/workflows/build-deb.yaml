@@ -73,7 +73,7 @@ jobs:
       - name: Collect .deb artifact
         run: |
           mkdir -p artifacts
-          mv ../*.deb artifacts/
+          mv ../libosal_*.deb artifacts/
       
       - name: Set sanitized image name
         id: sanitize
@@ -96,7 +96,7 @@ jobs:
           curl -1 -L -X POST "https://api.cloudsmith.io/v1/packages/robert-burger-AdLL/libosal/upload/" \
             -H "Authorization: Bearer $CLOUDSMITH_API_KEY" \
             -F "package=artifacts/libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb" \
-            -F "name=your-package" \
+            -F "name=libosal-${{ steps.sanitize.outputs.sanitized_image }}" \
             -F "version=${{ steps.sanitize.outputs.sanitized_image }}" \
             -F "distribution={{ matrix.os }}" \
             -F "release={{ matrix.version }}"
