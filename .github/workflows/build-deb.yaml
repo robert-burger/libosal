@@ -124,7 +124,7 @@ jobs:
             --upload-file "$FILENAME" \
             "https://upload.cloudsmith.io/${OWNER}/${REPO}/${TARGET_FILENAME}")
   
-          echo "step1_response=$RESPONSE" >> $GITHUB_OUTPUT
+          echo "response=$RESPONSE" >> $GITHUB_OUTPUT
   
       - name: Register package in Cloudsmith (Step 2 POST)
         env:
@@ -132,12 +132,15 @@ jobs:
         run: |
           OWNER="robert-burger-AdLL"
           REPO="libosal"
-  
-          IDENTIFIER=$(echo "$STEP1_RESPONSE" | jq -r '.identifier')
-  
+
+          RESPONSE="${{ steps.step1.outputs.response }}"
+          echo "Response from step1: $RESPONSE"
+
+          IDENTIFIER=$(echo "$RESPONSE" | jq -r '.identifier')
+
           if [ -z "$IDENTIFIER" ] || [ "$IDENTIFIER" == "null" ]; then
             echo "❌ Failed to get identifier from step 1:"
-            echo "$STEP1_RESPONSE"
+            echo "$RESPONSE"
             exit 1
           fi
   
