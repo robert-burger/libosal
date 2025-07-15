@@ -79,7 +79,7 @@ jobs:
         id: sanitize
         run: |
           version=$(dpkg-parsechangelog | sed -n 's/^Version: //p')
-          echo "sanitized_image=$(echo "$version" | tr '/:' '--')" >> $GITHUB_OUTPUT
+          echo "sanitized_image=$(echo "$version-$IMAGE" | tr '/:' '--')" >> $GITHUB_OUTPUT
         env:
           IMAGE: ${{ matrix.image }}
 
