@@ -91,4 +91,5 @@ jobs:
         run: pip install --upgrade cloudsmith-cli
       
       - name: Upload .deb to Cloudsmith
-        run: cloudsmith push deb --republish robert-burger-AdLL/libosal/${{ matrix.os }}/${{ matrix.version }} artifacts/*.deb --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
+        run: |
+          find artifacts --not --regex  ".*/dgbsym/.*" -exec cloudsmith push deb --republish robert-burger-AdLL/libosal/${{ matrix.os }}/${{ matrix.version }} {} --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
