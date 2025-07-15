@@ -136,7 +136,7 @@ jobs:
           RESPONSE="${{ steps.step1.outputs.response }}"
           echo "Response from step1: $RESPONSE"
 
-          IDENTIFIER=$(echo "$RESPONSE" | jq -r '.identifier')
+          IDENTIFIER=$(echo "$RESPONSE" | grep -o 'identifier:[^,]*' | sed 's/identifier://')
 
           if [ -z "$IDENTIFIER" ] || [ "$IDENTIFIER" == "null" ]; then
             echo "❌ Failed to get identifier from step 1:"
