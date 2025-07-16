@@ -1,4 +1,4 @@
-libosal (0.1.0~pre1-1) unstable; urgency=low
+libosal (0.1.0~pre1) unstable; urgency=low
 
   * Merge branch 'master' of github.com:robert-burger/libosal
   * Merge pull request #6 from marcfir/master
