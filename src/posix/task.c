@@ -180,7 +180,6 @@ osal_retval_t osal_task_join(osal_task_t *hdl, osal_task_retval_t *retval) {
     int local_ret;
 
     local_ret = pthread_join(hdl->tid, retval);
-    (void)local_ret;
 
     if (local_ret != 0) {
         if (local_ret == EDEADLK) {
@@ -384,7 +383,17 @@ osal_retval_t osal_task_set_policy(osal_task_t *hdl, osal_task_sched_policy_t po
             param.sched_priority = sched_get_priority_max(tmp_policy);
         }
 
-        (void)pthread_setschedparam(pthread_self(), tmp_policy, &param);
+        local_ret = pthread_setschedparam(pthread_self(), tmp_policy, &param);
+    
+        if (local_ret != 0) {
+            if ((local_ret == ESRCH) || (local_ret == EINVAL)) {
+                ret = OSAL_ERR_INVALID_PARAM;
+            } else if (local_ret == EPERM) {
+                ret = OSAL_ERR_PERMISSION_DENIED;
+            } else {
+                ret = OSAL_ERR_OPERATION_FAILED;
+            }
+        }
     }
 
     return ret;

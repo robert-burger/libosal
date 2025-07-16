@@ -255,6 +255,14 @@ TEST(MutexFunction, TestNoPriorityInheritance) {
 
   ASSERT_EQ(orv, OSAL_OK) << "osal_task_create() M failed";
 
+  orv = osal_task_set_policy(nullptr, OSAL_SCHED_POLICY_FIFO);
+  if (orv == OSAL_ERR_PERMISSION_DENIED) {
+      printf("Warning: osal_task_set_policy permission denied "
+              "on that build host! Skipping TestNoPriorityInheritance!\n");
+      return;
+  }
+  ASSERT_EQ(orv, OSAL_OK) << "osal_task_set_policy() L failed";
+
   orv = osal_task_set_priority(nullptr, 1);
   if (orv != 0) {
     printf("Warning: osal_task_set_priority() L failed "
@@ -266,9 +274,6 @@ TEST(MutexFunction, TestNoPriorityInheritance) {
     printf("Warning: osal_task_set_affinity() L failed "
            "- consider running under \"chrt -f 1 ...\"\n");
   }
-
-  orv = osal_task_set_policy(nullptr, OSAL_SCHED_POLICY_FIFO);
-  ASSERT_EQ(orv, OSAL_OK) << "osal_task_set_policy() L failed";
 
   run_L(&shared);
 
