@@ -1,5 +1,50 @@
+libosal (0.1.0~pre1-1) unstable; urgency=low
+
+  * Merge branch 'master' of github.com:robert-burger/libosal
+  * Merge pull request #6 from marcfir/master
+  * Merge commit '0.0.6-rev0-2-g98fb40b'
+  * fix: out-of-src-tree build
+  * fix: posix sem_timedwait -> converting timeout to CLOCK_REALTIME based timeout if needed
+  * use target_compile_definitions
+  * fix: add HAVE_CONFIG_H to cmake
+  * Merge pull request #13 from common/feat/stm32-merge
+  * Merge branch 'feat/stm32' into feat/stm32-merge
+  * changed ifndef and define from posix to stm32
+  * add: stm32 libosal files
+  * add: initial stm32 mutex
+  * fix: binary semaphore has uninitialized internal mutex attributes in posix case
+  * deleted crit sec in osal_puts
+  * deleted crit sec in sem_trywait
+  * changed buf size in osal_printf and added sizeof(buf)
+  * added CRIT_SECs around HAL_UART_TX
+  * use huart1 instead of huart3
+  * Merge pull request #1 from burger-r/stm32-changes
+  * Update timer.c, fix stm32hxx.h
+  * fix: changes for stm32 target
+  * added volatile int
+  * added volatile int
+  * added memset 0
+  * added HAL_UART_Transmit and ATOMIC_BLOCK
+  * removed outcommented lines; added timer logic
+  * removed outcommented lines; added semaphore logic(inc/dec)
+  * restructure
+  * added counter to sem
+  * added TIM2 and 4 for time calculation in osal_timer_gettime
+  * initialized timespec ts={0,0}
+  * added stm32_ret
+  * added me to authors; added date
+  * deleted function pthreads for stm32 functions
+  * added missing stm32 files; made #ifdef for config and for LIBOSAL_BUILD_STM32
+  * changed ifndef and define from posix to stm32
+  * changed ifndef and define from posix to stm32
+  * add: stm32 libosal files
+  * add: initial stm32 mutex
+
+ -- Robert Burger <robert.burger@dlr.de>  Thu, 3 Jul 2025 06:51:06 +0200
+
 libosal (0.0.6) unstable; urgency=low
 
+  * prep: 0.0.6 release
   * fix: extendend tracing to also return min_val and max_val relative
   * fix: extendend tracing to also return min_val and max_val
   * add: extenden tracing to also return min_val and max_val
@@ -21,7 +66,7 @@ libosal (0.0.6) unstable; urgency=low
   * doc: clean markdown
   * feat(CMake): Configure fpic
 
- -- Robert Burger <robert.burger@dlr.de>  Wed, 19 Mar 2025 14:51:32 +0100
+ -- Robert Burger <robert.burger@dlr.de>  Mon, 24 Mar 2025 08:28:42 +0100
 
 libosal (0.0.5) unstable; urgency=low
 

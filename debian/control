@@ -4,9 +4,9 @@ Maintainer: Robert Burger <robert.burger@dlr.de>
 Build-Depends: debhelper-compat (= 13), autotools-dev
 Standards-Version: 4.5.1
 Section: libs
-Homepage: https://rmc-github.robotic.dlr.de/pages/common/libosal/master/index.html
-Vcs-Browser: https://rmc-github.robotic.dlr.de/common/libosal
-Vcs-Git: https://rmc-github.robotic.dlr.de/common/libosal.git
+Homepage: https://www.burger-system.de/osal/osal
+Vcs-Browser: https://github.com/robert-burger/libosal.git
+Vcs-Git: https://github.com/robert-burger/libosal.git
 Rules-Requires-Root: no
 
 Package: libosal-dev
