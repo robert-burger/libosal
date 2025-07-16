@@ -94,132 +94,18 @@ jobs:
           echo "Files in workspace:"
           find *
 
-      - name: Upload binary to Cloudsmith (Step 1 PUT)
-        id: step1
-        env:
-          API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+      - name: Set up Python and install cloudsmith-cli
         run: |
-          VERSION=$(dpkg-parsechangelog | sed -n 's/^Version: //p')
-          OWNER="robert-burger-AdLL"
-          REPO="libosal"
+          python -m pip install --upgrade pip
+          pip install cloudsmith-cli
+
+
+      - name: Upload to Cloudsmith (${{ matrix.os }}/${{ matrix.version }})
+        env:
+          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+        run: |
           FILENAME="artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal_${VERSION}_amd64.deb"
-          TARGET_FILENAME="libosal-${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb"
-  
-          echo "Uploading via PUT..."
-          echo "filename: ${FILENAME}"
-          echo "https://upload.cloudsmith.io/${OWNER}/${REPO}/${TARGET_FILENAME}"
-          RESPONSE=$(curl -s -H "Authorization: token $API_KEY" \
-            --upload-file "$FILENAME" \
-            "https://upload.cloudsmith.io/${OWNER}/${REPO}/${TARGET_FILENAME}")
-  
-          echo "response=$RESPONSE" >> $GITHUB_OUTPUT
+          cloudsmith push deb robert-burger-AdLL/libosal/${{ matrix.os }}/${{ matrix.version }} ${FILENAME} \
+            --republish \
+            --api-key "$CLOUDSMITH_API_KEY"
 
-      - name: Register package in Cloudsmith (Step 2 POST w/ debug)
-        shell: bash
-        env:
-          API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-        run: |
-          VERSION=$(dpkg-parsechangelog | sed -n 's/^Version: //p')
-          OWNER="robert-burger-AdLL"
-          REPO="libosal"
-      
-          RESPONSE="${{ steps.step1.outputs.response }}"
-          echo "Step 1 raw response: $RESPONSE"
-      
-          IDENTIFIER=$(echo "$RESPONSE" | grep -o 'identifier:[^,]*' | sed 's/identifier://')
-          echo "Parsed IDENTIFIER: '$IDENTIFIER'"
-      
-          if [[ -z "$IDENTIFIER" || "$IDENTIFIER" == "null" ]]; then
-            echo "❌ Invalid identifier — aborting"
-            exit 1
-          fi
-      
-          JSON_PAYLOAD=$(cat <<EOF
-          {
-            "package_file": "$IDENTIFIER",
-            "name": "libosal",
-            "version": "${VERSION}",
-            "summary": "libosal is an operating system abstraction layer Library. It's purpose is to write os-independent code for easy portability between different systems and architectures.",
-            "description": "Uploaded via GitHub Actions with OS metadata",
-            "os": "${{ matrix.os }}",
-            "os_release": "${{ matrix.version }}",
-            "arch": "amd64"
-          }
-          EOF
-          )
-          echo "Request JSON Payload:"
-          echo "$JSON_PAYLOAD"
-      
-          HTTP_CODE=$(curl -s -w "%{http_code}" \
-            -H "Authorization: token $API_KEY" \
-            -H "Content-Type: application/json" \
-            -X POST "https://api.cloudsmith.io/v1/packages/${OWNER}/${REPO}/upload/raw/?replace=1" \
-            -d "$JSON_PAYLOAD" \
-            -o response_body.txt)
-      
-          echo "💬 Cloudsmith Response Code: $HTTP_CODE"
-          echo "🌐 Cloudsmith Response Body:"
-          cat response_body.txt || true
-      
-          if [[ "$HTTP_CODE" -ne 200 && "$HTTP_CODE" -ne 201 ]]; then
-            echo "❌ Cloudsmith registration failed."
-            exit 1
-          fi
-
-    #      - name: Register package in Cloudsmith (Step 2 POST)
-    #        shell: bash
-    #        env:
-    #          API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-    #        run: |
-    #          OWNER="robert-burger-AdLL"
-    #          REPO="libosal"
-    #
-    #          RESPONSE="${{ steps.step1.outputs.response }}"
-    #          echo "Step 1 raw response: $RESPONSE"
-    #
-    #          IDENTIFIER=$(echo "$RESPONSE" | grep -o 'identifier:[^,]*' | sed 's/identifier://')
-    #
-    #          if [ -z "$IDENTIFIER" ] || [ "$IDENTIFIER" == "null" ]; then
-    #            echo "❌ Failed to get identifier from step 1:"
-    #            echo "$RESPONSE"
-    #            exit 1
-    #          fi
-    #  
-    #          echo "Registering package with identifier: $IDENTIFIER"
-    #          curl -v --fail -H "Authorization: token $API_KEY" \
-    #            -H "Content-Type: application/json" \
-    #            -X POST "https://api.cloudsmith.io/v1/packages/${OWNER}/${REPO}/upload/raw/" \
-    #            -d @- <<EOF
-    #          {
-    #            "package_file": "$IDENTIFIER",
-    #            "name": "libosal",
-    #            "version": "1.0.0~pre1.1",
-    #            "summary": "testebuild",
-    #            "description": "Uploaded via GitHub Actions with OS metadata",
-    #            "os": "${{ matrix.os }}",
-    #            "release": "${{ matrix.version }}",
-    #            "arch": "amd64"
-    #          }
-    #          EOF
-
-          #- name: Push
-          #  id: push
-          #  uses: cloudsmith-io/action@master
-          #  with:
-          #    api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
-          #    command: "push"
-          #    format: "deb"
-          #    owner: "cloudsmith"
-          #    repo: "actions"
-          #    distro: "{{ martrix.os }}"
-          #    release: "{{ matrix.version }}"
-          #    republish: "true" # needed ONLY if version is not changing
-          #    file: "artifacts/libosal-*.deb"
-          #    use-executable: "false" # Add this to use pip instead
-          
-          #      - name: Install Cloudsmith CLI
-          #        run: pip install --break-system-packages --upgrade cloudsmith-cli
-          #      
-          #      - name: Upload .deb to Cloudsmith
-          #        run: |
-          #          find artifacts --not --regex  ".*/dgbsym/.*" -exec cloudsmith push deb --republish robert-burger-AdLL/libosal/${{ matrix.os }}/${{ matrix.version }} {} --api-key ${{ secrets.CLOUDSMITH_API_KEY }}
