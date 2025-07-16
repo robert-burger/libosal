@@ -1,8 +1,9 @@
-context: conan
-configurations:
-- any:
-  coverage: True
-- imports:
-  - linux_defaults_build_profile
-- debian11-x86_64
-- build_profile:osl154-x86_64 pikeos4.2-armv7hf-gcc5:
+builds:
+- context: conan
+  configurations:
+  - any:
+      coverage: True
+  - imports:
+    - linux_defaults_build_profile
+  - debian11-x86_64
+  - build_profile:osl154-x86_64 pikeos4.2-armv7hf-gcc5:
