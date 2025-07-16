@@ -139,7 +139,7 @@ jobs:
             "package_file": "$IDENTIFIER",
             "name": "libosal",
             "version": "${VERSION}",
-            "summary": "testebuild",
+            "summary": "libosal is an operating system abstraction layer Library. It's purpose is to write os-independent code for easy portability between different systems and architectures.",
             "description": "Uploaded via GitHub Actions with OS metadata",
             "os": "${{ matrix.os }}",
             "os_release": "${{ matrix.version }}",
