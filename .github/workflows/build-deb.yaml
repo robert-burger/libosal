@@ -109,7 +109,7 @@ jobs:
           python3 -m pip install --upgrade pip
           pip3 install cloudsmith-cli
 
-          cloudsmith push deb robert-burger-AdLL/libosal/${{ matrix.os }}/${{ matrix.version }} ${FILENAME} \
+          cloudsmith push deb robert-burger-AdLL/libosal/${{ matrix.os }}/${{ matrix.version }} ../${FILENAME} \
             --republish \
             --api-key "$CLOUDSMITH_API_KEY"
 
