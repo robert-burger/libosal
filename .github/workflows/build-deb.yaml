@@ -40,7 +40,7 @@ jobs:
       - name: Install build dependencies
         run: |
           apt-get update
-          apt-get install -y build-essential devscripts debhelper autotools-dev fakeroot sed git python3-pip python3-venv curl jq
+          apt-get install -y build-essential devscripts debhelper autotools-dev fakeroot sed git python3-pip python3-venv source curl jq
       
       - name: Checkout source
         uses: actions/checkout@v4
@@ -97,6 +97,7 @@ jobs:
       - name: Upload to Cloudsmith (${{ matrix.os }}/${{ matrix.version }})
         env:
           CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+        shell: bash
         run: |
           python3 -m venv cloudsmith
           cd cloudsmith
