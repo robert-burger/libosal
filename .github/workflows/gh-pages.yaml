@@ -1,0 +1,34 @@
+name: Build gh-pages
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install build dependencies
+        run: |
+          apt-get update
+          apt-get install -y doxygen build-essential devscripts debhelper autotools-dev autoconf-archive fakeroot sed git python3-pip python3-venv curl jq
+      
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mark working directory as safe
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Build .deb package
+        run: |
+          # baue mit dpkg-buildpackage (ohne signieren)
+          make -f Makefile.doc gh-pages
+
