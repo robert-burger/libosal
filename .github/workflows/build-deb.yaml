@@ -130,7 +130,7 @@ jobs:
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal_${{ env.VERSION }}_amd64.deb
-          asset_name: libosal_${{ env.VERSION }}_amd64_${{ matrix.os }}-${{ matrix.version }}.deb
+          asset_name: libosal-${{ env.VERSION }}-amd64-${{ matrix.os }}-${{ matrix.version }}.deb
           asset_content_type: application/vnd.debian.binary-package
 
       # Upload dev package to GitHub Release (only on tags)
@@ -142,7 +142,7 @@ jobs:
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal-dev_${{ env.VERSION }}_amd64.deb
-          asset_name: libosal-dev_${{ env.VERSION }}_amd64_${{ matrix.os }}-${{ matrix.version }}.deb
+          asset_name: libosal-dev-${{ env.VERSION }}-amd64-${{ matrix.os }}-${{ matrix.version }}.deb
           asset_content_type: application/vnd.debian.binary-package
           
       - name: Upload to Cloudsmith (${{ matrix.os }}/${{ matrix.version }})
