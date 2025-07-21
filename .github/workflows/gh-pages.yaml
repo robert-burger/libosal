@@ -60,7 +60,12 @@ jobs:
           git config user.email "robert.burger@dlr.de"
           
           git add index.html content.html navtree.css main.css "${SAFE_BRANCH}/*"
-          git commit -m 'Automatic update of GH pages'
+          git commit -m 'Automatic update of GH pages' || echo "No changes to commit"
 
           # Push to gh-pages branch, force update
-          git push --force origin HEAD:gh-pages
+          if ! git diff --quiet; then
+            git push origin HEAD:gh-pages --force
+          else
+            echo "No changes to push"
+          fi
+
