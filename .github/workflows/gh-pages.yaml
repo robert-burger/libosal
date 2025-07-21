@@ -57,4 +57,4 @@ jobs:
           # The pipeline has to lock the execution of this script, so no updates of the branch are done since clone.
 
           # Push to gh-pages branch, force update
-          git -C ${GH_PAGES_DIR_NAME} push --force "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" master:gh-pages
+          git -C ${GH_PAGES_DIR_NAME} push --force "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" gh-pages
