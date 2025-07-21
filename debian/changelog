@@ -1,5 +1,18 @@
-libosal (0.1.0~pre1) unstable; urgency=low
+libosal (0.1.0) unstable; urgency=low
 
+  * del: old project props
+  * fix: generate configure.ac via conan
+  * Merge branch 'master' of github.com:robert-burger/libosal
+  * Add github action to build deb packages and upload to cloudsmith (#7)
+  * chore: add newline
+  * fix: return error code if pthread_setschedparam fails
+  * Update build-tag.yaml
+  * Update build-tag.yaml
+  * Create build-tag.yaml
+  * Update cmake-multi-platform.yml
+  * Update cmake-multi-platform.yml
+  * Update cmake-multi-platform.yml
+  * Update cmake-multi-platform.yml
   * Merge branch 'master' of github.com:robert-burger/libosal
   * Merge pull request #6 from marcfir/master
   * Merge commit '0.0.6-rev0-2-g98fb40b'
@@ -40,7 +53,7 @@ libosal (0.1.0~pre1) unstable; urgency=low
   * add: stm32 libosal files
   * add: initial stm32 mutex
 
- -- Robert Burger <robert.burger@dlr.de>  Thu, 3 Jul 2025 06:51:06 +0200
+ -- Robert Burger <robert.burger@dlr.de>  Wed, 16 Jul 2025 13:07:08 +0200
 
 libosal (0.0.6) unstable; urgency=low
 
