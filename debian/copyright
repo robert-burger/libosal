@@ -1,15 +1,14 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: libosal
-Upstream-Contact: <preferred name and address to reach the upstream project>
-Source: <url://example.com>
+Upstream-Contact: https://www.burger-system.de/osal/osal
+Source: https://github.com/robert-burger/libosal.git
 
 Files: *
-Copyright: <years> <put author's name and email here>
-           <years> <likewise for another author>
+Copyright: 2025 Robert Burger <robert.burger@dlr.de>
 License: LGPL-3.0+
 
 Files: debian/*
-Copyright: 2023 Robert Burger <robert.burger@dlr.de>
+Copyright: 2025 Robert Burger <robert.burger@dlr.de>
 License: LGPL-3.0+
 
 License: LGPL-3.0+
