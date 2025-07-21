@@ -41,7 +41,7 @@ jobs:
           rm -rf "${DOCS}"
           doxygen doxygen.cfg
           touch "${BUILDDIR}/html/.nojekyll"
-          mv "${BUILDDIR}/html" $(DOCS)
+          mv "${BUILDDIR}/html" ${DOCS}
           cd "${GH_PAGES_DIR_NAME}" && python3 ../docs/create_directory_listing.py
           # add updated branch listing
           cp $(BUILDDIR)/*.css ${GH_PAGES_DIR_NAME}/
