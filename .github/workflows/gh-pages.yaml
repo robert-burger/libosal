@@ -1,0 +1,71 @@
+name: Build gh-pages
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build-gh-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y doxygen sed git python3
+      
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Mark working directory as safe
+        run: git config --global --add safe.directory $GITHUB_WORKSPACE
+
+      - name: Build gh-pages
+        shell: bash
+        run: |
+          BUILDDIR=$(pwd)/docs
+          GH_PAGES_DIR_NAME=$(pwd)/gh-pages
+          SAFE_BRANCH=$(echo "${GITHUB_REF_NAME}" | tr '/' '-')
+          DOCS=${GH_PAGES_DIR_NAME}/${SAFE_BRANCH}
+
+          install -d ${BUILDDIR}
+          rm -rf "${BUILDDIR}/html"
+          rm -rf "${DOCS}"
+
+          doxygen doxygen.cfg
+          touch "${BUILDDIR}/html/.nojekyll"
+          mv "${BUILDDIR}/html" ${DOCS}
+
+          cd "${GH_PAGES_DIR_NAME}" && python3 ../docs/create_directory_listing.py
+          
+          # add updated branch listing
+          cp ${BUILDDIR}/*.css ${GH_PAGES_DIR_NAME}/
+          cp ${BUILDDIR}/index.html ${GH_PAGES_DIR_NAME}/
+
+          git config user.name "Robert Burger"
+          git config user.email "robert.burger@dlr.de"
+          
+          git add index.html content.html navtree.css main.css "${SAFE_BRANCH}/*"
+          git commit -m 'Automatic update of GH pages' || echo "No changes to commit"
+
+          # Push to gh-pages branch, force update
+          if ! git diff --quiet; then
+            git push origin HEAD:gh-pages --force
+          else
+            echo "No changes to push"
+          fi
+
