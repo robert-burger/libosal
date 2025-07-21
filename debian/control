@@ -15,11 +15,21 @@ Architecture: any
 Multi-Arch: same
 Depends: libosal (= ${binary:Version}), ${misc:Depends}
 Description: Write os-independent code for easy portability between different systems and architectures.
- libosal is an operating system abstraction layer Library. It's purpose is to write os-independent code for easy portability between different systems and architectures. It contains of 'binary semaphores', 'condition variables', 'io', 'message queues', 'mutex', 'semaphores', 'shared memory', 'spinlocks', 'tasks', 'timers' and 'traces'.
+ libosal is an operating system abstraction layer Library. 
+ .
+ It's purpose is to write os-independent code for easy portability between 
+ different systems and architectures. It contains of 'binary semaphores', 
+ 'condition variables', 'io', 'message queues', 'mutex', 'semaphores', 
+ 'shared memory', 'spinlocks', 'tasks', 'timers' and 'traces'.
 
 Package: libosal
 Architecture: any
 Multi-Arch: same
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Write os-independent code for easy portability between different systems and architectures.
- libosal is an operating system abstraction layer Library. It's purpose is to write os-independent code for easy portability between different systems and architectures. It contains of 'binary semaphores', 'condition variables', 'io', 'message queues', 'mutex', 'semaphores', 'shared memory', 'spinlocks', 'tasks', 'timers' and 'traces'.
+ libosal is an operating system abstraction layer Library. 
+ .
+ It's purpose is to write os-independent code for easy portability between 
+ different systems and architectures. It contains of 'binary semaphores', 
+ 'condition variables', 'io', 'message queues', 'mutex', 'semaphores', 
+ 'shared memory', 'spinlocks', 'tasks', 'timers' and 'traces'.
