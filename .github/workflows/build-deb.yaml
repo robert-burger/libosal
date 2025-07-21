@@ -11,6 +11,24 @@ on:
       - '**'
 
 jobs:
+  create_release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: create_release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: Automated release for tag ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
   build-deb:
     runs-on: ubuntu-latest
    
@@ -89,19 +107,28 @@ jobs:
           name: libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb
           path: artifacts/${{ matrix.os }}/${{ matrix.version }}/*.deb
 
-      - name: Create GitHub Release
+      - name: Upload Debian package to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/create-release@v1
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
-          body: |
-            Automated release for tag ${{ github.ref_name }}
-          draft: false
-          prerelease: false
-
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal_${VERSION}_amd64.deb
+          asset_name: libosal_${VERSION}_amd64_${{ matrix.os }}-${{ matrix.version }}.deb
+          asset_content_type: application/vnd.debian.binary-package
+      
+      - name: Upload Debian dev package to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal-dev_${VERSION}_amd64.deb
+          asset_name: libosal-dev_${VERSION}_amd64_${{ matrix.os }}-${{ matrix.version }}.deb
+          asset_content_type: application/vnd.debian.binary-package
+          
       - name: Upload to Cloudsmith (${{ matrix.os }}/${{ matrix.version }})
         if: startsWith(github.ref, 'refs/tags/')
         env:
