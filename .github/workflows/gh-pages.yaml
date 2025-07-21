@@ -11,7 +11,7 @@ on:
       - '**'
 
 jobs:
-  build-deb:
+  build-gh-pages:
     runs-on: ubuntu-latest
     steps:
       - name: Install build dependencies
@@ -28,6 +28,7 @@ jobs:
         run: git config --global --add safe.directory $GITHUB_WORKSPACE
 
       - name: Build gh-pages
+        shell: bash
         env: 
           BUILDDIR: docs
           GH_PAGES_DIR_NAME: gh-pages
