@@ -28,13 +28,12 @@ jobs:
         run: git config --global --add safe.directory $GITHUB_WORKSPACE
 
       - name: Build gh-pages
-        env: |
-          SOURCEDIR         = ./
-          BUILDDIR          = $(SOURCEDIR)/docs
-          GH_PAGES_DIR_NAME = gh-pages
-          BRANCH_DIR_NAME   = $(subst /,_,$(BRANCH_NAME))
-          DOCS              = "$(GH_PAGES_DIR_NAME)/$(BRANCH_DIR_NAME)"     
+        env: 
+          BUILDDIR: docs
+          GH_PAGES_DIR_NAME: gh-pages
         run: |
+          safe_branch=$(echo "${GITHUB_REF_NAME}" | tr '/' '-')
+          DOCS=$(GH_PAGES_DIR_NAME)/$(safe_branch)
           rm -rf "$(GH_PAGES_DIR_NAME)"
           git clone `git config --get remote.origin.url` --branch gh-pages --depth 1 gh-pages
           install -d $(BUILDDIR)
@@ -53,7 +52,7 @@ jobs:
           git -C $(GH_PAGES_DIR_NAME) add content.html
           git -C $(GH_PAGES_DIR_NAME) add navtree.css
           git -C $(GH_PAGES_DIR_NAME) add main.css
-          git -C $(GH_PAGES_DIR_NAME) add "$(BRANCH_DIR_NAME)/*"
+          git -C $(GH_PAGES_DIR_NAME) add "$(safe_branch)/*"
           -git -C $(GH_PAGES_DIR_NAME) commit -m 'Automatic update of GH pages'
           # The pipeline has to lock the execution of this script, so no updates of the branch are done since clone.
           git -C $(GH_PAGES_DIR_NAME) push
