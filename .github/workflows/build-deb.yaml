@@ -107,6 +107,10 @@ jobs:
           name: libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb
           path: artifacts/${{ matrix.os }}/${{ matrix.version }}/*.deb
 
+      - name: Debug artifact files
+        run: |
+          ls -l ./artifacts/${{ matrix.os }}/${{ matrix.version }}/
+
       # Fetch the release upload URL dynamically on tag builds
       - name: Get Release Upload URL
         if: startsWith(github.ref, 'refs/tags/')
