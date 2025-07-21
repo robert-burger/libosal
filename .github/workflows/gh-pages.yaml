@@ -44,8 +44,8 @@ jobs:
           mv "${BUILDDIR}/html" ${DOCS}
           cd "${GH_PAGES_DIR_NAME}" && python3 ../docs/create_directory_listing.py
           # add updated branch listing
-          cp $(BUILDDIR)/*.css ${GH_PAGES_DIR_NAME}/
-          cp $(BUILDDIR)/index.html ${GH_PAGES_DIR_NAME}/
+          cp ${BUILDDIR}/*.css ${GH_PAGES_DIR_NAME}/
+          cp ${BUILDDIR}/index.html ${GH_PAGES_DIR_NAME}/
           git -C ${GH_PAGES_DIR_NAME} config user.name "Robert Burger"
           git -C ${GH_PAGES_DIR_NAME} config user.email "robert.burger@dlr.de"
           git -C ${GH_PAGES_DIR_NAME} add index.html
