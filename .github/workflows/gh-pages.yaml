@@ -35,7 +35,7 @@ jobs:
           SAFE_BRANCH=$(echo "${GITHUB_REF_NAME}" | tr '/' '-')
           DOCS=${GH_PAGES_DIR_NAME}/${SAFE_BRANCH}
           rm -rf "${GH_PAGES_DIR_NAME}"
-          git clone `git config --get remote.origin.url` --branch gh-pages --depth 1 gh-pages
+          git clone "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" --branch gh-pages --depth 1 gh-pages
           install -d ${BUILDDIR}
           rm -rf "${BUILDDIR}/html"
           rm -rf "${DOCS}"
@@ -57,4 +57,5 @@ jobs:
           # The pipeline has to lock the execution of this script, so no updates of the branch are done since clone.
 
           # Push to gh-pages branch, force update
-          git -C ${GH_PAGES_DIR_NAME} push --force "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" HEAD:gh-pages
+          git -C ${GH_PAGES_DIR_NAME} remote set-url origin "https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          git -C ${GH_PAGES_DIR_NAME} push --force origin HEAD:gh-pages
