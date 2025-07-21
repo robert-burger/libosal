@@ -3,8 +3,12 @@ name: Build DEB Package
 on:
   push:
     branches:
+      - '**'
+    tags:
+      - '**'
   pull_request:
     branches:
+      - '**'
 
 jobs:
   build-deb:
@@ -85,7 +89,21 @@ jobs:
           name: libosal-${{ steps.sanitize.outputs.sanitized_image }}.deb
           path: artifacts/${{ matrix.os }}/${{ matrix.version }}/*.deb
 
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            Automated release for tag ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
       - name: Upload to Cloudsmith (${{ matrix.os }}/${{ matrix.version }})
+        if: startsWith(github.ref, 'refs/tags/')
         env:
           CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
         shell: bash
