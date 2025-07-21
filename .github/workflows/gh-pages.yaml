@@ -53,7 +53,7 @@ jobs:
           git -C ${GH_PAGES_DIR_NAME} add navtree.css
           git -C ${GH_PAGES_DIR_NAME} add main.css
           git -C ${GH_PAGES_DIR_NAME} add "${SAFE_BRANCH}/*"
-          -git -C ${GH_PAGES_DIR_NAME} commit -m 'Automatic update of GH pages'
+          git -C ${GH_PAGES_DIR_NAME} commit -m 'Automatic update of GH pages'
           # The pipeline has to lock the execution of this script, so no updates of the branch are done since clone.
           git -C ${GH_PAGES_DIR_NAME} push
 
