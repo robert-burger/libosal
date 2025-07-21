@@ -17,7 +17,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen build-essential devscripts debhelper autotools-dev autoconf-archive fakeroot sed git python3-pip python3-venv curl jq
+          sudo apt-get install -y doxygen sed git python3
       
       - name: Checkout source
         uses: actions/checkout@v4
