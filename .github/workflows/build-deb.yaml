@@ -125,29 +125,46 @@ jobs:
         env:
           GITHUB_REF_NAME: ${{ github.ref_name }}
 
-      # Upload main package to GitHub Release (only on tags)
-      - name: Upload Debian package to GitHub Release
+      - name: Upload asset manually with curl
         if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-release-asset@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal_${{ env.VERSION }}_amd64.deb
-          asset_name: libosal-${{ env.VERSION }}-amd64-${{ matrix.os }}-${{ matrix.version }}.deb
-          asset_content_type: application/vnd.debian.binary-package
+          UPLOAD_URL: ${{ steps.get_release.outputs.upload_url }}
+          FILE_PATH: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal_${{ env.VERSION }}_amd64.deb
+          FILE_PATH_DEV: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal-dev_${{ env.VERSION }}_amd64.deb
+          FILE_NAME: libosal-${{ env.VERSION }}-amd64-${{ matrix.os }}-${{ matrix.version }}.deb
+          FILE_NAME_DEV: libosal-dev-${{ env.VERSION }}-amd64-${{ matrix.os }}-${{ matrix.version }}.deb
+        run: |
+          echo "Uploading $FILE_PATH to $UPLOAD_URL?name=$FILE_NAME"
+          curl --fail -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Content-Type: application/vnd.debian.binary-package" \
+            --data-binary @"$FILE_PATH" \
+            "$UPLOAD_URL?name=$FILE_NAME"
 
-      # Upload dev package to GitHub Release (only on tags)
-      - name: Upload Debian dev package to GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-release-asset@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal-dev_${{ env.VERSION }}_amd64.deb
-          asset_name: libosal-dev-${{ env.VERSION }}-amd64-${{ matrix.os }}-${{ matrix.version }}.deb
-          asset_content_type: application/vnd.debian.binary-package
+      # Upload main package to GitHub Release (only on tags)
+      #- name: Upload Debian package to GitHub Release
+      #  if: startsWith(github.ref, 'refs/tags/')
+      #  uses: actions/upload-release-asset@v1
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #  with:
+      #    upload_url: ${{ steps.get_release.outputs.upload_url }}
+      #    asset_path: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal_${{ env.VERSION }}_amd64.deb
+      #    asset_name: libosal-${{ env.VERSION }}-amd64-${{ matrix.os }}-${{ matrix.version }}.deb
+      #    asset_content_type: application/vnd.debian.binary-package
+
+      ## Upload dev package to GitHub Release (only on tags)
+      #- name: Upload Debian dev package to GitHub Release
+      #  if: startsWith(github.ref, 'refs/tags/')
+      #  uses: actions/upload-release-asset@v1
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #  with:
+      #    upload_url: ${{ steps.get_release.outputs.upload_url }}
+      #    asset_path: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal-dev_${{ env.VERSION }}_amd64.deb
+      #    asset_name: libosal-dev-${{ env.VERSION }}-amd64-${{ matrix.os }}-${{ matrix.version }}.deb
+      #    asset_content_type: application/vnd.debian.binary-package
           
       - name: Upload to Cloudsmith (${{ matrix.os }}/${{ matrix.version }})
         if: startsWith(github.ref, 'refs/tags/')
