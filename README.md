@@ -8,6 +8,22 @@ This software was developed and made available to the public by the [Institute o
 
 See [introduction](INTRODUCTION.md) or gh-pages for reference.
 
+## Install
+
+There's a debian repository hosted at cloudsmith where you can automatically install libosal via apt (Ubuntu 22.04, 24.04 and debian bullseye, bookworm). To setup the repository enter:
+
+```bash
+curl -1sLf \
+  'https://dl.cloudsmith.io/public/robertburger/common/setup.deb.sh' \
+  | sudo -E bash
+```
+
+Afterwards you should be able to install libosal simply with:
+
+```bash
+sudo apt install libosal
+```
+
 ## Build from source
 
 `libosal` uses autotools as build system. To build from source execute something like:
