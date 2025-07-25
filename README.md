@@ -24,6 +24,8 @@ Afterwards you should be able to install libosal simply with:
 sudo apt install libosal
 ```
 
+Caution: This is only the free cloudsmith account and has a monthly package delivery limit (1GB). So this might not always work. In that case just install the deb packages from the latest release.
+
 ## Build from source
 
 `libosal` uses autotools as build system. To build from source execute something like:
