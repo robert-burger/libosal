@@ -1,5 +1,14 @@
 # libosal
 
+[![Build and Publish Debian Package](https://github.com/robert-burger/libosal/actions/workflows/build-deb.yaml/badge.svg)](https://github.com/robert-burger/libosal/actions/workflows/build-deb.yaml)
+[![License: LGPL-V3](https://img.shields.io/badge/license-LGPL--V3-green.svg)](LICENSE)
+[![Linux](https://img.shields.io/badge/Linux-FCC624?logo=linux&logoColor=black)](#)
+[![Debian](https://img.shields.io/badge/Debian-A81D33?logo=debian&logoColor=fff)](#)
+[![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?logo=ubuntu&logoColor=white)](#)
+[![PikeOS](https://img.shields.io/badge/PikeOS-purple.svg)](LICENSE)
+[![VxWorks](https://img.shields.io/badge/VxWorks-yellow.svg)](LICENSE)
+[![Windows](https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&logoColor=white)](#)
+
 ## Overview
 
 **libosal** is a high-performance, modular Operating System Abstraction Layer (OSAL) designed to facilitate cross-platform development by abstracting platform-specific details of operating systems and hardware environments. Developed by the Institute of Robotics and Mechatronics at the German Aerospace Center (DLR), libosal enables seamless portability and maintainability of embedded and real-time software components across diverse operating systems including WIN32, MINGW32, PIKEOS, POSIX-compliant systems, and VXWORKS.
