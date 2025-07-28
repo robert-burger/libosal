@@ -89,7 +89,7 @@ jobs:
         id: sanitize
         run: |
           version=$(dpkg-parsechangelog | sed -n 's/^Version: //p')
-          echo "sanitized_image=$(echo "$version" | tr '/:' '--')" >> $GITHUB_OUTPUT
+          echo "sanitized_image=$(echo "$version_amd64" | tr '/:' '--')" >> $GITHUB_OUTPUT
 
       - name: Upload .deb package
         uses: actions/upload-artifact@v4
