@@ -68,6 +68,7 @@ jobs:
       - name: Build .deb package
         run: |
           # baue mit dpkg-buildpackage (ohne signieren)
+          dpkg-buildpackage -us -uc -S
           dpkg-buildpackage -us -uc -d
 
       - name: Collect .deb artifact
