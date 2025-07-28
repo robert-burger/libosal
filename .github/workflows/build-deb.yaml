@@ -66,11 +66,12 @@ jobs:
           autoreconf -fi
 
       - name: Build .deb package
+        shell: bash
         run: |
           # baue mit dpkg-buildpackage (ohne signieren)
-          CODENAME := $(shell lsb_release -sc)
-          DEBEMAIL = "robert.burger@dlr.de"
-          DEBFULLNAME = "Robert Burger"
+          CODENAME=$(lsb_release -sc)
+          DEBEMAIL="robert.burger@dlr.de"
+          DEBFULLNAME="Robert Burger"
 
           if ! dpkg-parsechangelog | grep -q "~${CODENAME}"; then
             dch --local ~${CODENAME} "Build for ${CODENAME}";
