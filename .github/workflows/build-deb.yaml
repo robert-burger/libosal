@@ -18,14 +18,14 @@ jobs:
       DEB_BUILD_OPTIONS: nocheck  # or whatever options you need
     strategy:
       matrix:
-        distro: [debian-bookworm, debian-bullseye, ubuntu-24.04, ubuntu-22.04]
+        distro: [debian-12, debian-11, ubuntu-24.04, ubuntu-22.04]
         include:
-          - distro: debian-bookworm
-            image: debian:bookworm
+          - distro: debian-12
+            image: debian:12
             os: debian
             version: bookworm
-          - distro: debian-bullseye
-            image: debian:bullseye
+          - distro: debian-11
+            image: debian:11
             os: debian
             version: bullseye
           - distro: ubuntu-24.04
@@ -89,9 +89,7 @@ jobs:
         id: sanitize
         run: |
           version=$(dpkg-parsechangelog | sed -n 's/^Version: //p')
-          echo "sanitized_image=$(echo "$version-$IMAGE" | tr '/:' '--')" >> $GITHUB_OUTPUT
-        env:
-          IMAGE: ${{ matrix.image }}
+          echo "sanitized_image=$(echo "$version" | tr '/:' '--')" >> $GITHUB_OUTPUT
 
       - name: Upload .deb package
         uses: actions/upload-artifact@v4
