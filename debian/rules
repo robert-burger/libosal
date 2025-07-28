@@ -12,16 +12,6 @@
 # package maintainers to append LDFLAGS
 #export DEB_LDFLAGS_MAINT_APPEND = -Wl,--as-needed
 	
-export CODENAME := $(shell lsb_release -sc)
-export DEBEMAIL = "robert.burger@dlr.de"
-export DEBFULLNAME = "Robert Burger"
-
-override_dh_prep:
-	if ! dpkg-parsechangelog | grep -q "~${CODENAME}"; then \
-		dch --local ~${CODENAME} "Build for ${CODENAME}"; \
-	fi
-	dh_prep
-
 %:
 	dh $@
 

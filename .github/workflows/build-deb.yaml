@@ -68,6 +68,14 @@ jobs:
       - name: Build .deb package
         run: |
           # baue mit dpkg-buildpackage (ohne signieren)
+          CODENAME := $(shell lsb_release -sc)
+          DEBEMAIL = "robert.burger@dlr.de"
+          DEBFULLNAME = "Robert Burger"
+
+          if ! dpkg-parsechangelog | grep -q "~${CODENAME}"; then
+            dch --local ~${CODENAME} "Build for ${CODENAME}";
+          fi
+
           dpkg-buildpackage -us -uc -S
           dpkg-buildpackage -us -uc -d
 
