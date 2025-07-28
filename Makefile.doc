@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 DOXYFILE          = doxygen.cfg
 SOURCEDIR         = ./
-BUILDDIR          = $(SOURCEDIR)/doc
+BUILDDIR          = $(SOURCEDIR)/docs
 GH_PAGES_DIR_NAME = gh-pages
 BRANCH_DIR_NAME   = $(subst /,_,$(BRANCH_NAME))
 BUILDCMD          = cissy run -c $(SOURCEDIR) -p doxygen/[~=1.8]@3rdparty/stable doxygen
@@ -21,10 +21,10 @@ gh-pages:
 	install -d $(BUILDDIR)
 	rm -rf "$(BUILDDIR)/html"
 	rm -rf "$(DOCS)"
-	make -f Makefile.doc doc/html
+	make -f Makefile.doc docs/html
 	touch "$(BUILDDIR)/html/.nojekyll"
 	mv "$(BUILDDIR)/html" $(DOCS)
-	cd "$(GH_PAGES_DIR_NAME)" && python3 ../doc/create_directory_listing.py
+	cd "$(GH_PAGES_DIR_NAME)" && python3 ../docs/create_directory_listing.py
 	# add updated branch listing
 	cp $(BUILDDIR)/*.css $(GH_PAGES_DIR_NAME)/
 	cp $(BUILDDIR)/index.html $(GH_PAGES_DIR_NAME)/
