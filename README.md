@@ -58,7 +58,7 @@ Contributions, pull requests, and issue reports are always welcome. Please:
 
 ## Usage 
 
-See [introduction](INTRODUCTION.md) or gh-pages for reference.
+See [introduction](INTRODUCTION.md) or [gh-pages](https://robert-burger.github.io/libosal) for reference.
 
 ---
 
