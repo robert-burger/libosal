@@ -156,7 +156,7 @@ jobs:
       - name: Collect .deb artifact
         run: |
           mkdir -p artifacts/
-          rsync -av --exclude='${PKGNAME}' ../ artifacts/
+          rsync -av --exclude=${PKGNAME} ../ artifacts/
 
       - name: Upload .deb package artifact
         uses: actions/upload-artifact@v4
