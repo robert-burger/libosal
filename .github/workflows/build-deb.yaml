@@ -112,7 +112,7 @@ jobs:
           FILENAME="../robotkernel-service-helper_${{ steps.sanitize.outputs.sanitized_image }}"
 
           DISTRO="${{ matrix.distro }}"
-          if [[ "$DISTRO" == "ubuntu24.04" || "$DISTRO" == "ubuntu-22.04" ]]; then
+          if [[ "$DISTRO" == "ubuntu-24.04" || "$DISTRO" == "ubuntu-22.04" ]]; then
             DBGSYM_EXT="ddeb"
           else
             DBGSYM_EXT="deb"
