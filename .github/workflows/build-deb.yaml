@@ -119,8 +119,8 @@ jobs:
             NEW_FILE="libosal-dbgsym_${SANITIZED_IMAGE}_amd64${NEW_EXT}"
             CHANGES_FILE="libosal_${SANITIZED_IMAGE}_amd64.changes"
 
-            mv "$OLD_FILE" "$NEW_FILE"
-            sed -i "s/${OLD_FILE}/${NEW_FILE}/g" "$CHANGES_FILE"
+            mv "../$OLD_FILE" "../$NEW_FILE"
+            sed -i "s/${OLD_FILE}/${NEW_FILE}/g" "../$CHANGES_FILE"
           fi
           
           curl -X POST https://deb.burger-system.de/upload \
