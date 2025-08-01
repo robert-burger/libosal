@@ -91,6 +91,9 @@ jobs:
             dch --local ~${CODENAME} --distribution ${CODENAME} "Build for ${CODENAME}";
           fi
 
+          echo "DEB_BUILD_OPTIONS=$DEB_BUILD_OPTIONS"
+          echo "compression=gzip" | sudo tee /etc/dpkg/dpkg.cfg.d/force-gzip
+
           dpkg-buildpackage -us -uc -sa
 
       - name: Debug artifact files 1
