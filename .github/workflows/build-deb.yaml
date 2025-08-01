@@ -107,6 +107,7 @@ jobs:
       - name: Upload to APT repository
         env:
           DEPLOY_TOKEN: ${{ secrets.BS_UPLOAD_KEY }}
+        shell: bash
         run: |
           FILENAME="../robotkernel-service-helper_${{ steps.sanitize.outputs.sanitized_image }}"
 
