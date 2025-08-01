@@ -109,7 +109,8 @@ jobs:
         shell: bash
         run: |
           DISTRO="${{ matrix.distro }}"
-          SANITIZED_IMAGE="${{ steps.sanitized.outputs.sanitized_image }}"
+          SANITIZED_IMAGE="${{ steps.sanitize.outputs.sanitized_image }}"
+
           if [[ "$DISTRO" == "ubuntu-24.04" || "$DISTRO" == "ubuntu-22.04" ]]; then
             OLD_EXT=".ddeb"
             NEW_EXT=".deb"
@@ -124,13 +125,13 @@ jobs:
           
           curl -X POST https://deb.burger-system.de/upload \
             -H "Authorization: Bearer $DEPLOY_TOKEN" \
-            -F "deb=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb" \
-            -F "deb-dev=@../libosal-dev_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb" \
-            -F "dbgsym=@../libosal-dbgsym_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb" \
-            -F "changes=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.changes" \
-            -F "buildinfo=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.buildinfo" \
-            -F "dsc=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}.dsc" \
-            -F "source=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}.tar.gz"
+            -F "deb=@../libosal_${SANITIZED_IMAGE}_amd64.deb" \
+            -F "deb-dev=@../libosal-dev_${SANITIZED_IMAGE}_amd64.deb" \
+            -F "dbgsym=@../libosal-dbgsym_${SANITIZED_IMAGE}_amd64.deb" \
+            -F "changes=@../libosal_${SANITIZED_IMAGE}_amd64.changes" \
+            -F "buildinfo=@../libosal_${SANITIZED_IMAGE}_amd64.buildinfo" \
+            -F "dsc=@../libosal_${SANITIZED_IMAGE}.dsc" \
+            -F "source=@../libosal_${SANITIZED_IMAGE}.tar.gz"
           
       - name: Collect .deb artifact
         run: |
