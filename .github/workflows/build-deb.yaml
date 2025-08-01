@@ -33,7 +33,7 @@ jobs:
   build-deb:
     runs-on: ubuntu-latest
     env:
-      DEB_BUILD_OPTIONS: nocheck
+      DEB_BUILD_OPTIONS: "compress=gzip nocheck"
     strategy:
       matrix:
         distro: [debian-12, debian-11, ubuntu-24.04, ubuntu-22.04]
