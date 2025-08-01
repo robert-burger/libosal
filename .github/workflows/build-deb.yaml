@@ -1,4 +1,4 @@
-name: Build DEB Package
+name: Build and Publish Debian Package
 
 on:
   push:
@@ -79,14 +79,6 @@ jobs:
         env:
           GITHUB_REF_NAME: ${{ github.ref_name }}
 
-      - name: Set VERSION env variable
-        id: set_version
-        run: |
-          echo "VERSION=$(dpkg-parsechangelog | sed -n 's/^Version: //p')" >> $GITHUB_ENV
-
-      - name: Prepare autotools
-        run: autoreconf -fi
-
       - name: Build .deb package
         shell: bash
         run: |
@@ -96,22 +88,40 @@ jobs:
           DEBFULLNAME="Robert Burger"
 
           if ! dpkg-parsechangelog | grep -q "~${CODENAME}"; then
-            dch --local ~${CODENAME} "Build for ${CODENAME}";
+            dch --local ~${CODENAME} --distribution ${CODENAME} "Build for ${CODENAME}";
           fi
 
           dpkg-buildpackage -us -uc -S
-          dpkg-buildpackage -us -uc -d
+          dpkg-buildpackage -us -uc -d -b
 
-      - name: Collect .deb artifact
+      - name: Debug artifact files 1
         run: |
-          mkdir -p artifacts/${{ matrix.os }}/${{ matrix.version }}
-          mv ../libosal*.deb artifacts/${{ matrix.os }}/${{ matrix.version }}
-
+          ls -l ../
+          
       - name: Set sanitized image name
         id: sanitize
         run: |
           version=$(dpkg-parsechangelog | sed -n 's/^Version: //p')
-          echo "sanitized_image=$(echo "${version}_amd64" | tr '/:' '--')" >> $GITHUB_OUTPUT
+          echo "sanitized_image=$(echo "${version}" | tr '/:' '--')" >> $GITHUB_OUTPUT
+            
+      - name: Upload to APT repository
+        env:
+          DEPLOY_TOKEN: ${{ secrets.BS_UPLOAD_KEY }}
+        run: |
+          FILENAME="../robotkernel-service-helper_${{ steps.sanitize.outputs.sanitized_image }}"
+          
+          curl -X POST https://deb.burger-system.de/upload \
+            -H "Authorization: Bearer $DEPLOY_TOKEN" \
+            -F "deb=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb" \
+            -F "changes=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.changes" \
+            -F "buildinfo=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.buildinfo" \
+            -F "dsc=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}.dsc" \
+            -F "source=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}.tar.gz"
+          
+      - name: Collect .deb artifact
+        run: |
+          mkdir -p artifacts/${{ matrix.os }}/${{ matrix.version }}
+          mv ../libosal*.deb artifacts/${{ matrix.os }}/${{ matrix.version }}
 
       - name: Upload .deb package artifact
         uses: actions/upload-artifact@v4
