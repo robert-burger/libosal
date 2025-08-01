@@ -86,9 +86,18 @@ jobs:
           CODENAME=$(lsb_release -sc)
           DEBEMAIL="robert.burger@dlr.de"
           DEBFULLNAME="Robert Burger"
+          VERSION=$(dpkg-parsechangelog --show-field Version)
 
-          if ! dpkg-parsechangelog | grep -q "~${CODENAME}"; then
-            dch --local ~${CODENAME} --distribution ${CODENAME} "Build for ${CODENAME}";
+          # Check if version already contains codename suffix
+          if [[ "$VERSION" == *"~${CODENAME}"* || "$VERSION" == *"+${CODENAME}"* ]]; then
+            echo "Version already contains codename suffix, skipping dch."
+          else
+            # If there's already a ~ in version (like ~pre1), add +codename
+            if [[ "$VERSION" == *"~"* ]]; then
+              dch --local +${CODENAME} --distribution ${CODENAME} "Build for ${CODENAME}"
+            else
+              dch --local ~${CODENAME} --distribution ${CODENAME} "Build for ${CODENAME}"
+            fi
           fi
 
           dpkg-buildpackage -us -uc -sa
