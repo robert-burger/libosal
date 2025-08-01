@@ -34,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DEB_BUILD_OPTIONS: "compress=gzip nocheck"
+      PKGNAME: "libosal"
     strategy:
       matrix:
         distro: [debian-12, debian-11, ubuntu-24.04, ubuntu-22.04]
@@ -59,9 +60,10 @@ jobs:
 
     steps:
       - name: Install build dependencies
+        shell: bash
         run: |
           apt-get update
-          apt-get install -y build-essential devscripts debhelper autotools-dev autoconf-archive fakeroot sed git python3-pip python3-venv curl jq
+          apt-get install -y build-essential devscripts debhelper autoconf-archive autotools-dev pkg-config sed git curl jq rsync
 
       - name: Checkout source
         uses: actions/checkout@v4
@@ -124,38 +126,46 @@ jobs:
             OLD_EXT=".ddeb"
             NEW_EXT=".deb"
 
-            OLD_FILE="libosal-dbgsym_${SANITIZED_IMAGE}_amd64${OLD_EXT}"
-            NEW_FILE="libosal-dbgsym_${SANITIZED_IMAGE}_amd64${NEW_EXT}"
-            CHANGES_FILE="libosal_${SANITIZED_IMAGE}_amd64.changes"
+            OLD_FILE="${PKGNAME}-dbgsym_${SANITIZED_IMAGE}_amd64${OLD_EXT}"
+            NEW_FILE="${PKGNAME}-dbgsym_${SANITIZED_IMAGE}_amd64${NEW_EXT}"
+            CHANGES_FILE="${PKGNAME}_${SANITIZED_IMAGE}_amd64.changes"
 
             mv "../$OLD_FILE" "../$NEW_FILE"
             sed -i "s/${OLD_FILE}/${NEW_FILE}/g" "../$CHANGES_FILE"
           fi
           
+          DBG_FILE="../${PKGNAME}-dbgsym_${SANITIZED_IMAGE}_amd64.deb"
+          DEV_FILE="../${PKGNAME}-dev_${SANITIZED_IMAGE}_amd64.deb"
+          DEB_FILE="../${PKGNAME}_${SANITIZED_IMAGE}_amd64.deb"
+          CHANGES_FILE="../${PKGNAME}_${SANITIZED_IMAGE}_amd64.changes"
+          BUILDINFO_FILE="../${PKGNAME}_${SANITIZED_IMAGE}_amd64.buildinfo"
+          DSC_FILE="../${PKGNAME}_${SANITIZED_IMAGE}.dsc"
+          TAR_FILE="../${PKGNAME}_${SANITIZED_IMAGE}.tar.gz"
+
+          for f in "$DEB_FILE" "$DEV_FILE" "$DBG_FILE" "$CHANGES_FILE" "$BUILDINFO_FILE" "$DSC_FILE" "$TAR_FILE"; do
+            [[ -f "$f" ]] || { echo "Missing file: $f"; exit 1; }
+          done
+
           curl -X POST https://deb.burger-system.de/upload \
             -H "Authorization: Bearer $DEPLOY_TOKEN" \
-            -F "deb=@../libosal_${SANITIZED_IMAGE}_amd64.deb" \
-            -F "deb-dev=@../libosal-dev_${SANITIZED_IMAGE}_amd64.deb" \
-            -F "dbgsym=@../libosal-dbgsym_${SANITIZED_IMAGE}_amd64.deb" \
-            -F "changes=@../libosal_${SANITIZED_IMAGE}_amd64.changes" \
-            -F "buildinfo=@../libosal_${SANITIZED_IMAGE}_amd64.buildinfo" \
-            -F "dsc=@../libosal_${SANITIZED_IMAGE}.dsc" \
-            -F "source=@../libosal_${SANITIZED_IMAGE}.tar.gz"
-          
+            -F "deb=@$DEB_FILE" \
+            -F "deb-dev=@$DEV_FILE" \
+            -F "dbgsym=@$DBG_FILE" \
+            -F "changes=@$CHANGES_FILE" \
+            -F "buildinfo=@$BUILDINFO_FILE" \
+            -F "dsc=@$DSC_FILE" \
+            -F "source=@$TAR_FILE"
+      
       - name: Collect .deb artifact
         run: |
-          mkdir -p artifacts/${{ matrix.os }}/${{ matrix.version }}
-          mv ../libosal*.deb artifacts/${{ matrix.os }}/${{ matrix.version }}
+          mkdir -p artifacts/
+          rsync -av --exclude='${PKGNAME}' ../ artifacts/
 
       - name: Upload .deb package artifact
         uses: actions/upload-artifact@v4
         with:
-          name: libosal_${{ steps.sanitize.outputs.sanitized_image }}.deb
-          path: artifacts/${{ matrix.os }}/${{ matrix.version }}/*.deb
-
-      - name: Debug artifact files
-        run: |
-          ls -l ./artifacts/${{ matrix.os }}/${{ matrix.version }}/
+          name: ${PKGNAME}-artifacts-${{ steps.sanitize.outputs.sanitized_image }}
+          path: artifacts/
 
       # Fetch the release upload URL dynamically on tag builds
       - name: Get Release Upload URL
@@ -176,10 +186,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           UPLOAD_URL: ${{ steps.get_release.outputs.upload_url }}
-          FILE_PATH: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal_${{ steps.sanitize.outputs.sanitized_image }}.deb
-          FILE_PATH_DEV: ./artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal-dev_${{ steps.sanitize.outputs.sanitized_image }}.deb
-          FILE_NAME: libosal_${{ steps.sanitize.outputs.sanitized_image }}.deb
-          FILE_NAME_DEV: libosal-dev_${{ steps.sanitize.outputs.sanitized_image }}.deb
+          FILE_PATH: ./artifacts/${PKGNAME}_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb
+          FILE_PATH_DEV: ./artifacts/${PKGNAME}-dev_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb
+          FILE_NAME: ${PKGNAME}_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb
+          FILE_NAME_DEV: ${PKGNAME}-dev_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb
         run: |
           echo "Uploading $FILE_PATH to $UPLOAD_URL?name=$FILE_NAME"
           curl --fail -X POST \
@@ -195,26 +205,3 @@ jobs:
             --data-binary @"$FILE_PATH_DEV" \
             "$UPLOAD_URL?name=$FILE_NAME_DEV"
 
-      - name: Upload to Cloudsmith (${{ matrix.os }}/${{ matrix.version }})
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-        shell: bash
-        run: |
-          FILENAME="artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal_${{ steps.sanitize.outputs.sanitized_image }}.deb"
-          FILENAME_DEV="artifacts/${{ matrix.os }}/${{ matrix.version }}/libosal-dev_${{ steps.sanitize.outputs.sanitized_image }}.deb"
-        
-          python3 -m venv cloudsmith
-          cd cloudsmith
-          source bin/activate
-
-          python3 -m pip install --upgrade pip
-          pip3 install cloudsmith-cli
-
-          cloudsmith push deb robertburger/common/${{ matrix.os }}/${{ matrix.version }} ../${FILENAME} \
-            --republish \
-            --api-key "$CLOUDSMITH_API_KEY"
-      
-          cloudsmith push deb robertburger/common/${{ matrix.os }}/${{ matrix.version }} ../${FILENAME_DEV} \
-            --republish \
-            --api-key "$CLOUDSMITH_API_KEY"
