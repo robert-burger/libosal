@@ -112,16 +112,22 @@ jobs:
 
           DISTRO="${{ matrix.distro }}"
           if [[ "$DISTRO" == "ubuntu-24.04" || "$DISTRO" == "ubuntu-22.04" ]]; then
-            DBGSYM_EXT="ddeb"
-          else
-            DBGSYM_EXT="deb"
+            OLD_EXT=".ddeb"
+            NEW_EXT=".deb"
+
+            OLD_FILE="libosal-dbgsym_${{ steps.sanitized.outputs.sanitized_image }}_amd64${OLD_EXT}"
+            NEW_FILE="libosal-dbgsym_${{ steps.sanitized.outputs.sanitized_image }}_amd64${NEW_EXT}"
+            CHANGES_FILE="libosal_${{ steps.sanitized.outputs.sanitized_image }}_amd64.changes"
+
+            mv "$OLD_FILE" "$NEW_FILE"
+            sed -i "s/${OLD_FILE}/${NEW_FILE}/g" "$CHANGES_FILE"
           fi
           
           curl -X POST https://deb.burger-system.de/upload \
             -H "Authorization: Bearer $DEPLOY_TOKEN" \
             -F "deb=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb" \
             -F "deb-dev=@../libosal-dev_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb" \
-            -F "dbgsym=@../libosal-dbgsym_${{ steps.sanitize.outputs.sanitized_image }}_amd64.${DBGSYM_EXT}" \
+            -F "dbgsym=@../libosal-dbgsym_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb" \
             -F "changes=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.changes" \
             -F "buildinfo=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.buildinfo" \
             -F "dsc=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}.dsc" \
