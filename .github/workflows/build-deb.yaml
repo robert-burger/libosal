@@ -91,8 +91,7 @@ jobs:
             dch --local ~${CODENAME} --distribution ${CODENAME} "Build for ${CODENAME}";
           fi
 
-          dpkg-buildpackage -us -uc -S -sa
-          dpkg-buildpackage -us -uc -d -b
+          dpkg-buildpackage -us -uc -sa
 
       - name: Debug artifact files 1
         run: |
