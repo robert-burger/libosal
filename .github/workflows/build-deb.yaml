@@ -109,19 +109,18 @@ jobs:
           DEPLOY_TOKEN: ${{ secrets.BS_UPLOAD_KEY }}
         run: |
           FILENAME="../robotkernel-service-helper_${{ steps.sanitize.outputs.sanitized_image }}"
-          case "${{ matrix.distro }}" in
-            ubuntu24.04|ubuntu-22.04)
-              DBGSYM_EXT="ddeb"
-              ;;
-            *)
-              DBGSYM_EXT="deb"
-              ;;
-          esac
+
+          DISTRO="${{ matrix.distro }}"
+          if [[ "$DISTRO" == "ubuntu24.04" || "$DISTRO" == "ubuntu-22.04" ]]; then
+            DBGSYM_EXT="ddeb"
+          else
+            DBGSYM_EXT="deb"
+          fi
           
           curl -X POST https://deb.burger-system.de/upload \
             -H "Authorization: Bearer $DEPLOY_TOKEN" \
             -F "deb=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.deb" \
-            -F "dbgsym=@../libosal-dbgsym_${{ steps.sanitize.outputs.sanitized_image }}_amd64.$DBGSYM_EXT" \
+            -F "dbgsym=@../libosal-dbgsym_${{ steps.sanitize.outputs.sanitized_image }}_amd64.${DBGSYM_EXT}" \
             -F "changes=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.changes" \
             -F "buildinfo=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}_amd64.buildinfo" \
             -F "dsc=@../libosal_${{ steps.sanitize.outputs.sanitized_image }}.dsc" \
