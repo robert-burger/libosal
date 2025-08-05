@@ -82,10 +82,11 @@ jobs:
         shell: bash
         run: |
           # baue mit dpkg-buildpackage (ohne signieren)
+          export DEBEMAIL="robert.burger@dlr.de"
+          export DEBFULLNAME="Robert Burger"
           CODENAME=$(lsb_release -sc)
-          DEBEMAIL="robert.burger@dlr.de"
-          DEBFULLNAME="Robert Burger"
           VERSION=$(dpkg-parsechangelog --show-field Version)
+          PRE_VERSION="pre${GITHUB_RUN_NUMBER}"
 
           # Check if version already contains codename suffix
           if [[ "$VERSION" == *"~${CODENAME}"* || "$VERSION" == *"+${CODENAME}"* ]]; then
@@ -93,9 +94,11 @@ jobs:
           else
             if [[ ! $GITHUB_REF =~ ^refs/tags/ ]]; then
               # Not a tag, so add ~pre<x>
-              dch --local ~pre${GITHUB_RUN_NUMBER}+${CODENAME} --distribution ${CODENAME} "Pre-release build"
+              FULL_VERSION="${VERSION}~${PRE_VERSION}-1~${CODENAME}"
+              dch -b --newversion "${FULL_VERSION}" --distribution "${CODENAME}" "Pre-release for ${CODENAME}"
             else
-              dch --local ~${CODENAME} --distribution ${CODENAME} "Build for ${CODENAME}"
+              FULL_VERSION="${VERSION}-1~${CODENAME}"
+              dch --newversion "${FULL_VERSION}" --distribution "${CODENAME}" "Pre-release for ${CODENAME}"
             fi
           fi
 
