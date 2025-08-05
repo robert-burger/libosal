@@ -101,7 +101,7 @@ jobs:
 
           dpkg-buildpackage -us -uc -sa
 
-      - name: Debug artifact files 1
+      - name: Debug artifact files
         run: |
           ls -l ../
           
