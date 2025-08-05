@@ -94,8 +94,8 @@ jobs:
           else
             if [[ ! $GITHUB_REF =~ ^refs/tags/ ]]; then
               # Not a tag, so add ~pre<x>
-              FULL_VERSION="${VERSION}~${PRE_VERSION}-1~${CODENAME}"
-              dch -b --newversion "${FULL_VERSION}" --distribution "${CODENAME}" "Pre-release for ${CODENAME}"
+              FULL_VERSION="${VERSION}~${PRE_VERSION}-1~${CODENAME}-pre"
+              dch -b --newversion "${FULL_VERSION}" --distribution "${CODENAME}-pre" "Pre-release for ${CODENAME}-pre"
             else
               FULL_VERSION="${VERSION}-1~${CODENAME}"
               dch --newversion "${FULL_VERSION}" --distribution "${CODENAME}" "Pre-release for ${CODENAME}"
