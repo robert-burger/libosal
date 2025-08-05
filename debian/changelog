@@ -2,6 +2,8 @@ libosal (0.1.1) unstable; urgency=low
 
   * prep: github debian build action
 
+ -- Robert Burger <robert.burger@dlr.de>  Tue, 05 Aug 2025 07:07:08 +0200
+
 libosal (0.1.0) unstable; urgency=low
 
   * del: old project props
