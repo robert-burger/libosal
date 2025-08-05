@@ -91,9 +91,9 @@ jobs:
           if [[ "$VERSION" == *"~${CODENAME}"* || "$VERSION" == *"+${CODENAME}"* ]]; then
             echo "Version already contains codename suffix, skipping dch."
           else
-            # If there's already a ~ in version (like ~pre1), add +codename
-            if [[ "$VERSION" == *"~"* ]]; then
-              dch --local +${CODENAME} --distribution ${CODENAME} "Build for ${CODENAME}"
+            if [[ ! $GITHUB_REF =~ ^refs/tags/ ]]; then
+              # Not a tag, so add ~pre<x>
+              dch --local ~pre${GITHUB_RUN_NUMBER}+${CODENAME} --distribution ${CODENAME} "Pre-release build"
             else
               dch --local ~${CODENAME} --distribution ${CODENAME} "Build for ${CODENAME}"
             fi
