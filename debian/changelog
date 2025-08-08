@@ -1,6 +1,7 @@
-libosal (0.1.2) unstable; urgency=low
+libosal (0.2.0) unstable; urgency=low
 
-  * prep: next patch level
+  * config.h is not longer distributed
+  * prep: next feature level
 
  -- Robert Burger <robert.burger@dlr.de>  Tue, 05 Aug 2025 07:07:08 +0200
 
