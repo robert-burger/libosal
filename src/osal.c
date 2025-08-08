@@ -27,6 +27,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <libosal/config.h>
+#endif
+
 #include <libosal/osal.h>
 
 #ifdef LIBOSAL_BUILD_WIN32

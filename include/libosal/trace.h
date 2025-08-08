@@ -31,14 +31,11 @@
 #ifndef LIBOSAL_TRACE__H
 #define LIBOSAL_TRACE__H
 
-#ifdef HAVE_CONFIG_H
-#include <libosal/config.h>
-#endif
-
-#include <libosal/types.h>
+#include <libosal/osal.h>
 #include <libosal/osal.h>
 #include <libosal/trace.h>
 #include <libosal/timer.h>
+#include <libosal/binary_semaphore.h>
 
 /** \defgroup trace_group Trace 
  * This module implements timing traces for use in realtime systems. 

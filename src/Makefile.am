@@ -1,5 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 AM_LDFLAGS = -no-undefined
+AUTOMAKE_OPTIONS = nostdinc
 
 includedir = $(prefix)/include/libosal
 includeposixdir = $(prefix)/include/libosal/posix
@@ -10,11 +11,10 @@ includewin32dir = $(prefix)/include/libosal/win32
 lib_LTLIBRARIES = libosal.la
 
 include_HEADERS = $(top_srcdir)/include/libosal/osal.h \
-				  $(top_builddir)/include/libosal/config.h \
-				  $(top_srcdir)/include/libosal/types.h \
 				  $(top_srcdir)/include/libosal/mutex.h \
 				  $(top_srcdir)/include/libosal/task.h \
 				  $(top_srcdir)/include/libosal/timer.h \
+				  $(top_srcdir)/include/libosal/types.h \
 				  $(top_srcdir)/include/libosal/semaphore.h \
 				  $(top_srcdir)/include/libosal/spinlock.h \
 				  $(top_srcdir)/include/libosal/binary_semaphore.h \
@@ -38,7 +38,7 @@ libosal_la_SOURCES	= io.c osal.c trace.c timer.c
 ADD_LIBS = @MATH_LIBS@
 ADD_CFLAGS = 
 
-if BUILD_POSIX
+if LIBOSAL_BUILD_POSIX
 includeposix_HEADERS    += $(top_srcdir)/include/libosal/posix/binary_semaphore.h \
 						   $(top_srcdir)/include/libosal/posix/condvar.h \
 						   $(top_srcdir)/include/libosal/posix/mutex.h \
@@ -70,7 +70,7 @@ ADD_LIBS += @PTHREAD_LIBS@ @RT_LIBS@
 ADD_CFLAGS += -Wno-unused-const-variable
 endif
 
-if BUILD_VXWORKS
+if LIBOSAL_BUILD_VXWORKS
 
 libosal_la_SOURCES += vxworks/binary_semaphore.c
 libosal_la_SOURCES += vxworks/condvar.c
@@ -80,7 +80,7 @@ libosal_la_SOURCES += vxworks/semaphore.c
 
 endif
 
-if BUILD_PIKEOS
+if LIBOSAL_BUILD_PIKEOS
 
 includepikeos_HEADERS   += $(top_srcdir)/include/libosal/pikeos/binary_semaphore.h \
 						   $(top_srcdir)/include/libosal/pikeos/condvar.h \
@@ -102,7 +102,7 @@ libosal_la_SOURCES += pikeos/shm.c
 
 endif
 
-if BUILD_WIN32
+if LIBOSAL_BUILD_WIN32
 
 includewin32_HEADERS   += 
 						   $(top_srcdir)/include/libosal/win32/mutex.h 

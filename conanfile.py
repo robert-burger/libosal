@@ -71,7 +71,7 @@ class MainProject(ConanFile):
             autotools.make(target="check")
             mkdir(self, "tests/posix/coverage")
             with chdir(self, "tests/posix"):
-                self.run("gcovr -v --decisions --html-details coverage/details.html -r . \
+                self.run(r"gcovr -v --decisions --html-details coverage/details.html -r . \
       --filter '(.+)\.((c)|(cc))$'  --gcov-ignore-parse-errors=all \
       . ../../src ../../src/posix ")
 
@@ -89,6 +89,7 @@ class MainProject(ConanFile):
                                "coverage")
             
             copy(self, "*.html", src, dst)
+            copy(self, "*.css", src, dst)
             
     def package_info(self):
         self.cpp_info.includedirs = ['include']

@@ -31,6 +31,21 @@
 #ifndef LIBOSAL_OSAL__H
 #define LIBOSAL_OSAL__H
 
+/* Use MINGW32 build on windows mingw32 */
+#undef LIBOSAL_BUILD_MINGW32
+
+/* Use PikeOS build */
+#undef LIBOSAL_BUILD_PIKEOS
+
+/* Use POSIX build on linux */
+#undef LIBOSAL_BUILD_POSIX
+
+/* Use VxWorks build */
+#undef LIBOSAL_BUILD_VXWORKS
+
+/* Use Win32 build */
+#undef LIBOSAL_BUILD_WIN32
+
 #define OSAL_OK                         0       //!< \brief Ok return code.
 #define OSAL_ERR_OPERATION_FAILED       -1      //!< \brief Error operation failed.
 #define OSAL_ERR_INVALID_PARAM          -2      //!< \brief Error invalid input parameter.
@@ -49,20 +64,7 @@
 #define OSAL_ERR_INTERRUPTED            -15     //!< \brief Error function call was interrupted.
 #define OSAL_ERR_MUTEX_IS_LOCKED        -16     //!< \brief Error mutex is locked.
 
-#ifdef HAVE_CONFIG_H
-#include <libosal/config.h>
-#endif
 #include <libosal/types.h>
-#include <libosal/task.h>
-#include <libosal/mutex.h>
-#include <libosal/semaphore.h>
-#include <libosal/spinlock.h>
-#include <libosal/binary_semaphore.h>
-#include <libosal/timer.h>
-#include <libosal/condvar.h>
-#ifdef LIBOSAL_BUILD_STM32
-#include <libosal/stm32/osal.h>
-#endif
 
 //! Initialize OSAL internals.
 void osal_init(void);

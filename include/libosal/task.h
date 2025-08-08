@@ -32,12 +32,7 @@
 #ifndef LIBOSAL_TASK__H
 #define LIBOSAL_TASK__H
 
-#ifdef HAVE_CONFIG_H
-#include <libosal/config.h>
-#endif
-
 #include <libosal/osal.h>
-#include <libosal/types.h>
 
 #ifdef LIBOSAL_BUILD_POSIX
 #include <libosal/posix/task.h>

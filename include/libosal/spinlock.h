@@ -31,11 +31,7 @@
 #ifndef LIBOSAL_SPINLOCK__H
 #define LIBOSAL_SPINLOCK__H
 
-#ifdef HAVE_CONFIG_H
-#include <libosal/config.h>
-#endif
-
-#include <libosal/types.h>
+#include <libosal/osal.h>
 
 #ifdef LIBOSAL_BUILD_POSIX
 #include <libosal/posix/spinlock.h>

@@ -28,6 +28,10 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <libosal/config.h>
+#endif
+
 #include <libosal/osal.h>
 #include <libosal/timer.h>
 
@@ -35,6 +39,8 @@
 #include <stdio.h>
 // cppcheck-suppress misra-c2012-21.10
 #include <assert.h>
+
+#include <vm.h>
 
 // sleep in nanoseconds
 void osal_sleep(osal_uint64_t nsec) {
