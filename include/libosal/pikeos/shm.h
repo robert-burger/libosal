@@ -31,6 +31,8 @@
 #ifndef LIBOSAL_PIKEOS_SHM__H
 #define LIBOSAL_PIKEOS_SHM__H
 
+#include <libosal/osal.h>
+
 #include <vm.h>
 
 typedef struct osal_shm {

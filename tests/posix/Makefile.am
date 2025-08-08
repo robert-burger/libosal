@@ -6,7 +6,7 @@ ACLOCAL_AMFLAGS = -I m4
 AM_LDFLAGS = -no-undefined
 
 
-if BUILD_POSIX
+if LIBOSAL_BUILD_POSIX
 
 cov-reset:
 	rm -fr coverage

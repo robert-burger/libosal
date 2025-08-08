@@ -28,12 +28,15 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <libosal/config.h>
+#endif
+
 #define _GNU_SOURCE             /* See feature_test_macros(7) */
 #include <sched.h>
 #include <pthread.h>
 #include <signal.h>
 
-#include <libosal/config.h>
 #include <libosal/osal.h>
 #include <libosal/task.h>
 #include <libosal/io.h>

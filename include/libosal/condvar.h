@@ -31,11 +31,7 @@
 #ifndef LIBOSAL_CONDVAR__H
 #define LIBOSAL_CONDVAR__H
 
-#ifdef HAVE_CONFIG_H
-#include <libosal/config.h>
-#endif
-
-#include <libosal/types.h>
+#include <libosal/osal.h>
 #include <libosal/mutex.h>
 #include <libosal/timer.h>
 

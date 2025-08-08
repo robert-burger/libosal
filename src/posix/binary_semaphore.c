@@ -28,7 +28,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include <libosal/config.h>
+#endif
+
 #include <libosal/osal.h>
+#include <libosal/binary_semaphore.h>
 #include <assert.h>
 #include <errno.h>
 #include <time.h>

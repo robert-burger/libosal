@@ -71,7 +71,7 @@ class MainProject(ConanFile):
             autotools.make(target="check")
             mkdir(self, "tests/posix/coverage")
             with chdir(self, "tests/posix"):
-                self.run("gcovr -v --decisions --html-details coverage/details.html -r . \
+                self.run(r"gcovr -v --decisions --html-details coverage/details.html -r . \
       --filter '(.+)\.((c)|(cc))$'  --gcov-ignore-parse-errors=all \
       . ../../src ../../src/posix ")
 

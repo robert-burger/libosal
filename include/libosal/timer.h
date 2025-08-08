@@ -33,7 +33,7 @@
 #ifndef LIBOSAL_TIMER__H
 #define LIBOSAL_TIMER__H
 
-#include <libosal/types.h>
+#include <libosal/osal.h>
 
 #ifdef LIBOSAL_BUILD_POSIX
 #include <libosal/posix/timer.h>

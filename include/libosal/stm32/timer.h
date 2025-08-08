@@ -34,6 +34,7 @@
 #ifndef LIBOSAL_TIMER__H
 #define LIBOSAL_TIMER__H
 
+#include <libosal/osal.h>
 #include <libosal/types.h>
 
 #ifdef LIBOSAL_BUILD_STM32

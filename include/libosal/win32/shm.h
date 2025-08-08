@@ -31,6 +31,8 @@
 #ifndef LIBOSAL_WIN32_SHM__H
 #define LIBOSAL_WIN32_SHM__H
 
+#include <libosal/osal.h>
+
 #include "windows.h"
 
 typedef struct osal_shm {

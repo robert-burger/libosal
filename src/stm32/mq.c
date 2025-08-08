@@ -28,12 +28,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <libosal/mq.h>
-#include <libosal/osal.h>
-
 #ifdef HAVE_CONFIG_H
 #include <libosal/config.h>
 #endif
+
+#include <libosal/osal.h>
+#include <libosal/mq.h>
 
 #include <assert.h>
 

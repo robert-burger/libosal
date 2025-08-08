@@ -31,10 +31,7 @@
 #ifndef LIBOSAL_BINARY_SEMAPHORE__H
 #define LIBOSAL_BINARY_SEMAPHORE__H
 
-#ifdef HAVE_CONFIG_H
-#include <libosal/config.h>
-#endif
-#include <libosal/types.h>
+#include <libosal/osal.h>
 #include <libosal/timer.h>
 
 #ifdef LIBOSAL_BUILD_POSIX

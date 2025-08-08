@@ -31,9 +31,7 @@
 #ifndef LIBOSAL_TYPES__H
 #define LIBOSAL_TYPES__H
 
-#ifdef HAVE_CONFIG_H
-#include <libosal/config.h>
-#endif
+#include <libosal/osal.h>
 
 #include <stdint.h>
 #include <stddef.h>

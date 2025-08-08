@@ -31,6 +31,8 @@
 #ifndef LIBOSAL_VXWORKS_SHM__H
 #define LIBOSAL_VXWORKS_SHM__H
 
+#include <libosal/osal.h>
+
 typedef struct osal_shm {
     int fd;
     osal_size_t size;
