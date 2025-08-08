@@ -89,6 +89,7 @@ class MainProject(ConanFile):
                                "coverage")
             
             copy(self, "*.html", src, dst)
+            copy(self, "*.css", src, dst)
             
     def package_info(self):
         self.cpp_info.includedirs = ['include']
