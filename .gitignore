@@ -17,6 +17,7 @@ config.guess
 config.h*
 config.log
 config.status
+config.sub
 configure
 depcomp
 install-sh
@@ -47,4 +48,4 @@ check_tasks
 check_shmio
 *.gcno
 
-
+*gh-pages*
