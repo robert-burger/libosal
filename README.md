@@ -64,21 +64,18 @@ See [introduction](INTRODUCTION.md) or [gh-pages](https://robert-burger.github.i
 
 ## Install
 
-There's a debian repository hosted at cloudsmith where you can automatically install libosal via apt (Ubuntu 22.04, 24.04 and debian bullseye, bookworm). To setup the repository enter:
+There's a debian repository hosted iby myself where you can automatically install libosal via apt (Ubuntu 22.04, 24.04 and debian bullseye, bookworm). To setup the repository enter:
 
 ```bash
-curl -1sLf \
-  'https://dl.cloudsmith.io/public/robertburger/common/setup.deb.sh' \
-  | sudo -E bash
+curl -fsSL https://deb.burger-system.de/setup.sh | bash > /dev/null
 ```
 
 Afterwards you should be able to install libosal simply with:
 
 ```bash
+sudo apt update
 sudo apt install libosal
 ```
-
-Caution: This is only the free cloudsmith account and has a monthly package delivery limit (1GB). So this might not always work. In that case just install the deb packages from the latest release.
 
 ---
 
