@@ -36,6 +36,7 @@
 #include <libosal/config.h>
 #endif
 
+#include <libosal/osal.h>
 #include <libosal/types.h>
 
 #ifdef LIBOSAL_BUILD_POSIX
