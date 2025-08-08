@@ -64,7 +64,7 @@ See [introduction](INTRODUCTION.md) or [gh-pages](https://robert-burger.github.i
 
 ## Install
 
-There's a debian repository hosted iby myself where you can automatically install libosal via apt (Ubuntu 22.04, 24.04 and debian bullseye, bookworm). To setup the repository enter:
+There's a debian repository hosted by myself where you can automatically install libosal via apt (Ubuntu 22.04, 24.04 and debian bullseye, bookworm). To setup the repository enter:
 
 ```bash
 curl -fsSL https://deb.burger-system.de/setup.sh | bash > /dev/null
