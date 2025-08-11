@@ -1,3 +1,7 @@
+libosal (0.2.1) unstable; urgency=low
+
+  * fix: cmake build
+
 libosal (0.2.0) unstable; urgency=low
 
   * config.h is not longer distributed
