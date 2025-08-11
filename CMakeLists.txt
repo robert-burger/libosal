@@ -3,12 +3,19 @@ execute_process(
     COMMAND git describe --tags --abbrev=0
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_VER
+    RESULT_VARIABLE GIT_RESULT
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
 )
-string(REGEX MATCH "([0-9]*.[0-9]*.[0-9]*).*" _ ${GIT_VER})
-set(PROJECT_VERSION ${CMAKE_MATCH_1})
-if("${PROJECT_VERSION}" STREQUAL "")
+if(GIT_RESULT EQUAL 0)
+    string(REGEX MATCH "v?([0-9]+\\.[0-9]+\\.[0-9]+)" _ ${GIT_VER})
+    set(PROJECT_VERSION ${CMAKE_MATCH_1})
+endif()
+
+if(NOT PROJECT_VERSION)
     set(PROJECT_VERSION 0.0.0)
 endif()
+
 project(libosal VERSION ${PROJECT_VERSION})
 
 set(CMAKE_CXX_STANDARD 11)
@@ -99,9 +106,13 @@ else()
     message(FATAL_ERROR "Set the BUILD_FOR_PLATFORM option!")
 endif()
 
+if (BUILD_SHARED_LIBS)
+    set(BUILD_WITH_POSITION_INDEPENDENT_CODE ON)
+endif()
+
 set(LIBOSAL_STDC_HEADERS 1)
-set(LIBOSAL_PACKAGE_VERSION "${GIT_VER}")
-set(LIBOSAL_VERSION "${GIT_VER}")
+set(LIBOSAL_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(LIBOSAL_VERSION "${PROJECT_VERSION}")
 set(LIBOSAL_PACKAGE_URL "${CMAKE_PROJECT_HOMEPAGE_URL}")
 set(LIBOSAL_PACKAGE "${CMAKE_PROJECT_NAME}")
 set(LIBOSAL_PACKAGE_NAME "${CMAKE_PROJECT_NAME}")
@@ -133,7 +144,8 @@ check_include_files("sys/stat.h" LIBOSAL_HAVE_SYS_STAT_H)
 check_include_files("sys/types.h" LIBOSAL_HAVE_SYS_TYPES_H)
 check_include_files("unistd.h" LIBOSAL_HAVE_UNISTD_H)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/template_config.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/libosal/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/template_config.h.in ${CMAKE_CURRENT_BINARY_DIR}/include/libosal/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/osal.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/libosal/osal.h)
 
 set(SRC_OSAL 
     src/io.c
@@ -153,13 +165,16 @@ endif()
 
 add_library(osal ${SRC_OSAL})
 if(BUILD_FOR_PLATFORM STREQUAL "POSIX")
-target_link_libraries(osal m)
+target_link_libraries(osal m rt)
 endif()
 target_compile_definitions(osal PUBLIC HAVE_CONFIG_H=1)
 target_include_directories(osal 
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>  
         $<INSTALL_INTERFACE:include>)
+target_include_directories(osal 
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
 set_property(TARGET osal PROPERTY POSITION_INDEPENDENT_CODE ${BUILD_WITH_POSITION_INDEPENDENT_CODE})
 
 
