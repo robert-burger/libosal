@@ -9,6 +9,8 @@
 [![VxWorks](https://img.shields.io/badge/VxWorks-yellow.svg)](LICENSE)
 [![Windows](https://custom-icon-badges.demolab.com/badge/Windows-0078D6?logo=windows11&logoColor=white)](#)
 
+[![Packaging status](https://repology.org/badge/vertical-allrepos/libosal.svg)](https://repology.org/project/libosal/versions)
+
 ## 🍀 Overview
 
 **libosal** is a high-performance, modular Operating System Abstraction Layer (OSAL) designed to facilitate cross-platform development by abstracting platform-specific details of operating systems and hardware environments. Developed by the Institute of Robotics and Mechatronics at the German Aerospace Center (DLR), libosal enables seamless portability and maintainability of embedded and real-time software components across diverse operating systems including WIN32, MINGW32, PIKEOS, POSIX-compliant systems, and VXWORKS.
