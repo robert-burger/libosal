@@ -4,7 +4,7 @@
 
 ACLOCAL_AMFLAGS = -I m4
 AM_LDFLAGS = -no-undefined
-
+AUTOMAKE_OPTIONS = nostdinc
 
 if LIBOSAL_BUILD_POSIX
 

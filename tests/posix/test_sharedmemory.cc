@@ -8,6 +8,7 @@
 
 #include "libosal/osal.h"
 #include "libosal/shm.h"
+#include "libosal/semaphore.h"
 #include "test_utils.h"
 #include <sys/mman.h>
 #include <sys/resource.h>
