@@ -1,4 +1,6 @@
 #include "libosal/osal.h"
+#include "libosal/mutex.h"
+#include "libosal/task.h"
 #include "test_utils.h"
 #include "gtest/gtest.h"
 #include <atomic>

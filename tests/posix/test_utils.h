@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <vector>
+#include <sched.h>
+
+#include "libosal/timer.h"
 
 #ifndef LIBOSAL_POSIX_TEST_UTILS_H
 #define LIBOSAL_POSIX_TEST_UTILS_H

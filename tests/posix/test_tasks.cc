@@ -3,6 +3,9 @@
 #include <vector>
 
 #include "libosal/osal.h"
+#include "libosal/task.h"
+#include "libosal/condvar.h"
+#include "libosal/mutex.h"
 #include "test_utils.h"
 
 int verbose = 0;
