@@ -15,4 +15,6 @@ endif
 
 pkgconfig_DATA = libosal.pc
 
+pkgcmakedir = $(libdir)/cmake/libosal
+dist_pkgcmake_DATA = cmake/libosal/libosalConfig.cmake
 

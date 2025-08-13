@@ -24,6 +24,7 @@ set(CMAKE_C_STANDARD 11)
 include(CheckIncludeFiles)
 include(CheckSymbolExists)
 include(CMakePackageConfigHelpers)
+include(GNUInstallDirs)
 
 option(BUILD_FOR_PLATFORM "Set to WIN32, MINGW32, PIKEOS, POSIX, or VXWORKS" "")
 option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
@@ -184,13 +185,27 @@ write_basic_package_version_file(
   COMPATIBILITY AnyNewerVersion
   )
 
+# Define your version, prefix, and dirs (adjust as needed)
+set(VERSION "${PROJECT_VERSION}")
+set(prefix "${CMAKE_INSTALL_PREFIX}")
+set(exec_prefix "${prefix}")
+set(libdir "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+set(includedir "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}")
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/libosal.pc.in
+  ${CMAKE_CURRENT_BINARY_DIR}/libosal.pc
+  @ONLY
+)
+
 set(INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+set(PACKAGE_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
 set(OSAL_LIB_NAME osal)
 
 configure_package_config_file(
   ${PROJECT_SOURCE_DIR}/cmake/libosalConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/libosalConfig.cmake
-  INSTALL_DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake/libosal
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libosal
   PATH_VARS OSAL_LIB_NAME INSTALL_DIR
   )
 
@@ -198,7 +213,7 @@ install(TARGETS osal EXPORT libosalTargets)
 install(
     EXPORT libosalTargets 
     FILE libosalTargets.cmake
-    DESTINATION lib/cmake/libosal
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libosal
 )
 install(DIRECTORY include/libosal/ DESTINATION include/libosal 
 	FILES_MATCHING PATTERN "*.h"
@@ -210,4 +225,7 @@ install(DIRECTORY include/libosal/ DESTINATION include/libosal
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libosalConfig.cmake" 
                 "${CMAKE_CURRENT_BINARY_DIR}/libosalConfigVersion.cmake"
-    DESTINATION lib/cmake/libosal)
+                DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/libosal)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libosal.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
