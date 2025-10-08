@@ -6,22 +6,30 @@ AC_INIT([libosal], [PACKAGE_VERSION], [Robert Burger <robert.burger@dlr.de>])
 
 AC_CANONICAL_TARGET
 
-# Automake initialization
-AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
-#AM_INIT_AUTOMAKE([-Wall -Werror foreign silent-rules subdir-objects])
-#m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
-m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+AS_IF([echo "$host" | grep -q 'rtems'], [
+    AC_MSG_NOTICE([RTEMS detected: skipping compiler test])
+    AC_SUBST(CC, arm-rtems6-gcc)
+    AC_SUBST(CXX, arm-rtems6-g++)
+    ac_cv_prog_cc_works=yes
+    ac_cv_prog_cc_cross=yes
+    ac_cv_exeext=
+], [
+    # Checks for programs.
+    AC_PROG_CC
 
+    # we test the posix API with gtest, which requires C++
+    AC_PROG_CXX
+])
+
+# Automake initialization
+AM_INIT_AUTOMAKE([-Wall foreign subdir-objects])
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_HEADERS([config.h include/libosal/osal.h])
 AC_CONFIG_MACRO_DIR([m4])
 AX_PREFIX_CONFIG_H(include/libosal/config.h) # prep mylib/_config.h from it..
 
-# Checks for programs.
-AC_PROG_CC
-# we test the posix API with gtest, which requires C++
-AC_PROG_CXX
 AC_PROG_LIBTOOL
 
 LT_INIT
@@ -43,6 +51,10 @@ case $target_os in
     linux*)
         LIBOSAL_BUILD_POSIX=true
         AC_DEFINE([LIBOSAL_BUILD_POSIX], [true], [Use POSIX build on linux])
+        ;;
+    rtems*)
+        LIBOSAL_BUILD_POSIX=true
+        AC_DEFINE([LIBOSAL_BUILD_POSIX], [true], [Use POSIX build on RTEMS])
         ;;
     vxworks*)
         LIBOSAL_BUILD_VXWORKS=true
@@ -113,6 +125,7 @@ AM_CONDITIONAL([LIBOSAL_BUILD_WIN32], [ test x$LIBOSAL_BUILD_WIN32 = xtrue])
 # Checks for libraries.
 
 # Checks for header files.
+AC_CHECK_HEADERS([string.h])
 AC_CHECK_HEADERS([stdint.h])
 AC_CHECK_HEADERS([math.h])
 AC_CHECK_HEADERS([sys/mman.h], HAVE_SYS_MMAN_H=true, HAVE_SYS_MMAN_H=false)
