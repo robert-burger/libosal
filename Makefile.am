@@ -6,10 +6,12 @@ pkgconfigdir=$(libdir)/pkgconfig
 SUBDIRS=src
 
 if LIBOSAL_BUILD_POSIX
+if !LIBOSAL_BUILD_RTEMS
 SUBDIRS += tests
 if !LIBOSAL_BUILD_MINGW32
 SUBDIRS += src/tools/logger 
 SUBDIRS += src/tools/shmtest
+endif
 endif
 endif
 
