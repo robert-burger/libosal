@@ -89,6 +89,7 @@ osal_retval_t osal_task_create(osal_task_t *hdl, const osal_task_attr_t *attr,
     p4ext_thr_attr_t *ptattr = NULL;
     p4ext_thr_attr_init(&tattr);
     tattr.context_flags = P4_THREAD_ARG_FPU | P4_THREAD_ARG_DEBUG;
+    tattr.stacksize = (8 * P4_PAGESIZE);
     ptattr = &tattr;
 
     if ((attr != NULL) && (attr->priority > 0)) {
