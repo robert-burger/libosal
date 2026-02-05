@@ -8,8 +8,11 @@ node('default') {
         context.getGitRepo().checkout()
         sshagent(credentials: [context.getConfig().gitCredentialsId]) {
             lock("gh-pages-${context.getGitRepo().getOrganization()}-${context.getGitRepo().getName()}") {
-                sh """
-                export CONAN_USER_HOME=${pwd()}/conan_home
+                sh """#!/bin/bash
+                set +x
+                source /opt/rmc-build-tools/sourceme-devel.sh --cissy /opt/rmc-build-tools/any/cissy2/
+                set -x
+                export CONAN_HOME=${pwd()}/conan_home
                 cd repo_dir
                 make -f Makefile.doc gh-pages
                 """
