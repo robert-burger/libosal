@@ -1,4 +1,4 @@
-@Library('rmc-jenkins-libraries-v2-no-changelog') _
+@Library('rmc-jenkins-libraries-v3') _
 env.CONAN_V2_MODE=1
 rmcBuild.auto()
 
