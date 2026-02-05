@@ -43,6 +43,9 @@
 
 #if LIBOSAL_HAVE_STRING_H == 1
 #include <string.h>
+#else 
+// forward decl
+void *memset(void *s, int c, size_t n);
 #endif
 
 //! \brief Allocate trace struct.
