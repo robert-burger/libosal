@@ -1,4 +1,4 @@
-libosal (0.2.2) unstable; urgency=low
+libosal (0.2.2) stable; urgency=low
 
   * cmake find package from autotools
   * cmake: generate and deploy pkg-config file
