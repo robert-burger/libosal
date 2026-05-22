@@ -1,22 +1,3 @@
 @Library('rmc-jenkins-libraries-v3') _
-env.CONAN_V2_MODE=1
 rmcBuild.auto()
 
-node('default') {
-    stage('create and publish gh-pages') {
-        def context = conan.init()
-        context.getGitRepo().checkout()
-        sshagent(credentials: [context.getConfig().gitCredentialsId]) {
-            lock("gh-pages-${context.getGitRepo().getOrganization()}-${context.getGitRepo().getName()}") {
-                sh """#!/bin/bash
-                set +x
-                source /opt/rmc-build-tools/sourceme-devel.sh --cissy /opt/rmc-build-tools/any/cissy2/
-                set -x
-                export CONAN_HOME=${pwd()}/conan_home
-                cd repo_dir
-                make -f Makefile.doc gh-pages
-                """
-            }
-        }
-    }
-}
