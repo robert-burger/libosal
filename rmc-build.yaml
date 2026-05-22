@@ -4,6 +4,6 @@ builds:
   - any:
       coverage: False
   - imports:
-    - linux_defaults_build_profile
-  - debian11-x86_64
-  - build_profile:osl154-x86_64 pikeos4.2-armv7hf-gcc5:
+    - linux_defaults
+  - build_profile:osl155-x86_64 pikeos4.2-armv7hf-gcc5:
+  - build_profile:osl155-x86_64 rtems6.1_zedboard-armv7le-gcc13
