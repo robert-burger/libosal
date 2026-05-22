@@ -9,8 +9,8 @@ class MainProject(ConanFile):
     license = "GPLv3"
     author = "Robert Burger <robert.burger@dlr.de>"
     url = f"https://rmc-github.robotic.dlr.de/common/{name}"
-    description = """"This library provides an Operating System Abstraction Layer 
-                      (OSAL) for other programs so they do not need to take care 
+    description = """"This library provides an Operating System Abstraction Layer
+                      (OSAL) for other programs so they do not need to take care
                       about the underlying implementation"""
     settings = "os", "compiler", "build_type", "arch"
     exports_sources = ["*", "!.gitignore", "!bindings"]
@@ -22,11 +22,11 @@ class MainProject(ConanFile):
     def build_requirements(self):
         if self.options.coverage == True:
             self.tool_requires("gcovr/6.0@pip/stable")
-            
-    
+
+
     def generate(self):
         tc = AutotoolsToolchain(self)
-        tc.autoreconf_args = [ "--install", ]        
+        tc.autoreconf_args = [ "--install", ]
         if self.settings.os == "pikeos":
             tc.update_configure_args({
                 "--host": "%s-%s" % (self.settings.arch, self.settings.os),  # update flag '--host=my-gnu-triplet
@@ -78,7 +78,7 @@ class MainProject(ConanFile):
     def package(self):
         autotools = Autotools(self)
         autotools.install()
-        
+
         if self.options.coverage:
             src = os.path.join(self.build_folder,
                                "tests",
@@ -87,10 +87,10 @@ class MainProject(ConanFile):
             dst = os.path.join(self.package_folder,
                                "doc",
                                "coverage")
-            
+
             copy(self, "*.html", src, dst)
             copy(self, "*.css", src, dst)
-            
+
     def package_info(self):
         self.cpp_info.includedirs = ['include']
         self.cpp_info.libs = ["osal"]
