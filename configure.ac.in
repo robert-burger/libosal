@@ -7,12 +7,23 @@ AC_INIT([libosal], [PACKAGE_VERSION], [Robert Burger <robert.burger@dlr.de>])
 AC_CANONICAL_TARGET
 
 AS_IF([echo "$host" | grep -q 'rtems'], [
-    AC_MSG_NOTICE([RTEMS detected: skipping compiler test])
-    AC_SUBST(CC, arm-rtems6-gcc)
-    AC_SUBST(CXX, arm-rtems6-g++)
-    ac_cv_prog_cc_works=yes
-    ac_cv_prog_cc_cross=yes
-    ac_cv_exeext=
+    AS_IF([echo "$host" | grep -q 'arm'], [
+        AC_MSG_NOTICE([RTEMS ARM detected: skipping compiler test])
+        AC_SUBST(CC, arm-rtems6-gcc)
+        AC_SUBST(CXX, arm-rtems6-g++)
+        ac_cv_prog_cc_works=yes
+        ac_cv_prog_cc_cross=yes
+        ac_cv_exeext=
+    ], [
+        AS_IF([echo "$host" | grep -q 'riscv'], [
+            AC_MSG_NOTICE([RTEMS RISC-V detected: skipping compiler test])
+            AC_SUBST(CC, riscv-rtems6-gcc)
+            AC_SUBST(CXX, riscv-rtems6-g++)
+            ac_cv_prog_cc_works=yes
+            ac_cv_prog_cc_cross=yes
+            ac_cv_exeext=
+        ])
+    ])
 ], [
     # Checks for programs.
     AC_PROG_CC
