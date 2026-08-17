@@ -565,7 +565,7 @@ osal_retval_t osal_task_get_affinity(osal_task_t *hdl,
 osal_retval_t osal_task_suspend(osal_task_t *hdl) {
     osal_retval_t ret = OSAL_OK;
 
-#if LIBOSAL_HAVE_SIGSTOP == 1 && LIBOSAL_HAVE_PTHREAD_KILL == 1
+#if LIBOSAL_HAVE_SIGSTOP == 1
     int local_ret;
 
     local_ret = pthread_kill(hdl->tid, SIGSTOP);
@@ -588,7 +588,7 @@ osal_retval_t osal_task_suspend(osal_task_t *hdl) {
 osal_retval_t osal_task_resume(osal_task_t *hdl) {
     osal_retval_t ret = OSAL_OK;
 
-#if LIBOSAL_HAVE_SIGCONT == 1 && LIBOSAL_HAVE_PTHREAD_KILL == 1
+#if LIBOSAL_HAVE_SIGCONT == 1
     int local_ret;
     local_ret = pthread_kill(hdl->tid, SIGCONT);
     if (local_ret != 0) {
@@ -635,3 +635,4 @@ osal_retval_t osal_task_get_state(osal_task_t *hdl,
 
     return ret;
 }
+
