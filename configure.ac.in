@@ -7,12 +7,23 @@ AC_INIT([libosal], [PACKAGE_VERSION], [Robert Burger <robert.burger@dlr.de>])
 AC_CANONICAL_TARGET
 
 AS_IF([echo "$host" | grep -q 'rtems'], [
-    AC_MSG_NOTICE([RTEMS detected: skipping compiler test])
-    AC_SUBST(CC, arm-rtems6-gcc)
-    AC_SUBST(CXX, arm-rtems6-g++)
-    ac_cv_prog_cc_works=yes
-    ac_cv_prog_cc_cross=yes
-    ac_cv_exeext=
+    AS_IF([echo "$host" | grep -q 'arm'], [
+        AC_MSG_NOTICE([RTEMS ARM detected: skipping compiler test])
+        AC_SUBST(CC, arm-rtems6-gcc)
+        AC_SUBST(CXX, arm-rtems6-g++)
+        ac_cv_prog_cc_works=yes
+        ac_cv_prog_cc_cross=yes
+        ac_cv_exeext=
+    ], [
+        AS_IF([echo "$host" | grep -q 'riscv'], [
+            AC_MSG_NOTICE([RTEMS RISC-V detected: skipping compiler test])
+            AC_SUBST(CC, riscv-rtems6-gcc)
+            AC_SUBST(CXX, riscv-rtems6-g++)
+            ac_cv_prog_cc_works=yes
+            ac_cv_prog_cc_cross=yes
+            ac_cv_exeext=
+        ])
+    ])
 ], [
     # Checks for programs.
     AC_PROG_CC
@@ -79,21 +90,33 @@ if test x$LIBOSAL_BUILD_POSIX == xtrue; then
     ])], [AC_DEFINE([HAVE_ENOTRECOVERABLE], [1])],
          [AC_DEFINE([HAVE_ENOTRECOVERABLE], [0])])
 
-    AC_DEFINE([HAVE_SIGSTOP], [], [Check if signal SIGSTOP is present.])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
-        #include <signal.h>
-    ],[
-        int ret = SIGSTOP;
-    ])], [AC_DEFINE([HAVE_SIGSTOP], [1])],
-         [AC_DEFINE([HAVE_SIGSTOP], [0])])
+    AS_IF([test x$LIBOSAL_BUILD_RTEMS = xtrue], [
+        AC_DEFINE([HAVE_SIGSTOP], [0], [pthread_kill based suspend is unavailable on RTEMS.])
+        AC_DEFINE([HAVE_SIGCONT], [0], [pthread_kill based resume is unavailable on RTEMS.])
+        AC_DEFINE([HAVE_PTHREAD_KILL], [0], [Check if posix function pthread_kill is present.])
+    ], [
+        AC_DEFINE([HAVE_SIGSTOP], [], [Check if signal SIGSTOP is present.])
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+            #include <signal.h>
+        ],[
+            int ret = SIGSTOP;
+        ])], [AC_DEFINE([HAVE_SIGSTOP], [1])],
+             [AC_DEFINE([HAVE_SIGSTOP], [0])])
 
-    AC_DEFINE([HAVE_SIGCONT], [], [Check if signal SIGCONT is present.])
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
-        #include <signal.h>
-    ],[
-        int ret = SIGCONT;
-    ])], [AC_DEFINE([HAVE_SIGCONT], [1])],
-         [AC_DEFINE([HAVE_SIGCONT], [0])])
+        AC_DEFINE([HAVE_SIGCONT], [], [Check if signal SIGCONT is present.])
+        AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+            #include <signal.h>
+        ],[
+            int ret = SIGCONT;
+        ])], [AC_DEFINE([HAVE_SIGCONT], [1])],
+             [AC_DEFINE([HAVE_SIGCONT], [0])])
+
+        AC_DEFINE([HAVE_PTHREAD_KILL], [], [Check if posix function pthread_kill is present.])
+        AC_CHECK_LIB(pthread, pthread_kill,
+                     [AC_DEFINE([HAVE_PTHREAD_KILL], [1])
+                     PTHREAD_LIBS="-lpthread"],
+                     [AC_DEFINE([HAVE_PTHREAD_KILL], [0])])
+    ])
             
     PTHREAD_LIBS=""
     RT_LIBS=""
@@ -111,7 +134,9 @@ if test x$LIBOSAL_BUILD_POSIX == xtrue; then
                  [AC_DEFINE([HAVE_PTHREAD_SETAFFINITY_NP], [0])])
 
     AC_CHECK_LIB(pthread, pthread_create, PTHREAD_LIBS="-lpthread")
-    AC_CHECK_LIB(rt, clock_gettime, RT_LIBS="-lrt")
+    AS_IF([test x$LIBOSAL_BUILD_RTEMS != xtrue], [
+        AC_CHECK_LIB(rt, clock_gettime, RT_LIBS="-lrt")
+    ])
     AC_SUBST(PTHREAD_LIBS)
     AC_SUBST(RT_LIBS)
 fi

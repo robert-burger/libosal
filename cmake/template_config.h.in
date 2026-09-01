@@ -28,6 +28,9 @@
 /* Check if posix function pthread_setaffinity_np present. */
 #cmakedefine LIBOSAL_HAVE_PTHREAD_SETAFFINITY_NP 1
 
+/* Check if posix function pthread_kill present. */
+#cmakedefine LIBOSAL_HAVE_PTHREAD_KILL 1
+
 /* Check if signal SIGCONT is present. */
 #cmakedefine LIBOSAL_HAVE_SIGCONT 1
 
