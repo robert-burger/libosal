@@ -32,6 +32,7 @@
 #endif
 
 #include <libosal/osal.h>
+#include <libosal/task.h>
 
 #ifdef LIBOSAL_BUILD_WIN32
 #define ATTR_CONSTRUCTOR_WEAK
