@@ -1,4 +1,4 @@
-libosal (0.2.4) unstable; urgency=low
+libosal (0.2.4) stable; urgency=low
 
   * fix: pool_task_active now returns 1 if task is active on pool.
   * change: enable task pool as default
