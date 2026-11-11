@@ -33,9 +33,27 @@
 
 #include <pthread.h>
 
+#include <libosal/osal.h>
+
 typedef struct osal_task {
     pthread_t tid;
 } osal_task_t;
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+//! \brief Get the number of preallocated task pool threads.
+/*!
+ * \return The maximum number of threads in the preallocated task pool,
+ *         or 0 if the task pool was not enabled in this library build
+ *         (library built without --enable-task-pool).
+ */
+osal_uint32_t osal_task_pool_size(osal_void_t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LIBOSAL_POSIX_TASK__H */
 
