@@ -15,9 +15,13 @@ class MainProject(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     exports_sources = ["*", "!.gitignore", "!bindings"]
     options = {"shared": [True, False],
-               "coverage" : [True, False]}
+               "coverage" : [True, False],
+               "enable-thread-pool": [True, False],
+               "thread-pool-size": ["ANY"]}
     default_options = {"shared": True,
-                       "coverage" : False}
+                       "coverage" : False,
+                       "enable-thread-pool": True,
+                       "thread-pool-size": 8}
 
     def build_requirements(self):
         if self.options.coverage == True:
@@ -62,7 +66,11 @@ class MainProject(ConanFile):
             args.append("--disable-shared")
             args.append("--enable-static")
 
-        args.append("--enable-task-pool")
+        if self.options["enable-thread-pool"]:
+            args.append("--enable-task-pool")
+            args.append(f"--with-task-pool-size={self.options['thread-pool-size']}")
+        else:
+            args.append("--disable-task-pool")
 
         self.run(f'sed "s|PACKAGE_VERSION|{self.version}|" configure.ac.in > configure.ac')
         autotools.autoreconf()
