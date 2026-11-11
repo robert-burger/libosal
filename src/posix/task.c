@@ -118,7 +118,7 @@ static pthread_mutex_t pool_guard_mtx = PTHREAD_MUTEX_INITIALIZER;
 static int pool_debug(void) {
     static int d = -1;
     if (d < 0) {
-        d = (getenv("POOL_DEBUG") != NULL);
+        d = (getenv("OSAL_POOL_DEBUG") != NULL);
     }
     return d;
 }
@@ -381,6 +381,10 @@ static void pool_ensure_init(void) {
         POOL_DBG("pool: init done, size %u\n", pool_size);
     }
     pthread_mutex_unlock(&pool_guard_mtx);
+}
+
+void osal_task_init(void) {
+    pool_ensure_init();
 }
 
 /*
