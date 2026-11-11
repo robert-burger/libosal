@@ -16,12 +16,12 @@ class MainProject(ConanFile):
     exports_sources = ["*", "!.gitignore", "!bindings"]
     options = {"shared": [True, False],
                "coverage" : [True, False],
-               "enable-thread-pool": [True, False],
-               "thread-pool-size": ["ANY"]}
+               "enable_thread_pool": [True, False],
+               "thread_pool_size": ["ANY"]}
     default_options = {"shared": True,
                        "coverage" : False,
-                       "enable-thread-pool": True,
-                       "thread-pool-size": 8}
+                       "enable_thread_pool": True,
+                       "thread_pool_size": 8}
 
     def build_requirements(self):
         if self.options.coverage == True:
@@ -66,9 +66,9 @@ class MainProject(ConanFile):
             args.append("--disable-shared")
             args.append("--enable-static")
 
-        if self.options["enable-thread-pool"]:
+        if self.options["enable_thread_pool"]:
             args.append("--enable-task-pool")
-            args.append(f"--with-task-pool-size={self.options['thread-pool-size']}")
+            args.append(f"--with-task-pool-size={self.options.thread_pool_size}")
         else:
             args.append("--disable-task-pool")
 
