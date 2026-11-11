@@ -41,8 +41,6 @@ AC_CONFIG_HEADERS([config.h include/libosal/osal.h])
 AC_CONFIG_MACRO_DIR([m4])
 AX_PREFIX_CONFIG_H(include/libosal/config.h) # prep mylib/_config.h from it..
 
-AC_PROG_LIBTOOL
-
 LT_INIT
         
 LIBOSAL_BUILD_POSIX=false
