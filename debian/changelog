@@ -1,3 +1,22 @@
+libosal (0.2.4) unstable; urgency=low
+
+  * fix: pool_task_active now returns 1 if task is active on pool.
+  * change: enable task pool as default
+  * change: osal_task_init done on dlopen
+  * add: .clang-format file to disable auto format
+  * add: posix task implementation now uses a pre-allocated thread_pool
+
+ -- Robert Burger <robert.burger@dlr.de>  Wed, 11 Nov 2026 11:20:33 +0100
+
+libosal (0.2.3) stable; urgency=low
+
+  * refactor: remove unrelated pthread_kill guards from STM32
+  * fix: Add RTEMS guards for unsupported POSIX signal APIs
+  * ci: add rtems-riscv build profile
+  * feat: split RTEMS compiler setting for ARM and RISC-V
+
+ -- Robert Burger <robert.burger@dlr.de>  Tue, 01 Sep 2026 11:18:24 +0200
+
 libosal (0.2.2) stable; urgency=low
 
   * cmake find package from autotools
