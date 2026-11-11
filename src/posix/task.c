@@ -556,17 +556,26 @@ static int pool_try_join(osal_task_t *hdl, osal_task_retval_t *retval, osal_retv
 }
 
 /*
- * pool_task_active - check whether hdl refers to an active pool task,
- * for the get/set family of functions operating on hdl->tid.
+ * pool_task_active - check whether hdl refers to a pool worker thread
+ * that still exists, for the get/set family of functions operating
+ * on hdl->tid.
+ *
+ * The handle stays operable as long as the worker thread it points to
+ * exists: while the job runs (ASSIGNED/RUNNING) and also after the
+ * handler returned but before the join (DONE, worker alive). That
+ * matches the legacy implementation, where the same window is a
+ * terminated but unjoined (zombie) thread that the pthread calls
+ * still accept.
  *
  * Returns:
- *   0: hdl refers to an active pool task (ASSIGNED/RUNNING), the
+ *   0: hdl refers to a live pool worker for this handle, the
  *      caller proceeds with the regular pthread operations on hdl->tid
  *   1: hdl is NULL (calling thread) or does not refer to a pool task,
  *      the caller proceeds with the regular path
- *   2: hdl refers to a pool task without an active job, the caller
- *      must return OSAL_ERR_INVALID_PARAM, like the ESRCH a regular
- *      pthread call on a gone thread would report
+ *   2: hdl refers to a pool thread whose worker is gone or no longer
+ *      owned by this handle (joined, slot reused, worker cancelled),
+ *      the caller must return OSAL_ERR_INVALID_PARAM, like the ESRCH
+ *      a regular pthread call on a gone thread would report
  */
 static int pool_task_active(osal_task_t *hdl) {
     int idx;
@@ -580,8 +589,15 @@ static int pool_task_active(osal_task_t *hdl) {
     idx = pool_find_slot(hdl);
     if (idx >= 0) {
         pool_slot_t *slot = &pool_slots[idx];
-        if ((slot->state != POOL_STATE_ASSIGNED) && (slot->state != POOL_STATE_RUNNING)) {
+        if ((slot->state == POOL_STATE_DONE) && (slot->worker_dead != 0)) {
+            /* worker cancelled or self-deleted: the thread is gone, a
+             * regular pthread call on hdl->tid would report ESRCH */
             active = 2;
+        } else {
+            /* ASSIGNED/RUNNING, or DONE with the worker still alive
+             * awaiting the join: the thread exists (like the unjoined
+             * thread of the legacy implementation), operate on it */
+            active = 0;
         }
     } else if (idx == POOL_SLOT_FINISHED) {
         active = 2;
