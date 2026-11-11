@@ -284,6 +284,11 @@ osal_retval_t osal_task_delete(osal_void_t);
 osal_retval_t osal_task_get_state(osal_task_t *hdl,
                                      osal_task_state_t *state);
 
+/*
+ * osal_task_init - initialize task stuff e.g. initialize task pool.
+ */
+void osal_task_init(void);
+
 #ifdef __cplusplus
 };
 #endif

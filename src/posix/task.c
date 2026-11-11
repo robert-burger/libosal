@@ -383,6 +383,9 @@ static void pool_ensure_init(void) {
     pthread_mutex_unlock(&pool_guard_mtx);
 }
 
+/*
+ * osal_task_init - initialize task stuff e.g. initialize task pool.
+ */
 void osal_task_init(void) {
     pool_ensure_init();
 }
