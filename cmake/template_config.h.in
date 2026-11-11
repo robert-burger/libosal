@@ -64,6 +64,9 @@
 /* Define to 1 if you have the <sys/types.h> header file. */
 #cmakedefine LIBOSAL_HAVE_SYS_TYPES_H 1
 
+/* Preallocated task thread pool for osal_task_create is enabled. */
+#cmakedefine LIBOSAL_HAVE_TASK_POOL 1
+
 /* Define to 1 if you have the <unistd.h> header file. */
 #cmakedefine LIBOSAL_HAVE_UNISTD_H 1
 
@@ -95,6 +98,9 @@
    required in a freestanding environment). This macro is provided for
    backward compatibility; new code need not use it. */
 #cmakedefine LIBOSAL_STDC_HEADERS 1
+
+/* Maximum number of preallocated task pool threads. */
+#define LIBOSAL_TASK_POOL_SIZE @LIBOSAL_TASK_POOL_SIZE@
 
 /* Version number of package */
 #cmakedefine LIBOSAL_VERSION "@VERSION@"

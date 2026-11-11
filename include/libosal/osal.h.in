@@ -46,6 +46,12 @@
 /* Use Win32 build */
 #undef LIBOSAL_BUILD_WIN32
 
+/* Preallocated task thread pool for osal_task_create is enabled. */
+#undef LIBOSAL_HAVE_TASK_POOL
+
+/* Maximum number of preallocated task pool threads. */
+#undef LIBOSAL_TASK_POOL_SIZE
+
 #define OSAL_OK                         0       //!< \brief Ok return code.
 #define OSAL_ERR_OPERATION_FAILED       -1      //!< \brief Error operation failed.
 #define OSAL_ERR_INVALID_PARAM          -2      //!< \brief Error invalid input parameter.
