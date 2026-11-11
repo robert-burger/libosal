@@ -57,7 +57,7 @@ extern int main(int argc, char **argv) {
     local_ret = osal_shm_map(&shm, &shm_map_attr, &shm_mem);
 
     osal_printf("mapped shared memory: %p, local_ret %d\n", shm_mem, local_ret);
-    osal_printf("content: %s\n", shm_mem);
+    osal_printf("content: %p\n", shm_mem);
     sprintf(shm_mem, "Hallo shared memory!");
     while (0) {
         osal_timer_t to;
